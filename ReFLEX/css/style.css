@@ -1,0 +1,291 @@
+*{ margin: 0; padding: 0; }
+
+body{
+	background-color: #343432;
+	font-family: Tahoma, sans-serif;
+	color: #aaabab;
+}
+
+#wrapper{
+	margin: 20px;
+	overflow: hidden;
+}
+#header{ height: 24%; }
+#videos{ height: 35%; }
+
+h1, h2{
+	font-size: 1.1em;
+	font-weight: normal;
+	margin-top: 10px;
+	margin-bottom: 10px;
+}
+
+.avatar{
+	width: auto;
+	height: 50%;
+	border-radius: 10px;
+	border: 2px solid #888;
+}
+
+hr{
+	border-width: 0;
+	border-bottom-width: 1px;
+	margin-top: 5px;
+	margin-bottom: 10px;
+	border-color: #777;
+}
+
+.button{
+	cursor: pointer;
+}
+
+#videos{
+	max-width: 900px;
+	margin: auto;
+}
+
+#video-player, #video-recorder, #video-recorder-controls{
+	width: 48%;
+}
+
+#video-player, #video-recorder{
+	width: 420px;
+	height: 280px;
+	position: relative;
+	background-size: 100%;
+}
+#video-player{
+	border: 2px solid #6698cf;
+	background-image: url(../images/Jellyfish.jpg);
+}
+#video-recorder{
+	background-color: #efef95;
+	border: 2px solid #fce162;
+}
+
+#video-player-play{
+	top: 50%;
+	left: 50%;
+	position: absolute;
+	
+}
+#video-player-play img{
+	top: -46px;
+	left: -46px;
+	position: absolute;
+	transition: opacity 1s;
+	-moz-transition: opacity 1s; /* Firefox 4 */
+	-webkit-transition: opacity 1s; /* Safari and Chrome */
+	-o-transition: opacity 1s; /* Opera */
+	opacity: 1;
+	cursor: pointer;
+}
+#video-player-play img:hover{ opacity: 0.3; }
+
+#video-player-ui audio{
+	width: 100%;
+	position: absolute;
+	bottom: 0;
+}
+
+.recorder-ui#record-button-onvideo{
+	position: absolute;
+	left: 50%;
+	top: 50%;
+}
+.recorder-ui.save-recorded-video{
+	width: 71px;
+	height: 71px;
+	padding: 3px;
+	margin: -37px;
+	background-color: rgba(0,0,0,0.5);
+	text-align: center;
+}
+
+.recorder-finished{
+	position: absolute;
+	top: 50%;
+}
+.recorder-ui.save-recorded-video{ left: 33.33%; }
+.recorder-ui#re-record-button-onvideo{ left: 66.66%; }
+
+.recorder-ui img{
+	position: absolute;
+	left: -37px;
+	top: -37px;
+}
+#video-recorder-overlay-ui span{
+	position: absolute;
+	width: 100%;
+	text-align: center;
+	top: 70px;
+}
+
+#note-drag-area{
+	width: 100%;
+	height: 100%;
+	z-index: -1;
+	position: absolute;
+	padding-top: 40px;
+	padding-bottom: 40px;
+	margin-top: -40px;
+	margin-bottom: -40px;
+}
+
+#video-recorder-overlay-ui #ilearned{
+	position: absolute;
+	bottom: 0;
+	background-color: rgba(0,0,0,0.6);
+	color: rgba(255, 255, 255, 1);
+	height: 40px;
+	width: 94%;
+	line-height: 40px;
+	padding-left: 3%;
+	padding-right: 3%;
+}
+
+#vumeters{
+	bottom: 50px; 
+	left: 10px;
+	position: relative;
+}
+
+#vumeters div{
+	width: 5px;
+	height: 30px;
+	background-color: rgba(23, 187, 69, 1);
+	position: absolute;
+	bottom: 0;
+}
+
+#countdown{
+	position: absolute;
+	left: 50%;
+	top: 50%;
+	height: 80px;
+	width: 80px;
+	margin: -44px;
+	text-align: center;
+	line-height: 80px;
+	font-size: 5em;
+	border: 4px solid rgba(255,255,255,0.7);
+	background-color: rgba(0,0,0,0.4);
+	color: rgba(255,255,255,0.9);
+}
+
+#video-player{ float: left; }
+#video-recorder, #video-recorder-controls{ float: right; }
+
+#video-recorder-controls{
+	margin: 5px;
+	height: 20px;
+	line-height: 223px;
+	vertical-align: middle;
+}
+
+#recorder-controls-button{
+	width: 6%;
+	height: 100%;
+	background-color: #af9095;
+	border: 3px solid #945a5d;
+	border-radius: 10px;
+	float: left;
+	display: inline-block;
+}
+
+
+.rfx-scrollbar{
+	margin-top: 10px;
+	height: 5px;
+	background-color: rgba(255,255,255,0.3);
+	border: 10px solid rgba(0,0,0,0.1);
+	display: inline-block;
+	background-clip: padding-box;
+	overflow: hidden;
+}
+
+.rfx-scrollbar-active{
+	width: 0;
+	max-width: 100%;
+	height: 100%;
+	background-color: rgba(25, 42, 180, 0.7);
+}
+
+.rfx-scrollbar-cursor{
+	float: right;
+	width: 15px;
+	height: 9px;
+	margin-top: -2px;
+	border-radius: 8px;
+	background-color: #fff;
+}
+.rfx-scrollbar-cursor.draggable{
+	position: absolute !important;
+}
+
+#recorder-controls-timeline{ width: 85%; float: right; }
+#note-scroll{ width: 98%; margin: auto; }
+#note-zoom{	width: 10%; }
+
+#notes{
+	margin-top: 100px;
+	height: 11%;
+	width: 100%;
+	position: relative;
+}
+#note-timeline{
+	position: relative;
+	background-color: rgba(255, 255, 255, 0.1);
+	height: 85%;
+}
+#week-blocks{
+	position: absolute;
+	width: 100%;
+	bottom: 0;
+	height: 10px;
+	
+	color: #fff;
+	font-size: 0.45em;
+	line-height: 10px;
+}
+#week-blocks .week-block{
+	background-color: #fff;
+	float: left;
+	height: 100%;
+	box-shadow: 0 0 1px rgba(0,0,0,0.9);
+}
+
+.week-block span{
+	font-size: 1.5em;
+	display: block;
+	margin-top: 12px;
+	width: 700%;
+}
+
+#week-blocks .week-block:nth-child(7n + 1) { background-color: #2f75ba; }
+#week-blocks .week-block:nth-child(7n + 2) { background-color: #3089c9; }
+#week-blocks .week-block:nth-child(7n + 3) { background-color: #4a8bc9; }
+#week-blocks .week-block:nth-child(7n + 4) { background-color: #6698cf; }
+#week-blocks .week-block:nth-child(7n + 5) { background-color: #8cabd5; }
+#week-blocks .week-block:nth-child(7n + 6) { background-color: #9dbbe2; }
+#week-blocks .week-block:nth-child(7n + 0) { background-color: #9dbbe2; }
+
+.note{
+	background-image: url(../images/note.png);
+	height: 60px;
+	width: 60px;
+	background-size: 100%;
+	background-repeat: no-repeat;
+	position: absolute; 
+	bottom: 8px;
+	left: 100px;
+	margin-left: -30px;
+	padding-bottom: 4px;
+	padding-right: 5px;
+	padding-top: 3px;
+	padding-left: 2px;
+}
+
+.note img{ width: 100%; border-radius: 3px; }
+
+.yellow{ background-image: url(../images/yellow_note.png); }
