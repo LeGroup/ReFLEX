@@ -48,8 +48,8 @@
     		private var jpegEncoder:JPGEncoder= new JPGEncoder(80);
     		private var camera:Camera;
             private var video:Video;
-            private var still:Bitmap;
-           // private var photo_bm:Bitmap;
+			private var still:Bitmap;
+			private var photo_bm:Bitmap;
             private var camw:Number;
             private var camh:Number;
             private var sound_position:Number;
@@ -101,8 +101,6 @@
 			private function initCamera():void {
                 // get Camera
                 video= new Video(camw,camh);
-				video.percentWidth = 100;
-				video.percentHeight = 100;
                 camera = Camera.getCamera();
 				
 
@@ -150,7 +148,7 @@
 
             // is called by flashTimer after photo has been taken
             private function _addStill(e:TimerEvent):void {
-                //photo_bm=new Bitmap(_bitmapData);
+                photo_bm=new Bitmap(_bitmapData);
                 _switchStill(photo_bm);
                 video.visible=false;
                 still_screen.visible=true;
@@ -279,7 +277,7 @@
             private function redoRecording():void {
                 startRecording();
             }
-            private function saveRecording(server_path:String, note_id:String): void {
+            private function saveRecording(server_path:String, note_id:String, title:String, user:String): void {
                 _display.text = 'Sending audio file...';                
 
                 var ml:MultipartURLLoader = new MultipartURLLoader();
@@ -316,6 +314,8 @@
 				//ml.addVariable('class_id', class_name);
 				var id:Date = new Date();
                 ml.addVariable('note_id', note_id);
+                ml.addVariable('note_title', title);
+                ml.addVariable('user_id', user);
                 if (photo_jpg) {
                     ml.addFile(photo_jpg, 'photo.jpg', 'photo', 'image/jpeg'); 
                 }           
@@ -329,8 +329,8 @@
                 
 				uploaderTimer = new Timer(10000);
 				uploaderTimer.addEventListener(TimerEvent.TIMER, forceFinish);
-                uploaderTimer.reset();                      
-                uploaderTimer.start();                      
+                uploaderTimer.reset();
+                uploaderTimer.start();
             }
             private function keepPhoto(server_path:String, class_name:String, group_name:String ) : void {
                 _display.text = 'Sending team photo...';                
@@ -417,7 +417,6 @@
     <mx:UIComponent id="uic" x="0" y="0" width="100%" height="100%" />
     <mx:UIComponent id="still_screen" x="0" y="0" width="100%" height="100%" visible="false">
 	</mx:UIComponent>	 
-	<mx:Bitmap width="100%" height="100%" id="photo_bm" />
 	<mx:Label color="0xffffff" x="10" y="10" id="_display" visible="false" text="00:00:00"/>
 	<mx:Label color="0xffffff" x="10" y="100" id="_error" visible="false" text=""/>
     <mx:Box id="encoding_container" visible="false" x="0" y="50" width="460" height="60" backgroundColor="#555555" alpha="0.8">

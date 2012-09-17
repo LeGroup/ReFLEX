@@ -1,0 +1,36 @@
+<?php require_once('db.php'); ?>
+<!DOCTYPE html>
+<html lang="fi">
+<head>
+	<link rel="stylesheet" type="text/css" href="css/style.css" />
+	<script src="script/jquery-1.8.1.min.js" type="text/javascript"></script>
+	<script src="script/jquery-ui-1.8.23.custom.min.js" type="text/javascript"></script>
+	<script src="script/main.js" type="text/javascript"></script>
+	<script src="script/swfobject.js" type="text/javascript"></script>
+	<script src="script/recorder.js" type="text/javascript"></script>
+</head>
+<body>
+	<div id="wrapper">
+		<?php 
+			if(isset($_GET['i']))
+			{
+				$q = $db->prepare('SELECT * FROM users WHERE url_id = :id');
+				$id = $_GET['i'];
+				$q->execute(array('id' => $id));
+				
+				if($q->rowCount() == 1) {
+					$result = $q->fetch();
+					$USER = new StdClass();
+					$USER->ID = $result['id'];
+					$USER->username = $result['name'];
+					$USER->registered = $result['date'];
+					$USER->avatar = $result['avatar'];
+					require_once('user_interface.php');
+				}
+			}
+			else
+				require_once('registration_interface.php');
+		?>
+	</div>
+</body>
+</html>

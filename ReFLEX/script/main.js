@@ -1,28 +1,73 @@
-var SERVER_URL = 'http://127.0.0.1/reflex/';
+var SERVER_URL = 'http://127.0.0.1/ReFLEX/';
+var UserId;
+var SelectedNote;
 var Notes = [];
 var Wrapper;
 var timelinewidth = 0.001;
-var start;
-var end;
 var noteTimelineLeft = 0;
 var zoomDragging;
 var Zoom;
 var weeksShown = 1.5;
 var maxWeeks = 5;
 
-$(function() {
+$(function() { Init(); });
+
+function Init() {
+	UserId = $('#user-data').data('id');
 	
-	LoadNotes();
-	
-	start = new Date("September 11, 2012 9:00:00");
-	end = new Date("September 11, 2012 17:30:00");
+	if(typeof UserId != 'undefined') {
+		debug('User logged in. Displaying basic user interface.');
+		InitializeUserInterface();
+	}
+	else {
+		debug('User no logged in. Displaying registration screen.');
+		$('#newUsername').focus(LosePlaceholder).blur(SetPlaceholder);
+		$('#newUserEmail').focus(LosePlaceholder).blur(SetPlaceholder);
+		$('#newUserAdd').click(RegisterUser);
+	}
+}
+
+function SetPlaceholder() {
+	if($(this).text() == '')
+	{ $(this).text($(this).data('placeholder')); }
+}
+function LosePlaceholder() {
+	if($(this).text() == $(this).data('placeholder'))
+	{ $(this).text(''); }
+}
+function InitializeUserInterface() {
+	LoadNotes(); //After loading notes the program initializes notebar, weekblock etc.
+}
+
+function RegisterUser() {
+	if(ValidateUserRegistration()) {
+		$.post('user_registration.php', { Username: $('#newUsername').text(), Email: $('#newUserEmail').text() }, function(result) { 
+			debug('PHP respond from user registration: ' + result);
+			var value = $.parseJSON(result);
+			$('#newUserAdd').hide();
+			// $('#newUserEmail').hide();
+			if(value.Success) {
+				$('#newUsername').removeAttr('contentEditable').text('Registration was successful. You will now get an email with link to your page.'); 
+				$('#newUserEmail').removeAttr('contentEditable').text("Actually you won't and the link is here: " + value.Uri); 
+			}
+			else {
+				debug('User Registration failed: ' + result);
+				$('#newUsername').removeAttr('contentEditable').text('Registration failed. Please try again or contact the administation'); 
+			}
+		});
+	}
+}
+
+function ValidateUserRegistration() {
+	return !($('#newUsername').text() == '' || $('#newUsername') == 'Your username' || $('#newUserEmail').text() == '' || $('#newUserEmail').text() == 'Your email address');
+}
+
+
+function InitLayout() {
 	//end = end.getTime();
 	wrapperResize();
 	$(window).resize(wrapperResize);
 	
-	
-	initNotebar();
-	weekBlockWidths();
 	
 	$('#note-zoom-cursor').draggable({
 		axis: 'x',
@@ -35,17 +80,9 @@ $(function() {
 		drag: setScroll,
 	});
 	
-	$('#notes').mousemove(function(e, h) {
-		if(e.mouseX < 50)
-		{ noteTimelineLeft += 4; }
-		else if(e.mouseX > $(this).width() - 50)
-		{ noteTimelineLeft -= 4; }
-		
-		$('#note-timeline').css('left', noteTimelineLeft);
-	});
 	
 	setZoom();
-});
+}
 
 function debug(msg) { 
 	var d = new Date();
@@ -73,8 +110,8 @@ function setScroll() {
 	
 }
 
-function weekBlockWidths() {
-	$('#note-timeline').css('width', (maxWeeks * 100) + '%');
+function weekBlockWidths(weekCount) {
+	$('#note-timeline').css('width', (weekCount * 100) + '%');
 	
 	$('#week-blocks > .week-block').each(function() {
 		$(this).width((1/$('#week-blocks > .week-block').length * 100) + "%");
@@ -103,17 +140,20 @@ function NotebarType () {
 var Notebar;
 var msInWeeks = 1000 * 60 * 60 * 24 * 7;
 var msInDay = 1000 * 60 * 60 * 24;
-function initNotebar() {
+function initNotebar(start, end) {
+	
 	
 	Notebar = new NotebarType();
 	//Offset of five days
 	//Time of the first note
-	Notebar.Start = new Date("September 14, 2012 9:00:00");
+	Notebar.Start = new Date();
+	Notebar.Start.setTime(start);
 	Notebar.Start.setHours(0, 0, 0, 0);
 	Notebar.Start = Notebar.Start.getTime() - msInDay * (Math.abs((Notebar.Start.getDay() + 6) % 7));
 	
 	//Now
 	Notebar.End = new Date();
+	Notebar.End.setTime(end);
 	Notebar.End.setHours(0, 0, 0, 0);
 	Notebar.End = Notebar.End.getTime() + msInDay * 3;
 	
@@ -131,6 +171,7 @@ function initNotebar() {
 			$('#week-blocks').append('<div class="week-block">' + (d % 7 == 0 ? '<span>' + dateFormat(t) + '</span>' : '') + '</div>');
 		t += msInWeeks;
 	}
+	weekBlockWidths();
 }
 
 
@@ -173,21 +214,53 @@ function Is_note_new(note) {
 }
 
 function SelectNote(note) {
+	SelectedNote = note;
 	debug('Selected a note');
 	$('#video-player').css('backgroundImage', 'url('+note.Picture+')');
 	$('#video-player-ui > audio').attr('src', note.Voice);
+	$('#player-title').text(note.Title).unbind('blur').blur(function() { TestNewTitle(note); });
+}
+
+function TestNewTitle(note) {
+	debug('Updating title...');
+	if(note.Title != $('#player-title').text())
+		SaveTitle(note);
+	else
+		debug('New title and old title are same. No need for updating.');
+}
+
+function SaveTitle(note) {
+	$.post('title_save.php', { ID: note.ID, Title: $('#player-title').text() }, function (data) { 
+			debug('PHP respond on updating title: ' + data);
+			note.Title = $('#player-title').text();
+		});
 }
 
 // noteObject: { Day: 1, Hour: 15, Image: 'images/Desert.jpg', Voice: 'path', Position: (Math.random()), Object: outerHTML }
 function LoadNotes() {
-	debug('Preparing to load notes.');
-	$.post('notes.php', { }, function(data) {
+	debug('Preparing to load notes from user ' + UserId + '.');
+	$.post('notes.php', { User: UserId }, function(data) {
 		var noteArray = $.parseJSON(data);
+		debug('Notes loaded.');
+		//Notebar need to be initialized before any notes are added
+		//However we need to know the date of the first note in order to set notebar's timespan
+		var start = new Date();
 		
+		//If there are notes, set the beginning of the notebar's timespan to the date of the first note.
+		if(noteArray.length > 0)
+			start.setTime(noteArray[0].Time);
+			
+		initNotebar(start, new Date());
+		
+		//Add notes
 		debug('Found ' + noteArray.length + ' notes.');
 		for(var i = 0; i < noteArray.length; i++) {
-			AddNote({ ID: noteArray[i].ID, Time: noteArray[i].Time, Picture: noteArray[i].Picture, Voice: noteArray[i].Voice });
+			AddNote({ ID: noteArray[i].ID, Time: noteArray[i].Time, Picture: noteArray[i].Picture, Voice: noteArray[i].Voice, Title: noteArray[i].Title });
 		}
-		SelectNote(Notes[Notes.length - 1]);
+		
+		//If there are already notes, select the most recent.
+		if(noteArray.length > 0)
+			SelectNote(Notes[Notes.length - 1]);
+		InitLayout();
 	});
 }

@@ -179,7 +179,7 @@ RECORDER.encodingComplete= function() {
 	UIChangeState('recorder-finished');
 	
 	//Generate a note object with unique ID
-	RecordedNote = { "ID": new Date().getTime() }
+	RecordedNote = { "ID": new Date().getTime(), "Title": $('#recorder-title').text() }
 	
 	$('#re-record-button-onvideo > img').click(RECORDER.start_recording);
 }
@@ -213,7 +213,7 @@ RECORDER.save_note= function() {
 	
 	debug('Using upload path: ' + SERVER_URL);
     if (rec) {
-        rec.saveRecording(SERVER_URL, RecordedNote.ID); 
+        rec.saveRecording(SERVER_URL, RecordedNote.ID, RecordedNote.Title, UserId); 
     }        
 }
 

@@ -1,21 +1,22 @@
 ﻿<?php
+require_once('db.php');
 
-$db = new PDO('mysql:dbname=reflex;host=127.0.0.1', 'root', '');
-$log = fopen("log/log.txt", 'a');
-
-if(!isset($_POST['note_id'])) { _log('Note_id not set.'); die(); }
-
-_log('------------------------NEW NOTE----------------------------');
-_log('Photo size: ' . $_FILES['photo']['size']/1000 . " kilobytes");
-_log('Audio size: ' . $_FILES['voice']['size']/1000 . " kilobytes");
-_log('Photo error code: ' . $_FILES['photo']['error']);
-_log('Audio error code: ' . $_FILES['voice']['error']);
-
+// if(!isset($_POST['note_id'])) { _log('Note_id not set.'); die(); }
 
 $new_note = new StdClass();
+
+// _log('------------------------NEW NOTE----------------------------');
+// _log('Photo size: ' . $_FILES['photo']['size']/1000 . " kilobytes");
+// _log('Audio size: ' . $_FILES['voice']['size']/1000 . " kilobytes");
+// _log('Photo error code: ' . $_FILES['photo']['error']);
+// _log('Audio error code: ' . $_FILES['voice']['error']);
+
+
 $new_note->Picture = "";
 $new_note->Voice = "";
 $new_note->ID = $_POST['note_id'];
+$new_note->User = $_POST['user_id'];
+$new_note->Title = isset($_POST['note_title']) ? $_POST['note_title'] : '';
 $new_note->Time = time() * 1000;
 
 $q = $db->prepare('SELECT id FROM notes WHERE id = "'.$new_note->ID.'"');
@@ -53,12 +54,14 @@ else { $new_note->Voice = $aud_name; }
 
 
 //Insert a row in the database
-$q = $db->prepare('INSERT INTO notes(id, time, picture, voice, student) VALUES(:id, :time, :picture, :voice, 0)');
+$q = $db->prepare('INSERT INTO notes(ID, Time, Picture, Voice, Title, Student) VALUES(:id, :time, :picture, :voice, :title, :user)');
 $result = $q->execute(array(
 			'id' => $new_note->ID,
 			'time' => $new_note->Time,
 			'picture' => $new_note->Picture,
-			'voice' => $new_note->Voice));
+			'voice' => $new_note->Voice,
+			'title' => $new_note->Title,
+			'user' => $new_note->User));
 
 if($result) {_log('Database row inserted successfully'); }
 else { _log('Inserting database row failed!'); print_r($q->errorInfo()); }
@@ -67,10 +70,6 @@ else { _log('Inserting database row failed!'); print_r($q->errorInfo()); }
 echo json_encode($new_note);
 
 fclose($log);
-function _log($text) {
-	global $log;
-	fwrite($log, date('Y.m.d H:i:s') . " - ".$text."\n");
-}
 
 function CreateDirectoryIfNotExist($path) {
 	if (!file_exists($path)) 

@@ -44,8 +44,11 @@ hr{
 	margin: auto;
 }
 
-#video-player, #video-recorder, #video-recorder-controls{
-	width: 48%;
+#video-player-wrapper{ float: left; }
+#video-recorder-wrapper{ float: right; }
+
+#video-player, #video-recorder{
+	width: 100%;
 }
 
 #video-player, #video-recorder{
@@ -174,13 +177,13 @@ hr{
 }
 
 #video-player{ float: left; }
-#video-recorder, #video-recorder-controls{ float: right; }
+#video-recorder{ float: right; }
 
 #video-recorder-controls{
 	margin: 5px;
 	height: 20px;
 	line-height: 223px;
-	vertical-align: middle;
+	width: 100%;
 }
 
 #recorder-controls-button{
@@ -223,7 +226,7 @@ hr{
 	position: absolute !important;
 }
 
-#recorder-controls-timeline{ width: 85%; float: right; }
+#recorder-controls-timeline{ float: left; width: 93%; }
 #note-scroll{ width: 98%; margin: auto; }
 #note-zoom{	width: 10%; }
 
@@ -289,3 +292,23 @@ hr{
 .note img{ width: 100%; border-radius: 3px; }
 
 .yellow{ background-image: url(../images/yellow_note.png); }
+
+/* Registration interface */
+#newUsername{ margin-top: 40%; }
+#newUsername, #newUserEmail{
+	border: 1px solid rgba(255,255,255,0.1); 
+	padding: 11px; 
+	font-size: 1.3em;
+	text-align: center;
+	display: inline-block;
+	margin-bottom: 10px;
+}
+
+#newUserAdd{
+	width: 100%; 
+	clear: both; 
+	display: block; 
+	padding: 6px; 
+	color: #5764cb;
+	text-align: center;
+}
