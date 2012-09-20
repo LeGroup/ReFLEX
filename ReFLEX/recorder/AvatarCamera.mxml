@@ -1,0 +1,206 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Application xmlns:fx="http://ns.adobe.com/mxml/2009" 
+			   xmlns:s="library://ns.adobe.com/flex/spark" 
+			   xmlns:mx="library://ns.adobe.com/flex/mx" creationComplete="init()" width="100%" height="100%" frameRate="30" backgroundColor="#1D1D1C">
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+		
+	</fx:Declarations>
+
+	
+	<fx:Script>
+		<![CDATA[
+            import com.adobe.images.JPGEncoder;            
+            import ru.inspirit.net.MultipartURLLoader;
+            import flash.events.Event;
+            import flash.events.IOErrorEvent;
+            import flash.system.Security;
+            import flash.external.ExternalInterface;
+            import mx.core.FlexGlobals;
+            private var preparationTimer:Timer;
+            private var uploaderTimer:Timer;
+            private var flashTimer:Timer;
+            private var prep_counter:Number;
+    		private var _bitmapData:BitmapData;
+    		private var _flash:BitmapData;
+    		private var photo_jpg:ByteArray;
+    		private var jpegEncoder:JPGEncoder= new JPGEncoder(80);
+    		private var camera:Camera;
+            private var video:Video;
+			private var still:Bitmap;
+			private var photo_bm:Bitmap;
+            private var camw:Number;
+            private var camh:Number;
+			
+			private function debug(msg:String):void { 
+				ExternalInterface.call('debug', 'FLASH: ' + msg);
+			}
+			
+			private function init():void {
+				debug('init()');
+				
+                camw=150;
+                camh=150;
+           				
+				_flash=new BitmapData(camw,camh,false, 0xaaFF88);
+				
+                // Taking avatar picture
+                ExternalInterface.addCallback("initCamera", initCamera);
+                ExternalInterface.addCallback("startRecording", startRecording);
+                ExternalInterface.addCallback("savePicture", savePicture);
+				
+				debug('Recorder initialized');
+                ExternalInterface.call("AVA.recorderInitialized");
+			}
+			
+
+			private function initCamera():void {
+				debug('initCamera()');
+                // get Camera
+                video= new Video(camw,camh);
+                camera = Camera.getCamera();
+				
+
+                function statusHandler(event:StatusEvent):void { 
+                    switch (event.code) { 
+                        case "Camera.Muted":
+							debug('Camera denied');
+                            ExternalInterface.call("AVA.cameraDenied"); 
+                            break; 
+                        case "Camera.Unmuted": 
+							debug('Camera allowed'); 
+                            ExternalInterface.call("AVA.cameraAccepted"); 
+                            break; 
+                    } 
+                }
+                if (camera) {
+                    camera.addEventListener(StatusEvent.STATUS, statusHandler)
+                    camera.setMode(camw,camh,12,false);
+                    camera.setQuality(0,100);
+                    video.attachCamera(camera);
+                    if (!camera.muted) {
+						debug('Camera allowed');
+                        ExternalInterface.call("AVA.cameraAccepted"); 
+                    }
+                }
+                uic.addChild(video);
+                flashTimer=new Timer(10,1);
+                flashTimer.addEventListener(TimerEvent.TIMER_COMPLETE, _addStill);
+			}
+
+            private function takePhoto():void {
+				debug('takePhoto()');
+                flashTimer.reset();                
+                flashTimer.start(); // --> _addStill
+                _switchStill(new Bitmap(_flash))
+                still_screen.visible=true;
+                _bitmapData=new BitmapData(camw, camh);
+                _bitmapData.draw(video);
+                video.attachCamera(null);
+
+                ExternalInterface.call("AVA.tookPhoto");
+            }
+
+            // is called by flashTimer after photo has been taken
+            private function _addStill(e:TimerEvent):void {
+				debug('addStill()');
+                photo_bm=new Bitmap(_bitmapData);
+                _switchStill(photo_bm);
+                video.visible=false;
+                still_screen.visible=true;
+                photo_jpg = jpegEncoder.encode(_bitmapData);
+                _bitmapData=null;
+            }
+
+			private function _switchStill(bmp:Bitmap):void {
+				debug('switchStill()');
+                if (still!=null) {
+                    if (still_screen.contains(still)) {
+                        still_screen.removeChild(still);
+                    }
+                }
+                still = bmp;
+                still_screen.addChild(still);
+			}
+
+			// Recording 
+			
+			private function startRecording():void {
+				debug('startRecording()');
+                // start preparations
+				prep_counter=4;
+                preparationTimer = new Timer(1000,prep_counter);
+                preparationTimer.addEventListener(TimerEvent.TIMER, _prepareAnnouncement);
+                preparationTimer.addEventListener(TimerEvent.TIMER_COMPLETE, _prepareComplete);         
+    		    // _display.text = 'Prepare...'
+    		    preparationTimer.reset();
+				initCamera();
+				video.visible = true;
+                preparationTimer.start(); // --> _prepareAnnouncement, _prepareComplete
+			}
+			
+			private function _prepareAnnouncement(e:TimerEvent):void {
+				debug('prepareAnnouncement()');
+    		    prep_counter--;
+                ExternalInterface.call("AVA.countdown", prep_counter);
+			}
+
+            private function _prepareComplete(e:TimerEvent):void {
+				debug('_prepareComplete()');
+                takePhoto();
+            }
+
+            private function savePicture(server_path:String, user:String): void {
+				debug('Uploading avatar');         
+
+                var ml:MultipartURLLoader = new MultipartURLLoader();
+                ml.addEventListener(Event.COMPLETE, onReady);         
+                // ExternalInterface.call("uploadingPicture");
+                                
+                function onReady(e:Event):void {
+					debug('saveRecording.onReady()');
+                    // notify teamup that we are done
+            		ExternalInterface.call("AVA.finishedRecording", ml.loader.data);
+					
+					uploaderTimer.stop();
+                }
+                function onError(evt:IOErrorEvent):void {
+					debug('Error while uploading avatar: ' + evt);
+                };
+                function forceFinish(event : Event) : void {
+					debug('Forced avatar uploading to finish ');
+                    // if the MultipartURLLoader hasn't responded in 20 seconds, assume that its return message is messed up
+                    // and the files are there. Send end notification.
+					uploaderTimer.stop();
+            		ExternalInterface.call("AVA.finishedRecording", ml.loader.data);
+                }
+            
+                //$_POST['data']
+                ml.addVariable('user_id', user);
+                ml.addFile(photo_jpg, 'photo.jpg', 'photo', 'image/jpeg'); 
+                
+				//Uploading the image
+                try {
+                    ml.load(server_path + "upload_avatar.php", false);  
+                } catch (error:Error) {
+					debug('Failed to upload avatar: ' + error.toString());
+                } finally {};
+                
+				uploaderTimer = new Timer(10000);
+				uploaderTimer.addEventListener(TimerEvent.TIMER, forceFinish);
+                uploaderTimer.reset();
+                uploaderTimer.start();
+            }
+
+		]]>
+	</fx:Script>
+
+    <mx:UIComponent id="uic" x="0" y="0" width="100%" height="100%" />
+    <mx:UIComponent id="still_screen" x="0" y="0" width="100%" height="100%" visible="false">
+	</mx:UIComponent>	 
+	<mx:Label color="0xffffff" x="10" y="10" id="_display" visible="false" text="00:00:00"/>
+	<mx:Label color="0xffffff" x="10" y="100" id="_error" visible="false" text=""/>
+    <mx:Box id="encoding_container" visible="false" x="0" y="50" width="460" height="60" backgroundColor="#555555" alpha="0.8">
+	<mx:ProgressBar id="encoding" x="10" y="0" width="100%" mode="manual" label="Encoding..." fontSize="10" chromeColor="0x008844" color="0xdddddd"/>
+	</mx:Box>
+</s:Application>

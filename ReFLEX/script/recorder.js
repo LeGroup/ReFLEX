@@ -3,9 +3,20 @@
 $(function() {
 	UIChangeState('video-off');
 	$('#record-button-onvideo > img').mousedown(RECORDER.prepare_recorder);
-	$('#save-recorded-video').draggable({ helper: 'clone', start: dragStarted, stop: dragStopped, zIndex: 9999 });
+	$('#save-recorded-video').draggable({ helper: 'clone', start: dragStarted, stop: dragStopped, zIndex: 9999 }).dblclick(function() {
+		RecordedNote.Time = (new Date).getTime(); 
+		RECORDER.save_note();
+		});
 	$('#note-drag-area').droppable({ startDrag: dragStarted, drop: noteDropped });
 });
+
+function resizeFix(rec) {
+	// debug('Resized!');
+	if(rec) {
+		// debug('Fixing resize!');
+		rec.resizeFix();
+	}
+}
 
 var RecorderNote;
 
@@ -14,8 +25,12 @@ function dragStopped() { $('#note-drag-area').css('zIndex', -1); }
 
 function noteDropped(event, ui) {
 	
-	if(ui.draggable.hasClass('note') || ui.draggable.hasClass('save-recorded-video'))
+	if(ui.draggable.hasClass('save-recorded-video'))
 	{
+		if(are_notes_draggable)
+			RecordedNote.Time = Notebar.GetTime(ui.offset.left);
+		else
+			RecordedNote.Time = (new Date()).getTime();
 		RECORDER.save_note();
 	}
 }
@@ -23,6 +38,7 @@ function noteDropped(event, ui) {
 function UIChangeState(state) {
 	$('.recorder-ui').hide(); 
 	$('.' + state).show();	
+	resizeFix(RECORDER.getRecorder());
 	debug('UI state changed to "'+state+'"');
 }
 
@@ -32,7 +48,7 @@ RECORDER = { on:false, vumeter_values:[] }
 
 RECORDER.prepare_recorder=function() {
 	if (!RECORDER.getRecorder()) {
-        swfobject.embedSWF('recorder/TeamRecorder4.swf', 'TeamRecorder', '420', '280', '10.3.0', 'expressInstall.swf', {},{},{});
+        swfobject.embedSWF('recorder/TeamRecorder4.swf', 'TeamRecorder', '100%', '100%', '10.3.0', 'expressInstall.swf', {},{ scale: 'exactfit' },{});
     }
 	
     debug('record mode on');
@@ -56,6 +72,7 @@ RECORDER.getRecorder=function() {
     var rec=swfobject.getObjectById('TeamRecorder');
     if (rec && rec.initCamera !== undefined) {
         debug('Found recorder');
+		resizeFix(rec);
         return rec;
     } else {
         debug('no recorder available');
@@ -179,8 +196,8 @@ RECORDER.encodingComplete= function() {
 	UIChangeState('recorder-finished');
 	
 	//Generate a note object with unique ID
-	RecordedNote = { "ID": new Date().getTime(), "Title": $('#recorder-title').text() }
-	
+	RecordedNote = { "Title": $('#recorder-title').text() }
+	$('#save-recorded-video').draggable('enable');
 	$('#re-record-button-onvideo > img').click(RECORDER.start_recording);
 }
 
@@ -213,7 +230,7 @@ RECORDER.save_note= function() {
 	
 	debug('Using upload path: ' + SERVER_URL);
     if (rec) {
-        rec.saveRecording(SERVER_URL, RecordedNote.ID, RecordedNote.Title, UserId); 
+        rec.saveRecording(SERVER_URL, RecordedNote.Title, UserId, RecordedNote.Time); 
     }        
 }
 
@@ -222,6 +239,9 @@ RECORDER.finishedRecording = function(path) {
     // $('#upload-panel').dialog('close');
     // $('div.recorder_panel').hide();
     debug('Received a record:'+path);
+	
+	
+	$('#save-recorded-video').draggable('disable');
 	
 	try{ var note = $.parseJSON(path); }
 	catch (e) { debug('Parsing JSON failed: \n' + path); }

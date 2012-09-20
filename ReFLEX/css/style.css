@@ -19,14 +19,25 @@ h1, h2{
 	margin-top: 10px;
 	margin-bottom: 10px;
 }
-
+/* Container */
+#avatar{
+	width: 150px;
+	height: 150px;
+	position: relative;
+	margin-bottom: 10px;
+	
+}
+/* Image */
 .avatar{
-	width: auto;
-	height: 50%;
+	width: 100%;
+	height: 100%;
 	border-radius: 10px;
 	border: 2px solid #888;
+	position: absolute;
 }
-
+#ava-countdown{
+	display: none;
+}
 hr{
 	border-width: 0;
 	border-bottom-width: 1px;
@@ -40,26 +51,30 @@ hr{
 }
 
 #videos{
-	max-width: 900px;
 	margin: auto;
+	max-width: 1000px;
 }
 
-#video-player-wrapper{ float: left; }
-#video-recorder-wrapper{ float: right; }
+#video-player-wrapper{ float: left; width: 48%; height: 100%; }
+#video-recorder-wrapper{ float: right; width: 48%; height: 100%; }
 
 #video-player, #video-recorder{
 	width: 100%;
 }
 
 #video-player, #video-recorder{
+	/*
 	width: 420px;
 	height: 280px;
+	*/
+	width: 100%;
+	height: 100%;
+
 	position: relative;
-	background-size: 100%;
+	background-size: cover !important;
 }
 #video-player{
 	border: 2px solid #6698cf;
-	background-image: url(../images/Jellyfish.jpg);
 }
 #video-recorder{
 	background-color: #efef95;
@@ -279,7 +294,7 @@ hr{
 	width: 60px;
 	background-size: 100%;
 	background-repeat: no-repeat;
-	position: absolute; 
+	position: absolute !important; 
 	bottom: 8px;
 	left: 100px;
 	margin-left: -30px;
@@ -294,7 +309,7 @@ hr{
 .yellow{ background-image: url(../images/yellow_note.png); }
 
 /* Registration interface */
-#newUsername{ margin-top: 40%; }
+#newUsername{ margin-top: 200px; }
 #newUsername, #newUserEmail{
 	border: 1px solid rgba(255,255,255,0.1); 
 	padding: 11px; 

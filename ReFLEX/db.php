@@ -1,4 +1,5 @@
 <?php
+
 $db = new PDO('mysql:dbname=reflex;host=127.0.0.1', 'root', '');
 $log = fopen("log/log.txt", 'a');
 

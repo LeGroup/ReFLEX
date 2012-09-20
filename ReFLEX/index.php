@@ -2,12 +2,15 @@
 <!DOCTYPE html>
 <html lang="fi">
 <head>
+	<title>ReFLEX</title>
+	<meta charset="utf-8">
 	<link rel="stylesheet" type="text/css" href="css/style.css" />
 	<script src="script/jquery-1.8.1.min.js" type="text/javascript"></script>
 	<script src="script/jquery-ui-1.8.23.custom.min.js" type="text/javascript"></script>
 	<script src="script/main.js" type="text/javascript"></script>
 	<script src="script/swfobject.js" type="text/javascript"></script>
 	<script src="script/recorder.js" type="text/javascript"></script>
+	<script src="script/avatarCamera.js" type="text/javascript"></script>
 </head>
 <body>
 	<div id="wrapper">

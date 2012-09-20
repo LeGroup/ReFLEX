@@ -89,3 +89,53 @@
 2012.09.17 09:48:07 - Database row inserted successfully
 2012.09.17 10:06:56 - Database row inserted successfully
 2012.09.17 10:08:04 - Database row inserted successfully
+2012.09.17 11:54:21 - Database row inserted successfully
+2012.09.17 12:29:34 - Database row inserted successfully
+2012.09.17 12:32:34 - Database row inserted successfully
+2012.09.17 12:33:28 - Database row inserted successfully
+2012.09.17 12:35:43 - Database row inserted successfully
+2012.09.17 12:44:46 - Database row inserted successfully
+2012.09.17 12:51:59 - Database row inserted successfully
+2012.09.17 12:58:36 - Database row inserted successfully
+2012.09.17 13:00:46 - Database row inserted successfully
+2012.09.17 13:01:15 - Database row inserted successfully
+2012.09.17 13:01:29 - Database row inserted successfully
+2012.09.17 13:22:16 - Database row inserted successfully
+2012.09.17 13:22:27 - Database row inserted successfully
+2012.09.17 13:27:01 - Database row inserted successfully
+2012.09.17 14:11:11 - Database row inserted successfully
+2012.09.17 14:26:18 - Database row inserted successfully
+2012.09.17 14:26:41 - Database row inserted successfully
+2012.09.17 14:27:02 - Database row inserted successfully
+2012.09.17 14:27:24 - Database row inserted successfully
+2012.09.17 14:28:20 - Database row inserted successfully
+2012.09.17 14:28:38 - Database row inserted successfully
+2012.09.17 14:28:55 - Database row inserted successfully
+2012.09.17 14:29:09 - Database row inserted successfully
+2012.09.17 14:30:59 - Database row inserted successfully
+2012.09.17 14:55:45 - Database row inserted successfully
+2012.09.17 14:55:57 - Database row inserted successfully
+2012.09.17 15:01:42 - Inserting database row failed!
+2012.09.17 15:04:49 - Database row inserted successfully
+2012.09.17 15:09:21 - Database row inserted successfully
+2012.09.17 15:09:35 - Database row inserted successfully
+2012.09.17 16:00:02 - Database row inserted successfully
+2012.09.18 15:14:56 - Database row inserted successfully
+2012.09.19 14:26:16 - Database row inserted successfully
+2012.09.19 15:00:11 - Database row inserted successfully
+2012.09.20 09:21:41 - Database row inserted successfully
+2012.09.20 10:30:04 - Uploading photo failed!
+2012.09.20 10:30:04 - Database row inserted successfully
+2012.09.20 10:31:49 - ------------------------NEW NOTE----------------------------
+2012.09.20 10:31:49 - Photo size: 0 kilobytes
+2012.09.20 10:31:49 - Audio size: 28.644 kilobytes
+2012.09.20 10:31:49 - Photo error code: 
+2012.09.20 10:31:49 - Audio error code: 0
+2012.09.20 10:31:49 - Uploading photo failed!
+2012.09.20 10:31:49 - Database row inserted successfully
+2012.09.20 10:35:47 - ------------------------NEW NOTE----------------------------
+2012.09.20 10:35:47 - Photo size: 30.741 kilobytes
+2012.09.20 10:35:47 - Audio size: 28.644 kilobytes
+2012.09.20 10:35:47 - Photo error code: 0
+2012.09.20 10:35:47 - Audio error code: 0
+2012.09.20 10:35:47 - Database row inserted successfully

@@ -9,6 +9,7 @@ var zoomDragging;
 var Zoom;
 var weeksShown = 1.5;
 var maxWeeks = 5;
+var are_notes_draggable = true;
 
 $(function() { Init(); });
 
@@ -89,10 +90,11 @@ function debug(msg) {
 	var hh = d.getHours();
 	var mm = d.getMinutes();
 	var ss = d.getSeconds();
+	var ms = d.getMilliseconds();
 	if (hh < 10) {hh = "0"+hh;}
 	if (mm < 10) {mm = "0"+mm;}
 	if (ss < 10) {ss = "0"+ss;}
-	console.log(hh + ':' + mm + ':' + ss + ' - ' + msg); 
+	console.log(hh + ':' + mm + ':' + ss + '.' + ms + '	- ' + msg); 
 } 
 
 function setZoom() {
@@ -127,7 +129,8 @@ function datetimeFormat(date) {
 }
 function weekDay(date) { date = new Date(date); return date.getDay(); }
 
-function NotebarType () { 
+function NotebarType (obj) { 
+	this.Object = obj;
 	this.Timespan = 0; 	
 	this.Start = 0; 
 	this.End =  0; 
@@ -136,6 +139,9 @@ function NotebarType () {
 		var t = time - this.Start;
 		return Clamp(t/this.Timespan, 0, 1);
 	}
+	this.GetTime = function (positionX) {
+		return this.Start + this.Timespan * Clamp((positionX - this.Object.position().left)/this.Object.width(), 0, 1);
+	}
 }
 var Notebar;
 var msInWeeks = 1000 * 60 * 60 * 24 * 7;
@@ -143,7 +149,7 @@ var msInDay = 1000 * 60 * 60 * 24;
 function initNotebar(start, end) {
 	
 	
-	Notebar = new NotebarType();
+	Notebar = new NotebarType($('#note-timeline'));
 	//Offset of five days
 	//Time of the first note
 	Notebar.Start = new Date();
@@ -165,6 +171,7 @@ function initNotebar(start, end) {
 	
 	var t = Notebar.Start;
 	
+	debug('Weeks: ' + weeks);
 	for(var i = 0; i < weeks; i++)
 	{
 		for(var d = 0; d < 7; d++)
@@ -202,7 +209,25 @@ function AddNoteElement(note) {
 	note.Object.attr('title', datetimeFormat(note.Time));
 	note.Object.css('left', Notebar.GetRatio(note.Time) * 100 + '%');
 	note.Object.click(function() { SelectNote(note); });
+	if(are_notes_draggable) {
+		note.Object.draggable({ 
+			containment: 'parent',
+			zIndex: 9999,
+			stop: function(e, ui) { 
+				note.Time = Notebar.GetTime(ui.offset.left);
+				UpdateNote(note);
+			}
+		});
+	}
 	$('#note-timeline').append(note.Object);
+}
+
+function UpdateNote(note) {
+	//JSON.stringify doesn't like the Object property as it's a jquery object.
+	//It needs to be removed before stringification then/However we need to keep it for other features to use
+	var noteToSave = note;
+	delete noteToSave.Object;
+	$.post('update.php', { Note: JSON.stringify(note) });
 }
 
 function Is_note_new(note) {
@@ -212,6 +237,7 @@ function Is_note_new(note) {
 	}
 	return true;
 }
+
 
 function SelectNote(note) {
 	SelectedNote = note;
@@ -255,7 +281,7 @@ function LoadNotes() {
 		//Add notes
 		debug('Found ' + noteArray.length + ' notes.');
 		for(var i = 0; i < noteArray.length; i++) {
-			AddNote({ ID: noteArray[i].ID, Time: noteArray[i].Time, Picture: noteArray[i].Picture, Voice: noteArray[i].Voice, Title: noteArray[i].Title });
+			AddNote({ ID: noteArray[i].ID, Time: noteArray[i].Time, Picture: noteArray[i].Picture, Voice: noteArray[i].Voice, Title: noteArray[i].Title, Student: noteArray[i].Student });
 		}
 		
 		//If there are already notes, select the most recent.
