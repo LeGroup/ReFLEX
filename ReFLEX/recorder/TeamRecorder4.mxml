@@ -261,8 +261,7 @@
             private function saveRecording(server_path:String, title:String, user:String, noteTime:String): void {
 			
                 var ml:MultipartURLLoader = new MultipartURLLoader();
-                ml.addEventListener(Event.COMPLETE, onReady);
-                //ml.addEventListener(ProgressEvent.PROGRESS, onProgress);              
+                ml.addEventListener(Event.COMPLETE, onReady);         
                 ExternalInterface.call("uploadingRecording");
                                 
                 function onReady(e:Event):void {
@@ -369,7 +368,5 @@
     <mx:Box id="encoding_container" visible="false" x="0" y="50" width="460" height="60" backgroundColor="#555555" alpha="0.8">
 	<mx:ProgressBar id="encoding" x="10" y="0" width="100%" mode="manual" label="Encoding..." fontSize="10" chromeColor="0x008844" color="0xdddddd"/>
 	</mx:Box>
-	
-	
 </s:Application>
 
