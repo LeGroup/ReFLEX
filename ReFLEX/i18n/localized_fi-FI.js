@@ -10,5 +10,22 @@
 	"I learned...": "Opin...",
 	"This note is private!": "Tämä tallennus on yksityinen!",
 	"Enter your pin code to open it": "Syötä tunnuslukusi avataksesi sen.",
-	"Your pin has been reset. Please check your email.": "Uusi tunnusluku on lähetetty sähköpostiisi."
+	"Your pin has been reset. Please check your email.": "Uusi tunnusluku on lähetetty sähköpostiisi.",
+	"Add new user": "Tee uusi käyttäjä",
+	"Your name": "Nimesi",
+	"Your email address": "Sähköpostiosoitteesi",
+	"Make private": "Aseta yksityiseksi",
+	"Make public": "Aseta julkiseksi",
+	"January": "Tammikuu",
+	"February": "Helmikuu",
+	"March": "Maaliskuu",
+	"April": "Huhtikuu",
+	"May": "Toukokuu",
+	"June": "Kesäkuu",
+	"July": "Heinäkuu",
+	"August": "Elokuu",
+	"September": "Syyskuu",
+	"October": "Lokakuu",
+	"November": "Marraskuu",
+	"December": "Joulukuu"
 }

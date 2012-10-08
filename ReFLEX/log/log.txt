@@ -547,3 +547,9 @@
 2012.10.08 10:00:59 - Photo error code: 0
 2012.10.08 10:00:59 - Audio error code: 0
 2012.10.08 10:00:59 - Database row inserted successfully
+2012.10.08 14:13:08 - ------------------------NEW NOTE----------------------------
+2012.10.08 14:13:08 - Photo size: 19.493 kilobytes
+2012.10.08 14:13:08 - Audio size: 171.864 kilobytes
+2012.10.08 14:13:08 - Photo error code: 0
+2012.10.08 14:13:08 - Audio error code: 0
+2012.10.08 14:13:08 - Database row inserted successfully

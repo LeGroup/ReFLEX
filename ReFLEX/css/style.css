@@ -224,9 +224,9 @@ h1, h2{
 }
 
 #vumeters div{
-	width: 5px;
+	width: 10px;
 	height: 30px;
-	background-color: rgba(23, 187, 69, 1);
+	background-color: rgba(23, 187, 69, 0.5);
 	position: absolute;
 	bottom: 0;
 }

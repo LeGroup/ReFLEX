@@ -1,6 +1,7 @@
 // **********************************
 // Team recorder UI Reflex
-RECORDER = { on:false, vumeter_values:[] }
+RECORDER = { on:false, vumeter_values:[], isCameraAccepted: false }
+
 
 // UIChangeState function changes the current UI state
 // This means hiding UI elements that shouldn't be displayed in the current state
@@ -15,7 +16,8 @@ RECORDER.UiStates = {
 	Encoding: 'recorder-encoding',
 	Finished: 'recorder-finished',
 	NoteSelected: 'note-selected',
-	NoteSealed: 'note-sealed'
+	NoteSealed: 'note-sealed',
+	CameraPermission: 'camera-permission'
 };
 
 var StatesWhenNoteOptionsAvailable = [RECORDER.UiStates.NoteSelected, RECORDER.UiStates.Playing, RECORDER.UiStates.PlaybackFinished];
@@ -117,7 +119,6 @@ function UIChangeState(state) {
 // Team recorder 
 
 RECORDER.prepare_recorder=function() {
-	$('#record-button-onvideo > img').hide();
 	if (!RECORDER.getRecorder()) {
         swfobject.embedSWF('recorder/TeamRecorder4.swf', 'TeamRecorder', '100%', '100%', '10.3.0', 'expressInstall.swf', {},{ scale: 'exactfit', wmode: 'transparent' },{});
     }
@@ -129,10 +130,11 @@ RECORDER.prepare_recorder=function() {
 		$(this).css('left', ($(this).width() + 3) * i);
 		i++;
     });
-	
-	UIChangeState(RECORDER.UiStates.RecorderInitialized);
-	
-	$('#record-button-onvideo > img').show().mouseenter(function() { $(this).stop().animate({ opacity: '0.95' }, 500); }).mouseleave(function () {$(this).stop().animate({ opacity: '0.5' }, 500); }).click(RECORDER.start_recording);
+	if(RECORDER.isCameraAccepted)
+		UIChangeState(RECORDER.UiStates.RecorderInitialized);
+	else
+		UIChangeState(RECORDER.UiStates.CameraPermission);
+		
 	$('#note_viewer').hide();
     $('#note_photo').hide();
     $('#note_recorder').show();
@@ -170,9 +172,14 @@ RECORDER.movePlaybackToPosition = function(t) {
 }
 
 RECORDER.cameraAccepted=function() {
-	$('#record-button-onvideo > img').show();
+	RECORDER.isCameraAccepted = true;
+	
+	if(RECORDER.CurrentState == RECORDER.UiStates.CameraPermission)
+		UIChangeState(RECORDER.UiStates.RecorderInitialized);
+	
         $('#recorder_toggle').show().css('border-color', '#33aa33').off('click').click(RECORDER.start_recording);
-        debug('camera accepted');
+	debug('camera accepted');
+	$('#record-button-onvideo > img').click(RECORDER.start_recording);
 }
 RECORDER.cameraDenied=function() {
     debug('camera denied');

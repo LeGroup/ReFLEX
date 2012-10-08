@@ -9,10 +9,13 @@ var zoomDragging;
 var Zoom;
 var weeksShown = 1.5;
 var are_notes_draggable = false;
+var localizedStrings;
 
 $(function() { Init(); });
 
 function Init() {
+	var t = document.URL;
+	SERVER_URL = t.substr(0, t.indexOf('?'));
 	
 	// Focus moves to the next element automatically
 	$('.pincode > div > input').keyup(function(e) {
@@ -38,6 +41,9 @@ function Init() {
 		$('#newUserAdd').click(RegisterUser);
 	}
 	DisplayRatio($('#video-recorder-wrapper'), 354/242);
+	
+	
+	localize();
 }
 function DisplayRatio(o, ratio) {
 	if(ratio)
@@ -66,7 +72,6 @@ function InitializeUserInterface() {
 		$('#pin-reset').click(ResetPin);
 	LoadNotes(); //After loading notes the program initializes notebar, weekblock etc.
 	
-	localize();
 }
 
 function ResetPin() {
@@ -198,7 +203,7 @@ function weekBlockWidths(weekCount) {
 var months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
 
 function dateFormat(date) { date = new Date(date); return date.getDate() + '.' + (date.getMonth() + 1) + '.' + date.getFullYear(); }
-function monthFormat(date) { return months[new Date(date).getMonth()]; }
+function monthFormat(date) { return i18n(months[new Date(date).getMonth()]); }
 function datetimeFormat(date) { 
 	var d = new Date();
 	d.setTime(date);
@@ -259,7 +264,6 @@ function NotebarType (obj) {
 				t = nextDay(t);
 			}
 		}
-		
 		// week blocks
 		t = Notebar.Start;
 		for(var i = 0; i < weeks; i++) {
@@ -460,10 +464,10 @@ function SelectNote(note) {
 	SelectedNote = note;
 	debug('Selected a note');
 	if(SelectedNote.Private) {
-		$('#privacy').val('Make public');
+		$('#privacy').val(i18n('Make public'));
 		UIChangeState(RECORDER.UiStates.NoteSealed);
 	} else {
-		$('#privacy').val('Make private');
+		$('#privacy').val(i18n('Make private'));
 		OpenNote(SelectedNote);
 	}
 }
@@ -492,7 +496,7 @@ function LoadNotes() {
 		
 		//If there are notes, set the beginning of the notebar's timespan to the date of the first note.
 		if(noteArray.length > 0) {
-			start.setTime(noteArray[0].Time);
+			start = new Date().getTime() > noteArray[0].Time ? noteArray[0].Time : new Date().getTime();
 			end = new Date().getTime() > noteArray[noteArray.length - 1].Time ? new Date().getTime() : noteArray[noteArray.length].Time;
 		}
 		initNotebar(start, end);
@@ -538,7 +542,6 @@ function localize(){
     // Ensure language code is in the format aa-AA:
 	// var lang = OPTIONS.language.replace(/_/, '-').toLowerCase();
 	var lang = guess_language();
-	lang = 'fi-FI';
 	debug('Language: ' + lang);
 	
 	if (lang.length > 3) {
@@ -563,10 +566,19 @@ function localize(){
             $('.i18n').each(function (i) {
                 $(this).html(i18n($(this).html(), lang));
             })
-
+			
             $('.i18n_title').each(function (i) {
                 $(this).attr('title', i18n($(this).attr('title'), lang));
             })
+			
+            $('.i18n_placeholder').each(function (i) {
+                $(this).attr('placeholder', i18n($(this).attr('placeholder'), lang));
+            })
+			
+            $('.i18n_value').each(function (i) {
+                $(this).attr('value', i18n($(this).attr('value'), lang));
+            })
+			
             $('input.topic').each(function () {
             if ($(this).val()=='Enter topic') { 
                 $(this).val(i18n('Enter topic'), lang);

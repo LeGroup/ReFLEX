@@ -24,7 +24,7 @@ $ID = $db->lastInsertId();
 $hash = sha1($ID . $user);
 	
 //Create uri to the new user's page
-$uri =  $_SERVER['REQUEST_SCHEME'].'://'.$_SERVER['HTTP_HOST'].$_SERVER['CONTEXT_PREFIX'].'?i='.$hash;
+$uri = '?i='.$hash;
 $return->Uri = $uri;
 
 //Save the uri in the database
