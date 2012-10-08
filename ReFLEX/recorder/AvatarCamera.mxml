@@ -39,8 +39,8 @@
 			private function init():void {
 				debug('init()');
 				
-                camw=150;
-                camh=150;
+                camw=90;
+                camh=90;
            				
 				_flash=new BitmapData(camw,camh,false, 0xaaFF88);
 				
@@ -181,7 +181,7 @@
                 
 				//Uploading the image
                 try {
-                    ml.load(server_path + "upload_avatar.php", false);  
+                    ml.load(server_path + "php/upload_avatar.php", false);  
                 } catch (error:Error) {
 					debug('Failed to upload avatar: ' + error.toString());
                 } finally {};
@@ -197,10 +197,5 @@
 
     <mx:UIComponent id="uic" x="0" y="0" width="100%" height="100%" />
     <mx:UIComponent id="still_screen" x="0" y="0" width="100%" height="100%" visible="false">
-	</mx:UIComponent>	 
-	<mx:Label color="0xffffff" x="10" y="10" id="_display" visible="false" text="00:00:00"/>
-	<mx:Label color="0xffffff" x="10" y="100" id="_error" visible="false" text=""/>
-    <mx:Box id="encoding_container" visible="false" x="0" y="50" width="460" height="60" backgroundColor="#555555" alpha="0.8">
-	<mx:ProgressBar id="encoding" x="10" y="0" width="100%" mode="manual" label="Encoding..." fontSize="10" chromeColor="0x008844" color="0xdddddd"/>
-	</mx:Box>
+	</mx:UIComponent>
 </s:Application>

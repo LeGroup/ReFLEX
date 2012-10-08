@@ -8,12 +8,25 @@ var noteTimelineLeft = 0;
 var zoomDragging;
 var Zoom;
 var weeksShown = 1.5;
-var maxWeeks = 5;
-var are_notes_draggable = true;
+var are_notes_draggable = false;
 
 $(function() { Init(); });
 
 function Init() {
+	
+	// Focus moves to the next element automatically
+	$('.pincode > div > input').keyup(function(e) {
+		if(e.which <= 90 && e.which >= 48 && $(this).val().length > 0)
+			var index = $('.pincode > div > input').index($(this)) + 1;
+			if(index >= $('.pincode > div > input').length) {
+				OpenNote(SelectedNote);
+			}
+			else {
+				if(typeof(index) != 'undefined')
+					$('.pincode > div > input').get(index).focus(); 
+			}
+	});
+	
 	UserId = $('#user-data').data('id');
 	
 	if(typeof UserId != 'undefined') {
@@ -22,34 +35,59 @@ function Init() {
 	}
 	else {
 		debug('User no logged in. Displaying registration screen.');
-		$('#newUsername').focus(LosePlaceholder).blur(SetPlaceholder);
-		$('#newUserEmail').focus(LosePlaceholder).blur(SetPlaceholder);
 		$('#newUserAdd').click(RegisterUser);
 	}
+	DisplayRatio($('#video-recorder-wrapper'), 354/242);
+}
+function DisplayRatio(o, ratio) {
+	if(ratio)
+		o.data('display-ratio', ratio);
+	else
+		o.data('display-ratio', o.width() / o.height());		
+	o.css('height', o.width() / o.data('display-ratio') + "px"); 
+	$(window).resize(function() { o.css('height', o.width() / o.data('display-ratio') + "px"); }); 
 }
 
-function SetPlaceholder() {
-	if($(this).text() == '')
-	{ $(this).text($(this).data('placeholder')); }
-}
 function LosePlaceholder() {
 	if($(this).text() == $(this).data('placeholder'))
 	{ $(this).text(''); }
 }
 function InitializeUserInterface() {
+		$('#prev-week').click(PreviousWeek);
+		$('#next-week').click(NextWeek);
+		$('#toggle-settings').click(function() { $('#settings').toggle(200); });
+		$('#privacy').click(function() { 
+			if(SelectedNote.Private)
+				MakePublic(SelectedNote); 
+			else
+				MakePrivate(SelectedNote);
+		});
+		
+		$('#pin-reset').click(ResetPin);
 	LoadNotes(); //After loading notes the program initializes notebar, weekblock etc.
+	
+	localize();
+}
+
+function ResetPin() {
+	$.post('php/resetPin.php', { id: UserId }, function(data) {
+		debug('Pin Reset, PHP responds: ' + data);
+		alert(i18n('Your pin has been reset. Please check your email.'));
+	});
 }
 
 function RegisterUser() {
 	if(ValidateUserRegistration()) {
-		$.post('user_registration.php', { Username: $('#newUsername').text(), Email: $('#newUserEmail').text() }, function(result) { 
+		$.post('php/user_registration.php', { Username: $('#newUsername').val(), Email: $('#newUserEmail').val() }, function(result) { 
 			debug('PHP respond from user registration: ' + result);
 			var value = $.parseJSON(result);
 			$('#newUserAdd').hide();
 			// $('#newUserEmail').hide();
 			if(value.Success) {
-				$('#newUsername').removeAttr('contentEditable').text('Registration was successful. You will now get an email with link to your page.'); 
-				$('#newUserEmail').removeAttr('contentEditable').text("Actually you won't and the link is here: " + value.Uri); 
+				$('#newUsername').remove();	
+				$('#newUserEmail').remove();
+				$('.register-complete').show(200).html('Registration was successful. You will now get an email with link to your page.' +
+				'<br />Actually you won\'t and the link is here: <a href="' + value.Uri + '">Your page</a>, and here\'s your password for private recordings: ' + value.Pin); 
 			}
 			else {
 				debug('User Registration failed: ' + result);
@@ -60,7 +98,7 @@ function RegisterUser() {
 }
 
 function ValidateUserRegistration() {
-	return !($('#newUsername').text() == '' || $('#newUsername') == 'Your username' || $('#newUserEmail').text() == '' || $('#newUserEmail').text() == 'Your email address');
+	return !($('#newUsername').val() == '' || $('#newUserEmail').val() == '');
 }
 
 
@@ -81,6 +119,16 @@ function InitLayout() {
 		drag: setScroll,
 	});
 	
+	$('#timeline-cursor').draggable({
+		axis: 'x',
+		containment: 'parent',
+		drag: function() {
+			$('#timeline-active').css('width', (getScrollbarRatio('#timeline-cursor') * 100) + '%');
+		},
+		stop: playbackPositionScroll,
+		disabled: true
+	});
+	
 	
 	setZoom();
 }
@@ -94,67 +142,176 @@ function debug(msg) {
 	if (hh < 10) {hh = "0"+hh;}
 	if (mm < 10) {mm = "0"+mm;}
 	if (ss < 10) {ss = "0"+ss;}
-	console.log(hh + ':' + mm + ':' + ss + '.' + ms + '	- ' + msg); 
+	if (ms < 10) {ms = "0"+ms;}
+	if (ms < 100) {ms = "0"+ms;}
+	console.log(hh + ':' + mm + ':' + ss + '.' + ms + '	' + msg); 
 } 
 
+function getScrollbarRatio(id) {
+	return Clamp(($(id).position().left) / ($(id).parent().width()), 0, 1);
+}
+
 function setZoom() {
-	Zoom = Clamp(($('#note-zoom-cursor').position().left - 30) / ($('#note-zoom-cursor').parent().width() - 17), 0, 1);
-	$('#note-timeline').css('width', (100 * Clamp(Zoom * maxWeeks, 1, maxWeeks)) + "%");
-	weekShown = Zoom * 5;
+	Zoom = getScrollbarRatio('#note-zoom-cursor');
+	
+	if(Zoom > 0.6)
+		zoomDisplayChange('day', 'week', 'month');
+	else if(Zoom > 0.27)
+		zoomDisplayChange('week', 'day', 'month');
+	else
+		zoomDisplayChange('month', 'day', 'week');
+		
+	$('#note-timeline').css('width', (100 * Clamp(Zoom * Notebar.WeekCount, 1, Notebar.WeekCount)) + "%");
 	setScroll();
 }
 
-function setScroll() {
-	var scroll;
-	scroll = Clamp(($('#note-scroll-cursor').position().left - 30) / ($('#note-scroll-cursor').parent().width()), 0, 1);
-	
-	$('#note-timeline').css('margin-left', -(scroll * ($('#note-timeline').width() - $('#notes').width())) + "px");
-	
+function zoomDisplayChange(show, hide1, hide2) {
+		$('#' + show + '-blocks').show().stop().animate({opacity: 1.0}, 400);
+		$('#' + hide1 + '-blocks').stop().animate({opacity: 0.0}, 400, function() { $(this).hide(); });
+		$('#' + hide2 + '-blocks').stop().animate({opacity: 0.0}, 400, function() { $(this).hide(); });
+		
+		$('#zoom-title-' + show + 's').show().stop().animate({opacity: 1.0}, 400);
+		$('#zoom-title-' + hide1 + 's').stop().animate({opacity: 0.0}, 400, function() { $(this).hide(); });
+		$('#zoom-title-' + hide2 + 's').stop().animate({opacity: 0.0}, 400, function() { $(this).hide(); });
 }
+
+function setScroll() {
+	var scroll = getScrollbarRatio('#note-scroll-cursor');
+	$('#note-timeline').css('margin-left', -(scroll * ($('#note-timeline').width() - $('#notes').width())) + "px");
+}
+
+function playbackPositionScroll() {
+	$('#timeline-active').css('width', (getScrollbarRatio('#timeline-cursor') * 100) + '%');
+	RECORDER.movePlaybackToPosition(getScrollbarRatio('#timeline-cursor'));
+}
+
 
 function weekBlockWidths(weekCount) {
-	$('#note-timeline').css('width', (weekCount * 100) + '%');
-	
-	$('#week-blocks > .week-block').each(function() {
-		$(this).width((1/$('#week-blocks > .week-block').length * 100) + "%");
-	});
+	$('#note-timeline').css('width', '100%');
+	$('#day-blocks').width((Math.ceil(Notebar.DayCount)/Notebar.DayCount) * 100 + '%');
+	$('#day-blocks > div').width((1/$('#day-blocks > div').length * 100) + "%");
+	$('#week-blocks').width(Math.ceil(Notebar.WeekCount)/Notebar.WeekCount * 100 + '%');
+	$('#week-blocks > div').width((1/$('#week-blocks > div').length * 100) + "%");
+	$('#month-blocks').width(Notebar.MonthTime/Notebar.Timespan * 100 + '%');
 }
 
+var months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+
 function dateFormat(date) { date = new Date(date); return date.getDate() + '.' + (date.getMonth() + 1) + '.' + date.getFullYear(); }
+function monthFormat(date) { return months[new Date(date).getMonth()]; }
 function datetimeFormat(date) { 
 	var d = new Date();
 	d.setTime(date);
 	date = d;
-	return date.getDate() + '.' + (date.getMonth() + 1) + '.' + date.getFullYear() + ' ' + date.getHours() + ':' + date.getMinutes(); 
+	var mins = date.getMinutes();
+	var hours = date.getHours();
+	if(mins < 10) { mins = '0' + mins; }
+	if(hours < 10) { hours = '0' + hours; }
+	return date.getDate() + '.' + (date.getMonth() + 1) + '.' + date.getFullYear() + ' ' + hours + ':' + mins; 
 }
+
 function weekDay(date) { date = new Date(date); return date.getDay(); }
+function daysInMonth(month,year) { return new Date(year, month + 1, 0).getDate(); }
+function monthInTime(month, year) { return new Date(year, month + 2, 0).getTime() - new Date(year, month + 1, 0).getTime(); }
 
 function NotebarType (obj) { 
 	this.Object = obj;
 	this.Timespan = 0; 	
 	this.Start = 0; 
-	this.End =  0; 
+	this.End = 0; 
+	this.DayCount;
+	this.WeekCount;
+	this.MonthCount;
 	
 	this.GetRatio = function (time) {
 		var t = time - this.Start;
 		return Clamp(t/this.Timespan, 0, 1);
 	}
 	this.GetTime = function (positionX) {
-		return this.Start + this.Timespan * Clamp((positionX - this.Object.position().left)/this.Object.width(), 0, 1);
+		return this.Start + this.Timespan * (Clamp((positionX - this.Object.offset().left)/this.Object.width(), 0, 1));
+	}
+	
+	this.GetWeekCount = function() {
+		return Math.ceil(Notebar.Timespan / msInWeeks);
+	}
+	
+	this.Reset = function() {
+		
+		Notebar.Timespan = Notebar.End - Notebar.Start;
+		// Now
+		$('#now-indicator').css('left', Notebar.GetRatio(new Date().getTime()) * 100 + '%');
+		
+		var weeks = Notebar.GetWeekCount();
+		
+		var daysElement = $('#day-blocks');
+		var weeksElement = $('#week-blocks');
+		var monthsElement = $('#month-blocks');
+		daysElement.empty();
+		weeksElement.empty();
+		monthsElement.empty();
+		
+		
+		// day blocks
+		var t = Notebar.Start;
+		for(var i = 0; i < weeks; i++) {
+			for(var d = 0; d < 7; d++) {
+				daysElement.append('<div><span>' + dateFormat(t) + '</span></div>');
+				t = nextDay(t);
+			}
+		}
+		
+		// week blocks
+		t = Notebar.Start;
+		for(var i = 0; i < weeks; i++) {
+			weeksElement.append('<div><span>' + dateFormat(t) + '</span></div>');
+			t += msInWeeks;
+		}
+		
+		// month blocks
+		// this is ridiculous
+		t = new Date(Notebar.Start).setDate(1);
+		var monthDayOffset = Notebar.Start - t;
+		var time = -monthDayOffset;
+		var months = 0;
+		var dayCount = 0;
+		while(time <= Notebar.Timespan) {
+			var monthTime = monthInTime(new Date(t).getMonth() - 1, new Date(t).getFullYear());
+			dayCount += daysInMonth(new Date(t).getMonth(), new Date(t).getFullYear());
+			monthsElement.append('<div data-dayCount="' + daysInMonth(new Date(t).getMonth(), new Date(t).getFullYear()) + '"><span>' + monthFormat(t) + '</span></div>');
+			t = nextMonth(t);
+			time = nextMonth(time);
+			months++;
+		}
+		Notebar.DayCount = Notebar.GetWeekCount() * 7;
+		Notebar.WeekCount = Notebar.GetWeekCount();
+		Notebar.MonthCount = months;
+		
+		var monthTimeStart = new Date(Notebar.Start).getTime();
+		var monthTimeEnd = new Date(Notebar.Start).setMonth(new Date(Notebar.Start).getMonth() + months + 1, 0);
+		Notebar.MonthTime = monthTimeEnd - monthTimeStart;
+		monthsElement.css('marginLeft', -(monthDayOffset/Notebar.Timespan) * 100 + '%');
+		
+		$('#month-blocks > div').each(function() { $(this).css('width', ($(this).attr('data-dayCount') / dayCount) * 100 + '%'); });
+		
+		//Setting correct week block widths
+		weekBlockWidths(Notebar.WeekCount);
+		
+		// Self-explanatory
+		UpdateAllNotePositions();
+		
 	}
 }
 var Notebar;
 var msInWeeks = 1000 * 60 * 60 * 24 * 7;
 var msInDay = 1000 * 60 * 60 * 24;
 function initNotebar(start, end) {
-	
-	
 	Notebar = new NotebarType($('#note-timeline'));
-	//Offset of five days
+	
 	//Time of the first note
 	Notebar.Start = new Date();
 	Notebar.Start.setTime(start);
 	Notebar.Start.setHours(0, 0, 0, 0);
+	Notebar.Start.setDate(1);
 	Notebar.Start = Notebar.Start.getTime() - msInDay * (Math.abs((Notebar.Start.getDay() + 6) % 7));
 	
 	//Now
@@ -167,20 +324,45 @@ function initNotebar(start, end) {
 	
 	var weeks = Math.ceil(Notebar.Timespan / msInWeeks);
 	Notebar.End = Notebar.Start + weeks * msInWeeks;
-	Notebar.Timespan = Notebar.End - Notebar.Start;
+	setTimeout(Notebar.Reset, 1);
 	
-	var t = Notebar.Start;
-	
-	debug('Weeks: ' + weeks);
-	for(var i = 0; i < weeks; i++)
-	{
-		for(var d = 0; d < 7; d++)
-			$('#week-blocks').append('<div class="week-block">' + (d % 7 == 0 ? '<span>' + dateFormat(t) + '</span>' : '') + '</div>');
-		t += msInWeeks;
-	}
-	weekBlockWidths();
 }
 
+function MakePrivate(note) {
+	note.Private = true;
+	note.Thumb = 'images/private.png';
+	$('#privacy').val('Make public');
+	UpdateNote(note);
+}
+
+function MakePublic(note) {
+	note.Private = false;
+	note.Thumb = note.Picture;
+	$('#privacy').val('Make private');
+	UpdateNote(note);
+}
+
+function nextDay(t) {
+	t = new Date(t);
+	return new Date(t.getFullYear(), t.getMonth(), t.getDate() + 1).getTime();
+}
+
+function nextMonth(t) {
+	t = new Date(t);
+	return new Date(t.getFullYear(), t.getMonth() + 1, t.getDate()).getTime();
+}
+
+function PreviousWeek() {
+	var t = new Date(Notebar.Start);
+	Notebar.Start = new Date(t.getFullYear(), t.getMonth(), t.getDate() - 7).getTime();
+	Notebar.Reset();
+}
+
+function NextWeek() {
+	var t = new Date(Notebar.Start);
+	Notebar.Start = new Date(t.getFullYear(), t.getMonth(), t.getDate() + 7).getTime();
+	Notebar.Reset();
+}
 
 function wrapperResize() 
 { $('#wrapper').height($(window).outerHeight()); }
@@ -198,36 +380,62 @@ function AddNote(note) {
 		AddNoteElement(note);
 		Notes.push(note);
 		debug('Added a note. Notes.length = ' + Notes.length);
-		//debug(typeof(JSON.stringify(note)));
 	}
 	else
 		debug('Note is already added!');
 }
 
+function UpdateAllNotePositions() {
+	for(var i = 0; i < Notes.length; i++) {
+		UpdateNotePosition(Notes[i]);
+	}
+}
+
+function UpdateNotePosition(note) {
+	note.Object.css('left', Notebar.GetRatio(note.Time) * 100 + '%');
+}
+
 function AddNoteElement(note) {
-	note.Object = $('<div class="note button"><img src="' + note.Picture + '" alt /></div>');
+	note.Object = $('<div class="note button"><div><img src="' + note.Thumb + '" alt /></div></div>');
 	note.Object.attr('title', datetimeFormat(note.Time));
 	note.Object.css('left', Notebar.GetRatio(note.Time) * 100 + '%');
-	note.Object.click(function() { SelectNote(note); });
 	if(are_notes_draggable) {
 		note.Object.draggable({ 
+			axis: 'x',
 			containment: 'parent',
+			snap: '#now-indicator',
+			snapMode: 'inner',
+			snapTolerance: 15,
 			zIndex: 9999,
+			start: function() {
+				$(this).data('noclick', true);
+			},
 			stop: function(e, ui) { 
 				note.Time = Notebar.GetTime(ui.offset.left);
+				note.Object.attr('title', datetimeFormat(note.Time));
 				UpdateNote(note);
 			}
 		});
 	}
+	note.Object.click(function() { SelectNote(note); });
 	$('#note-timeline').append(note.Object);
 }
 
 function UpdateNote(note) {
 	//JSON.stringify doesn't like the Object property as it's a jquery object.
-	//It needs to be removed before stringification then/However we need to keep it for other features to use
-	var noteToSave = note;
-	delete noteToSave.Object;
-	$.post('update.php', { Note: JSON.stringify(note) });
+	//It needs to be temporarily removed before stringification 
+	var obj = note.Object;
+	note.Object.remove();
+	delete note.Object;
+	$.post('php/update.php', { Note: JSON.stringify(note) }, function(data) { 
+		debug('PHP responds on note update: ' + data);
+		var ret = $.parseJSON(data);
+		
+		if(!ret.Private)
+			note.Thumb = ret.Picture;
+		
+		AddNoteElement(note);
+	});
 }
 
 function Is_note_new(note) {
@@ -240,48 +448,60 @@ function Is_note_new(note) {
 
 
 function SelectNote(note) {
+	//Highlighting
+	$('.selected').removeClass('selected');
+	note.Object.addClass('selected');
+	
+	if(RECORDER.CurrentState == RECORDER.UiStates.Playing)
+		RECORDER.stop_playing();
+	
+	RECORDER.recording_timer(0);
+	
 	SelectedNote = note;
 	debug('Selected a note');
-	$('#video-player').css('backgroundImage', 'url('+note.Picture+')');
-	$('#video-player-ui > audio').attr('src', note.Voice);
-	$('#player-title').text(note.Title).unbind('blur').blur(function() { TestNewTitle(note); });
+	if(SelectedNote.Private) {
+		$('#privacy').val('Make public');
+		UIChangeState(RECORDER.UiStates.NoteSealed);
+	} else {
+		$('#privacy').val('Make private');
+		OpenNote(SelectedNote);
+	}
 }
 
-function TestNewTitle(note) {
-	debug('Updating title...');
-	if(note.Title != $('#player-title').text())
-		SaveTitle(note);
-	else
-		debug('New title and old title are same. No need for updating.');
+function OpenNote(note) {
+	var pin = "";
+	$('.pincode > div > input').each(function() {
+		pin += $(this).val();
+	});
+	
+	RECORDER.loadNote(note, pin);
 }
 
-function SaveTitle(note) {
-	$.post('title_save.php', { ID: note.ID, Title: $('#player-title').text() }, function (data) { 
-			debug('PHP respond on updating title: ' + data);
-			note.Title = $('#player-title').text();
-		});
-}
+
 
 // noteObject: { Day: 1, Hour: 15, Image: 'images/Desert.jpg', Voice: 'path', Position: (Math.random()), Object: outerHTML }
 function LoadNotes() {
 	debug('Preparing to load notes from user ' + UserId + '.');
-	$.post('notes.php', { User: UserId }, function(data) {
+	$.post('php/notes.php', { User: UserId }, function(data) {
 		var noteArray = $.parseJSON(data);
 		debug('Notes loaded.');
 		//Notebar need to be initialized before any notes are added
 		//However we need to know the date of the first note in order to set notebar's timespan
 		var start = new Date();
+		var end = new Date();
 		
 		//If there are notes, set the beginning of the notebar's timespan to the date of the first note.
-		if(noteArray.length > 0)
+		if(noteArray.length > 0) {
 			start.setTime(noteArray[0].Time);
-			
-		initNotebar(start, new Date());
+			end = new Date().getTime() > noteArray[noteArray.length - 1].Time ? new Date().getTime() : noteArray[noteArray.length].Time;
+		}
+		initNotebar(start, end);
 		
 		//Add notes
 		debug('Found ' + noteArray.length + ' notes.');
 		for(var i = 0; i < noteArray.length; i++) {
-			AddNote({ ID: noteArray[i].ID, Time: noteArray[i].Time, Picture: noteArray[i].Picture, Voice: noteArray[i].Voice, Title: noteArray[i].Title, Student: noteArray[i].Student });
+			
+			AddNote({ ID: noteArray[i].ID, Time: noteArray[i].Time, Thumb: noteArray[i].Thumb, Student: noteArray[i].Student, Private: (noteArray[i].Private == 'yes')});
 		}
 		
 		//If there are already notes, select the most recent.
@@ -289,4 +509,70 @@ function LoadNotes() {
 			SelectNote(Notes[Notes.length - 1]);
 		InitLayout();
 	});
+}
+
+function i18n(str, lang){
+    if (!localizedStrings || !str) return str;
+	
+    var locstr = localizedStrings[str];
+    
+	if (locstr == null || locstr == "") {
+		debug('Localization error: ' + str + ' missing in ' + lang);
+        locstr = str;
+    }
+    return locstr;
+}
+
+
+var URL_VARS = { };
+var CONTROLLER = { };
+CONTROLLER.getLocale = function() { return null; }
+function guess_language(){
+    return URL_VARS.locale || CONTROLLER.getLocale() || navigator.language || navigator.userLanguage;
+}
+
+function localize(){
+    // The idea is that some html-entities are marked for translation (class 'i18n'). The content text of these html-entities (= english text) is used as a key in translation dict (localizedStrings) and it is checked for possible translation available and replaced if available. 
+    // This is enough for us, but would not scale for larger program. (Homonyms in english would translate identically for differing purposes.)
+
+    // Ensure language code is in the format aa-AA:
+	// var lang = OPTIONS.language.replace(/_/, '-').toLowerCase();
+	var lang = guess_language();
+	lang = 'fi-FI';
+	debug('Language: ' + lang);
+	
+	if (lang.length > 3) {
+		lang = lang.substring(0, 3) + lang.substring(3).toUpperCase();
+	} else if (lang.length == 2) {
+	    lang = lang+'-'+lang.toUpperCase();   
+	}
+	if (lang=='en-EN') return;
+    jQuery.ajax("i18n/localized_"+lang+".js", {
+        dataType: "json",
+        isLocal: true,     
+        error: function(jqXHR, textStatus, errorThrown){
+            debug('i18n failed:jqXHR='+jqXHR+' textStatus:'+textStatus+' errorThrown:'+errorThrown);
+            return jqXHR;
+                
+        },
+        complete: function(data) {
+            // Change all of the static strings in index.html
+            var place;
+            localizedStrings=$.parseJSON(data.responseText);
+            debug(''+Object.keys(localizedStrings).length+' translation keys available');
+            $('.i18n').each(function (i) {
+                $(this).html(i18n($(this).html(), lang));
+            })
+
+            $('.i18n_title').each(function (i) {
+                $(this).attr('title', i18n($(this).attr('title'), lang));
+            })
+            $('input.topic').each(function () {
+            if ($(this).val()=='Enter topic') { 
+                $(this).val(i18n('Enter topic'), lang);
+            }
+            });
+            }
+        }           
+    );
 }

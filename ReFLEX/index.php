@@ -1,4 +1,7 @@
-<?php require_once('db.php'); ?>
+<?php 
+	$log = fopen("log/log.txt", 'a');
+	require_once('php/db.php'); 
+?>
 <!DOCTYPE html>
 <html lang="fi">
 <head>
@@ -27,7 +30,6 @@
 					$USER->ID = $result['id'];
 					$USER->username = $result['name'];
 					$USER->registered = $result['date'];
-					$USER->avatar = $result['avatar'];
 					require_once('user_interface.php');
 				}
 			}

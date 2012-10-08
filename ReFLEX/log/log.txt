@@ -139,3 +139,411 @@
 2012.09.20 10:35:47 - Photo error code: 0
 2012.09.20 10:35:47 - Audio error code: 0
 2012.09.20 10:35:47 - Database row inserted successfully
+2012.09.21 08:57:38 - ------------------------NEW NOTE----------------------------
+2012.09.21 08:57:38 - Photo size: 18.578 kilobytes
+2012.09.21 08:57:38 - Audio size: 28.644 kilobytes
+2012.09.21 08:57:38 - Photo error code: 0
+2012.09.21 08:57:38 - Audio error code: 0
+2012.09.21 08:57:38 - Database row inserted successfully
+2012.09.21 08:57:52 - ------------------------NEW NOTE----------------------------
+2012.09.21 08:57:52 - Photo size: 17.884 kilobytes
+2012.09.21 08:57:52 - Audio size: 28.644 kilobytes
+2012.09.21 08:57:52 - Photo error code: 0
+2012.09.21 08:57:52 - Audio error code: 0
+2012.09.21 08:57:52 - Database row inserted successfully
+2012.09.21 10:30:31 - ------------------------NEW NOTE----------------------------
+2012.09.21 10:30:31 - Photo size: 34.029 kilobytes
+2012.09.21 10:30:31 - Audio size: 28.644 kilobytes
+2012.09.21 10:30:31 - Photo error code: 0
+2012.09.21 10:30:31 - Audio error code: 0
+2012.09.21 10:30:31 - Database row inserted successfully
+2012.09.21 10:31:23 - ------------------------NEW NOTE----------------------------
+2012.09.21 10:31:23 - Photo size: 34.403 kilobytes
+2012.09.21 10:31:23 - Audio size: 28.644 kilobytes
+2012.09.21 10:31:23 - Photo error code: 0
+2012.09.21 10:31:23 - Audio error code: 0
+2012.09.21 10:31:23 - Database row inserted successfully
+2012.09.21 15:29:02 - ------------------------NEW NOTE----------------------------
+2012.09.21 15:29:02 - Photo size: 24.967 kilobytes
+2012.09.21 15:29:02 - Audio size: 28.644 kilobytes
+2012.09.21 15:29:02 - Photo error code: 0
+2012.09.21 15:29:02 - Audio error code: 0
+2012.09.21 15:29:03 - Database row inserted successfully
+2012.09.24 09:49:51 - ------------------------NEW NOTE----------------------------
+2012.09.24 09:49:51 - Photo size: 26.939 kilobytes
+2012.09.24 09:49:51 - Audio size: 28.644 kilobytes
+2012.09.24 09:49:51 - Photo error code: 0
+2012.09.24 09:49:51 - Audio error code: 0
+2012.09.24 09:49:51 - Database row inserted successfully
+2012.09.24 14:00:37 - ------------------------NEW NOTE----------------------------
+2012.09.24 14:00:37 - Photo size: 28.03 kilobytes
+2012.09.24 14:00:37 - Audio size: 28.644 kilobytes
+2012.09.24 14:00:37 - Photo error code: 0
+2012.09.24 14:00:37 - Audio error code: 0
+2012.09.24 14:00:37 - Database row inserted successfully
+2012.09.25 08:57:16 - ------------------------NEW NOTE----------------------------
+2012.09.25 08:57:16 - Photo size: 24.719 kilobytes
+2012.09.25 08:57:16 - Audio size: 28.644 kilobytes
+2012.09.25 08:57:16 - Photo error code: 0
+2012.09.25 08:57:16 - Audio error code: 0
+2012.09.25 08:57:16 - Database row inserted successfully
+2012.09.25 09:00:14 - ------------------------NEW NOTE----------------------------
+2012.09.25 09:00:14 - Photo size: 24.958 kilobytes
+2012.09.25 09:00:14 - Audio size: 28.644 kilobytes
+2012.09.25 09:00:14 - Photo error code: 0
+2012.09.25 09:00:14 - Audio error code: 0
+2012.09.25 09:00:14 - Database row inserted successfully
+2012.09.25 09:04:01 - ------------------------NEW NOTE----------------------------
+2012.09.25 09:04:01 - Photo size: 24.584 kilobytes
+2012.09.25 09:04:01 - Audio size: 28.644 kilobytes
+2012.09.25 09:04:01 - Photo error code: 0
+2012.09.25 09:04:01 - Audio error code: 0
+2012.09.25 09:04:01 - Database row inserted successfully
+2012.09.25 09:07:58 - ------------------------NEW NOTE----------------------------
+2012.09.25 09:07:58 - Photo size: 24.894 kilobytes
+2012.09.25 09:07:58 - Audio size: 155.496 kilobytes
+2012.09.25 09:07:58 - Photo error code: 0
+2012.09.25 09:07:58 - Audio error code: 0
+2012.09.25 09:07:58 - Database row inserted successfully
+2012.09.25 09:14:07 - ------------------------NEW NOTE----------------------------
+2012.09.25 09:14:07 - Photo size: 24.184 kilobytes
+2012.09.25 09:14:07 - Audio size: 155.496 kilobytes
+2012.09.25 09:14:07 - Photo error code: 0
+2012.09.25 09:14:07 - Audio error code: 0
+2012.09.25 09:14:07 - Database row inserted successfully
+2012.09.25 10:31:53 - ------------------------NEW NOTE----------------------------
+2012.09.25 10:31:53 - Photo size: 26.155 kilobytes
+2012.09.25 10:31:53 - Audio size: 155.496 kilobytes
+2012.09.25 10:31:53 - Photo error code: 0
+2012.09.25 10:31:53 - Audio error code: 0
+2012.09.25 10:31:53 - Database row inserted successfully
+2012.09.25 13:41:49 - ------------------------NEW NOTE----------------------------
+2012.09.25 13:41:49 - Photo size: 29.428 kilobytes
+2012.09.25 13:41:49 - Audio size: 155.496 kilobytes
+2012.09.25 13:41:49 - Photo error code: 0
+2012.09.25 13:41:49 - Audio error code: 0
+2012.09.25 13:41:49 - Database row inserted successfully
+2012.09.25 15:20:57 - ------------------------NEW NOTE----------------------------
+2012.09.25 15:20:57 - Photo size: 29.765 kilobytes
+2012.09.25 15:20:57 - Audio size: 155.496 kilobytes
+2012.09.25 15:20:57 - Photo error code: 0
+2012.09.25 15:20:57 - Audio error code: 0
+2012.09.25 15:20:57 - Database row inserted successfully
+2012.09.25 15:26:10 - ------------------------NEW NOTE----------------------------
+2012.09.25 15:26:10 - Photo size: 30.488 kilobytes
+2012.09.25 15:26:10 - Audio size: 155.496 kilobytes
+2012.09.25 15:26:10 - Photo error code: 0
+2012.09.25 15:26:10 - Audio error code: 0
+2012.09.25 15:26:10 - Database row inserted successfully
+2012.09.25 15:43:04 - ------------------------NEW NOTE----------------------------
+2012.09.25 15:43:04 - Photo size: 29.552 kilobytes
+2012.09.25 15:43:04 - Audio size: 155.496 kilobytes
+2012.09.25 15:43:04 - Photo error code: 0
+2012.09.25 15:43:04 - Audio error code: 0
+2012.09.25 15:43:04 - Database row inserted successfully
+2012.09.26 10:08:20 - ------------------------NEW NOTE----------------------------
+2012.09.26 10:08:20 - Photo size: 11.182 kilobytes
+2012.09.26 10:08:20 - Audio size: 155.496 kilobytes
+2012.09.26 10:08:20 - Photo error code: 0
+2012.09.26 10:08:20 - Audio error code: 0
+2012.09.26 10:08:20 - Database row inserted successfully
+2012.09.26 10:08:42 - ------------------------NEW NOTE----------------------------
+2012.09.26 10:08:42 - Photo size: 11.288 kilobytes
+2012.09.26 10:08:42 - Audio size: 155.496 kilobytes
+2012.09.26 10:08:42 - Photo error code: 0
+2012.09.26 10:08:42 - Audio error code: 0
+2012.09.26 10:08:42 - Database row inserted successfully
+2012.09.26 11:20:18 - ------------------------NEW NOTE----------------------------
+2012.09.26 11:20:18 - Photo size: 28.625 kilobytes
+2012.09.26 11:20:18 - Audio size: 155.496 kilobytes
+2012.09.26 11:20:18 - Photo error code: 0
+2012.09.26 11:20:18 - Audio error code: 0
+2012.09.26 11:20:18 - Database row inserted successfully
+2012.09.26 11:23:16 - ------------------------NEW NOTE----------------------------
+2012.09.26 11:23:16 - Photo size: 28.573 kilobytes
+2012.09.26 11:23:16 - Audio size: 155.496 kilobytes
+2012.09.26 11:23:16 - Photo error code: 0
+2012.09.26 11:23:16 - Audio error code: 0
+2012.09.26 11:23:16 - Database row inserted successfully
+2012.09.26 11:24:33 - ------------------------NEW NOTE----------------------------
+2012.09.26 11:24:33 - Photo size: 28.083 kilobytes
+2012.09.26 11:24:33 - Audio size: 155.496 kilobytes
+2012.09.26 11:24:33 - Photo error code: 0
+2012.09.26 11:24:33 - Audio error code: 0
+2012.09.26 11:24:33 - Database row inserted successfully
+2012.09.26 14:00:25 - ------------------------NEW NOTE----------------------------
+2012.09.26 14:00:25 - Photo size: 31.249 kilobytes
+2012.09.26 14:00:25 - Audio size: 155.496 kilobytes
+2012.09.26 14:00:25 - Photo error code: 0
+2012.09.26 14:00:25 - Audio error code: 0
+2012.09.26 14:00:25 - Database row inserted successfully
+2012.09.26 14:04:03 - ------------------------NEW NOTE----------------------------
+2012.09.26 14:04:03 - Photo size: 29.376 kilobytes
+2012.09.26 14:04:03 - Audio size: 171.864 kilobytes
+2012.09.26 14:04:03 - Photo error code: 0
+2012.09.26 14:04:03 - Audio error code: 0
+2012.09.26 14:04:03 - Database row inserted successfully
+2012.09.26 14:10:46 - ------------------------NEW NOTE----------------------------
+2012.09.26 14:10:46 - Photo size: 30.339 kilobytes
+2012.09.26 14:10:46 - Audio size: 171.864 kilobytes
+2012.09.26 14:10:46 - Photo error code: 0
+2012.09.26 14:10:46 - Audio error code: 0
+2012.09.26 14:10:46 - Database row inserted successfully
+2012.09.26 14:13:23 - ------------------------NEW NOTE----------------------------
+2012.09.26 14:13:23 - Photo size: 30.584 kilobytes
+2012.09.26 14:13:23 - Audio size: 171.864 kilobytes
+2012.09.26 14:13:23 - Photo error code: 0
+2012.09.26 14:13:23 - Audio error code: 0
+2012.09.26 14:13:23 - Database row inserted successfully
+2012.09.26 14:14:14 - ------------------------NEW NOTE----------------------------
+2012.09.26 14:14:14 - Photo size: 30.153 kilobytes
+2012.09.26 14:14:14 - Audio size: 171.864 kilobytes
+2012.09.26 14:14:14 - Photo error code: 0
+2012.09.26 14:14:14 - Audio error code: 0
+2012.09.26 14:14:14 - Database row inserted successfully
+2012.09.26 14:15:41 - ------------------------NEW NOTE----------------------------
+2012.09.26 14:15:41 - Photo size: 29.408 kilobytes
+2012.09.26 14:15:41 - Audio size: 171.864 kilobytes
+2012.09.26 14:15:41 - Photo error code: 0
+2012.09.26 14:15:41 - Audio error code: 0
+2012.09.26 14:15:41 - Database row inserted successfully
+2012.09.26 14:19:04 - ------------------------NEW NOTE----------------------------
+2012.09.26 14:19:04 - Photo size: 29.011 kilobytes
+2012.09.26 14:19:04 - Audio size: 171.864 kilobytes
+2012.09.26 14:19:04 - Photo error code: 0
+2012.09.26 14:19:04 - Audio error code: 0
+2012.09.26 14:19:04 - Database row inserted successfully
+2012.09.26 14:38:27 - ------------------------NEW NOTE----------------------------
+2012.09.26 14:38:27 - Photo size: 30.253 kilobytes
+2012.09.26 14:38:27 - Audio size: 171.864 kilobytes
+2012.09.26 14:38:27 - Photo error code: 0
+2012.09.26 14:38:27 - Audio error code: 0
+2012.09.26 14:38:27 - Database row inserted successfully
+2012.09.26 15:10:23 - ------------------------NEW NOTE----------------------------
+2012.09.26 15:10:23 - Photo size: 29.911 kilobytes
+2012.09.26 15:10:23 - Audio size: 171.864 kilobytes
+2012.09.26 15:10:23 - Photo error code: 0
+2012.09.26 15:10:23 - Audio error code: 0
+2012.09.26 15:10:23 - Database row inserted successfully
+2012.09.26 15:12:10 - ------------------------NEW NOTE----------------------------
+2012.09.26 15:12:10 - Photo size: 30.256 kilobytes
+2012.09.26 15:12:10 - Audio size: 171.864 kilobytes
+2012.09.26 15:12:10 - Photo error code: 0
+2012.09.26 15:12:10 - Audio error code: 0
+2012.09.26 15:12:10 - Database row inserted successfully
+2012.09.26 15:15:19 - ------------------------NEW NOTE----------------------------
+2012.09.26 15:15:19 - Photo size: 29.133 kilobytes
+2012.09.26 15:15:19 - Audio size: 171.864 kilobytes
+2012.09.26 15:15:19 - Photo error code: 0
+2012.09.26 15:15:19 - Audio error code: 0
+2012.09.26 15:15:20 - Database row inserted successfully
+2012.09.26 15:16:28 - ------------------------NEW NOTE----------------------------
+2012.09.26 15:16:28 - Photo size: 29.107 kilobytes
+2012.09.26 15:16:28 - Audio size: 171.864 kilobytes
+2012.09.26 15:16:28 - Photo error code: 0
+2012.09.26 15:16:28 - Audio error code: 0
+2012.09.26 15:16:28 - Database row inserted successfully
+2012.09.26 15:19:20 - ------------------------NEW NOTE----------------------------
+2012.09.26 15:19:20 - Photo size: 28.27 kilobytes
+2012.09.26 15:19:20 - Audio size: 171.864 kilobytes
+2012.09.26 15:19:20 - Photo error code: 0
+2012.09.26 15:19:20 - Audio error code: 0
+2012.09.26 15:19:20 - Database row inserted successfully
+2012.09.26 15:20:08 - ------------------------NEW NOTE----------------------------
+2012.09.26 15:20:08 - Photo size: 29.187 kilobytes
+2012.09.26 15:20:08 - Audio size: 171.864 kilobytes
+2012.09.26 15:20:08 - Photo error code: 0
+2012.09.26 15:20:08 - Audio error code: 0
+2012.09.26 15:20:08 - Database row inserted successfully
+2012.09.26 15:21:23 - ------------------------NEW NOTE----------------------------
+2012.09.26 15:21:23 - Photo size: 29.314 kilobytes
+2012.09.26 15:21:23 - Audio size: 171.864 kilobytes
+2012.09.26 15:21:23 - Photo error code: 0
+2012.09.26 15:21:23 - Audio error code: 0
+2012.09.26 15:21:23 - Database row inserted successfully
+2012.09.26 15:22:21 - ------------------------NEW NOTE----------------------------
+2012.09.26 15:22:21 - Photo size: 28.875 kilobytes
+2012.09.26 15:22:21 - Audio size: 171.864 kilobytes
+2012.09.26 15:22:21 - Photo error code: 0
+2012.09.26 15:22:21 - Audio error code: 0
+2012.09.26 15:22:21 - Database row inserted successfully
+2012.09.27 10:41:31 - ------------------------NEW NOTE----------------------------
+2012.09.27 10:41:31 - Photo size: 28.499 kilobytes
+2012.09.27 10:41:31 - Audio size: 171.864 kilobytes
+2012.09.27 10:41:31 - Photo error code: 0
+2012.09.27 10:41:31 - Audio error code: 0
+2012.09.27 10:41:31 - Database row inserted successfully
+2012.09.27 14:19:43 - ------------------------NEW NOTE----------------------------
+2012.09.27 14:19:43 - Photo size: 27.914 kilobytes
+2012.09.27 14:19:43 - Audio size: 171.864 kilobytes
+2012.09.27 14:19:43 - Photo error code: 0
+2012.09.27 14:19:43 - Audio error code: 0
+2012.09.27 14:19:43 - Database row inserted successfully
+2012.09.27 14:53:49 - ------------------------NEW NOTE----------------------------
+2012.09.27 14:53:49 - Photo size: 27.62 kilobytes
+2012.09.27 14:53:49 - Audio size: 171.864 kilobytes
+2012.09.27 14:53:49 - Photo error code: 0
+2012.09.27 14:53:49 - Audio error code: 0
+2012.09.27 14:53:49 - Database row inserted successfully
+2012.10.01 09:10:11 - ------------------------NEW NOTE----------------------------
+2012.10.01 09:10:11 - Photo size: 30.478 kilobytes
+2012.10.01 09:10:11 - Audio size: 171.864 kilobytes
+2012.10.01 09:10:11 - Photo error code: 0
+2012.10.01 09:10:11 - Audio error code: 0
+2012.10.01 09:10:11 - Database row inserted successfully
+2012.10.01 16:38:39 - ------------------------NEW NOTE----------------------------
+2012.10.01 16:38:39 - Photo size: 28.936 kilobytes
+2012.10.01 16:38:39 - Audio size: 171.864 kilobytes
+2012.10.01 16:38:39 - Photo error code: 0
+2012.10.01 16:38:39 - Audio error code: 0
+2012.10.01 16:38:39 - Database row inserted successfully
+2012.10.02 12:54:48 - ------------------------NEW NOTE----------------------------
+2012.10.02 12:54:48 - Photo size: 39.329 kilobytes
+2012.10.02 12:54:48 - Audio size: 171.864 kilobytes
+2012.10.02 12:54:48 - Photo error code: 0
+2012.10.02 12:54:48 - Audio error code: 0
+2012.10.02 12:54:48 - Database row inserted successfully
+2012.10.02 12:55:57 - ------------------------NEW NOTE----------------------------
+2012.10.02 12:55:57 - Photo size: 39.766 kilobytes
+2012.10.02 12:55:57 - Audio size: 171.864 kilobytes
+2012.10.02 12:55:57 - Photo error code: 0
+2012.10.02 12:55:57 - Audio error code: 0
+2012.10.02 12:55:57 - Database row inserted successfully
+2012.10.02 15:08:11 - ------------------------NEW NOTE----------------------------
+2012.10.02 15:08:11 - Photo size: 32.284 kilobytes
+2012.10.02 15:08:11 - Audio size: 171.864 kilobytes
+2012.10.02 15:08:11 - Photo error code: 0
+2012.10.02 15:08:11 - Audio error code: 0
+2012.10.02 15:08:11 - Database row inserted successfully
+2012.10.02 15:31:56 - ------------------------NEW NOTE----------------------------
+2012.10.02 15:31:56 - Photo size: 31.711 kilobytes
+2012.10.02 15:31:56 - Audio size: 171.864 kilobytes
+2012.10.02 15:31:56 - Photo error code: 0
+2012.10.02 15:31:56 - Audio error code: 0
+2012.10.02 15:31:56 - Database row inserted successfully
+2012.10.02 16:28:12 - ------------------------NEW NOTE----------------------------
+2012.10.02 16:28:12 - Photo size: 31.415 kilobytes
+2012.10.02 16:28:12 - Audio size: 171.864 kilobytes
+2012.10.02 16:28:12 - Photo error code: 0
+2012.10.02 16:28:12 - Audio error code: 0
+2012.10.02 16:28:12 - Database row inserted successfully
+2012.10.03 09:52:37 - ------------------------NEW NOTE----------------------------
+2012.10.03 09:52:37 - Photo size: 23.292 kilobytes
+2012.10.03 09:52:37 - Audio size: 171.864 kilobytes
+2012.10.03 09:52:37 - Photo error code: 0
+2012.10.03 09:52:37 - Audio error code: 0
+2012.10.03 09:52:37 - Database row inserted successfully
+2012.10.04 09:26:24 - ------------------------NEW NOTE----------------------------
+2012.10.04 09:26:25 - Photo size: 29.772 kilobytes
+2012.10.04 09:26:25 - Audio size: 171.864 kilobytes
+2012.10.04 09:26:25 - Photo error code: 0
+2012.10.04 09:26:25 - Audio error code: 0
+2012.10.04 09:26:25 - Database row inserted successfully
+2012.10.04 11:52:07 - ------------------------NEW NOTE----------------------------
+2012.10.04 11:52:07 - Photo size: 4.355 kilobytes
+2012.10.04 11:52:07 - Audio size: 171.864 kilobytes
+2012.10.04 11:52:07 - Photo error code: 0
+2012.10.04 11:52:07 - Audio error code: 0
+2012.10.04 11:52:07 - Database row inserted successfully
+2012.10.04 11:54:01 - ------------------------NEW NOTE----------------------------
+2012.10.04 11:54:01 - Photo size: 4.355 kilobytes
+2012.10.04 11:54:01 - Audio size: 171.864 kilobytes
+2012.10.04 11:54:01 - Photo error code: 0
+2012.10.04 11:54:01 - Audio error code: 0
+2012.10.04 11:54:01 - Database row inserted successfully
+2012.10.04 12:02:52 - ------------------------NEW NOTE----------------------------
+2012.10.04 12:02:52 - Photo size: 4.355 kilobytes
+2012.10.04 12:02:52 - Audio size: 171.864 kilobytes
+2012.10.04 12:02:52 - Photo error code: 0
+2012.10.04 12:02:52 - Audio error code: 0
+2012.10.04 12:02:52 - Database row inserted successfully
+2012.10.04 12:06:21 - ------------------------NEW NOTE----------------------------
+2012.10.04 12:06:21 - Photo size: 30.028 kilobytes
+2012.10.04 12:06:21 - Audio size: 171.864 kilobytes
+2012.10.04 12:06:21 - Photo error code: 0
+2012.10.04 12:06:21 - Audio error code: 0
+2012.10.04 12:06:21 - Database row inserted successfully
+2012.10.04 13:51:52 - ------------------------NEW NOTE----------------------------
+2012.10.04 13:51:52 - Photo size: 27.948 kilobytes
+2012.10.04 13:51:52 - Audio size: 171.864 kilobytes
+2012.10.04 13:51:52 - Photo error code: 0
+2012.10.04 13:51:52 - Audio error code: 0
+2012.10.04 13:51:52 - Database row inserted successfully
+2012.10.04 14:16:19 - ------------------------NEW NOTE----------------------------
+2012.10.04 14:16:19 - Photo size: 28.685 kilobytes
+2012.10.04 14:16:19 - Audio size: 171.864 kilobytes
+2012.10.04 14:16:19 - Photo error code: 0
+2012.10.04 14:16:19 - Audio error code: 0
+2012.10.04 14:16:19 - Database row inserted successfully
+2012.10.04 14:18:18 - ------------------------NEW NOTE----------------------------
+2012.10.04 14:18:18 - Photo size: 28.505 kilobytes
+2012.10.04 14:18:18 - Audio size: 171.864 kilobytes
+2012.10.04 14:18:18 - Photo error code: 0
+2012.10.04 14:18:18 - Audio error code: 0
+2012.10.04 14:18:18 - Database row inserted successfully
+2012.10.04 16:05:58 - ------------------------NEW NOTE----------------------------
+2012.10.04 16:05:58 - Photo size: 27.406 kilobytes
+2012.10.04 16:05:58 - Audio size: 171.864 kilobytes
+2012.10.04 16:05:58 - Photo error code: 0
+2012.10.04 16:05:58 - Audio error code: 0
+2012.10.04 16:05:58 - Database row inserted successfully
+2012.10.05 09:20:13 - ------------------------NEW NOTE----------------------------
+2012.10.05 09:20:13 - Photo size: 27.185 kilobytes
+2012.10.05 09:20:13 - Audio size: 171.864 kilobytes
+2012.10.05 09:20:13 - Photo error code: 0
+2012.10.05 09:20:13 - Audio error code: 0
+2012.10.05 09:20:13 - Database row inserted successfully
+2012.10.05 10:45:12 - ------------------------NEW NOTE----------------------------
+2012.10.05 10:45:12 - Photo size: 28.654 kilobytes
+2012.10.05 10:45:12 - Audio size: 171.864 kilobytes
+2012.10.05 10:45:12 - Photo error code: 0
+2012.10.05 10:45:12 - Audio error code: 0
+2012.10.05 10:45:12 - Database row inserted successfully
+2012.10.05 10:52:21 - ------------------------NEW NOTE----------------------------
+2012.10.05 10:52:21 - Photo size: 28.604 kilobytes
+2012.10.05 10:52:21 - Audio size: 171.864 kilobytes
+2012.10.05 10:52:21 - Photo error code: 0
+2012.10.05 10:52:21 - Audio error code: 0
+2012.10.05 10:52:21 - Database row inserted successfully
+2012.10.05 10:53:28 - ------------------------NEW NOTE----------------------------
+2012.10.05 10:53:28 - Photo size: 28.885 kilobytes
+2012.10.05 10:53:28 - Audio size: 171.864 kilobytes
+2012.10.05 10:53:28 - Photo error code: 0
+2012.10.05 10:53:28 - Audio error code: 0
+2012.10.05 10:53:28 - Database row inserted successfully
+2012.10.05 11:25:25 - ------------------------NEW NOTE----------------------------
+2012.10.05 11:25:25 - Photo size: 28.969 kilobytes
+2012.10.05 11:25:25 - Audio size: 171.864 kilobytes
+2012.10.05 11:25:25 - Photo error code: 0
+2012.10.05 11:25:25 - Audio error code: 0
+2012.10.05 11:25:25 - Database row inserted successfully
+2012.10.05 11:29:13 - ------------------------NEW NOTE----------------------------
+2012.10.05 11:29:13 - Photo size: 28.645 kilobytes
+2012.10.05 11:29:13 - Audio size: 171.864 kilobytes
+2012.10.05 11:29:13 - Photo error code: 0
+2012.10.05 11:29:13 - Audio error code: 0
+2012.10.05 11:29:13 - Database row inserted successfully
+2012.10.05 11:29:35 - ------------------------NEW NOTE----------------------------
+2012.10.05 11:29:35 - Photo size: 20.391 kilobytes
+2012.10.05 11:29:35 - Audio size: 171.864 kilobytes
+2012.10.05 11:29:35 - Photo error code: 0
+2012.10.05 11:29:35 - Audio error code: 0
+2012.10.05 11:29:35 - Database row inserted successfully
+2012.10.05 11:30:02 - ------------------------NEW NOTE----------------------------
+2012.10.05 11:30:02 - Photo size: 28.635 kilobytes
+2012.10.05 11:30:02 - Audio size: 171.864 kilobytes
+2012.10.05 11:30:02 - Photo error code: 0
+2012.10.05 11:30:02 - Audio error code: 0
+2012.10.05 11:30:02 - Database row inserted successfully
+2012.10.05 11:30:25 - ------------------------NEW NOTE----------------------------
+2012.10.05 11:30:25 - Photo size: 22.839 kilobytes
+2012.10.05 11:30:25 - Audio size: 171.864 kilobytes
+2012.10.05 11:30:25 - Photo error code: 0
+2012.10.05 11:30:25 - Audio error code: 0
+2012.10.05 11:30:25 - Database row inserted successfully
+2012.10.08 10:00:59 - ------------------------NEW NOTE----------------------------
+2012.10.08 10:00:59 - Photo size: 28.882 kilobytes
+2012.10.08 10:00:59 - Audio size: 171.864 kilobytes
+2012.10.08 10:00:59 - Photo error code: 0
+2012.10.08 10:00:59 - Audio error code: 0
+2012.10.08 10:00:59 - Database row inserted successfully

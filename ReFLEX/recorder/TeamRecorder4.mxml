@@ -35,6 +35,8 @@
             private var wavEncoder:WaveEncoder = new WaveEncoder( volume );
             private var recorder:MicRecorder;
     		private var sound:WavSound; //WavSound
+			private var externalSound:Sound; //Can't play mp3 files with wavSound
+			private var soundChannel:SoundChannel = new SoundChannel();
     		private var record_len:Number;
     		private var recording_seconds:Number;
     		private var mp3Encoder:ShineMP3Encoder;
@@ -48,20 +50,16 @@
             private var camh:Number;
             private var sound_position:Number;
             private var recording:Boolean;
-            private var note_length:Number = 2000;
+            private var note_length:Number = 10000;
 			private var resizeTimer:Timer;
 			private var flashDuration:Number = 50;
+			private var recordCanceled:Boolean = false;
 			
 			private function init():void {
 			    //Security.loadPolicyFile(server_path+'crossdomain.php');
                 camw=420;
                 camh=280;
 				
-				resizeTimer = new Timer(1000);
-				resizeTimer.addEventListener(TimerEvent.TIMER, resizeFix);
-				resizeTimer.start();
-				
-    				
 				_flash=new BitmapData(camw,camh,false, 0xaaFF88);
 				sound_position=0;
 				
@@ -80,6 +78,7 @@
                 ExternalInterface.addCallback("redoRecording", redoRecording);
                 ExternalInterface.addCallback("saveRecording", saveRecording);
                 ExternalInterface.addCallback("resizeFix", resizeFix);
+                ExternalInterface.addCallback("loadNote", loadNote);
                 ExternalInterface.call("recorderInitialized");
 			}
 			
@@ -88,22 +87,24 @@
 			}
 			
 			private function resizeFix():void {
-				if(video !== null) {
+				if(video != null) {
 					video.width = stage.stageWidth;
 					video.height = stage.stageHeight;
 				}
-				else
-					debug('Never mind, video was null.');
 			}
 			
 			private function initCamera():void {
                 // get Camera
+				try{
+				
                 video= new Video(camw,camh);
                 camera = Camera.getCamera();
-				
+				resizeFix();
+				} catch(e:Error) {
+					debug(e.toString());
+				}
 
                 function statusHandler(event:StatusEvent):void { 
-
                     switch (event.code) { 
                         case "Camera.Muted":
 							debug('Camera denied');
@@ -141,6 +142,7 @@
             }
 			
 			private function setFlash(event:TimerEvent):void {
+				captured_shot.visible = true;
 				captured_shot.source = _flash;
 				flashTimer = new Timer(flashDuration, 1);
 				flashTimer.addEventListener(TimerEvent.TIMER_COMPLETE, removeFlash);
@@ -161,12 +163,12 @@
 				mymic.soundTransform = new SoundTransform(0,0);
 				mymic.setLoopBack(true);
 				
-				recorder= new MicRecorder( wavEncoder, mymic );
+				recorder = new MicRecorder( wavEncoder, mymic );
     			recorder.addEventListener(RecordingEvent.RECORDING, _onRecording);
     			recorder.addEventListener(Event.COMPLETE, _onRecordComplete);
 
-				prep_counter=4;
-                preparationTimer = new Timer(1000,prep_counter);
+				prep_counter = 4;
+                preparationTimer = new Timer(1000, prep_counter);
                 preparationTimer.addEventListener(TimerEvent.TIMER, _prepareAnnouncement);
                 preparationTimer.addEventListener(TimerEvent.TIMER_COMPLETE, _prepareComplete);                
 				micTimer = new Timer(100);
@@ -176,10 +178,11 @@
 
 			// Recording 
 			private function startRecording():void {
+				captured_shot.source = null;
                 // make sure that vumeter is on
                 micTimer.start(); // --> _miclevel
                 // start preparations
-                prep_counter=4;
+                prep_counter = 4;
     		    preparationTimer.reset();
     		    recording_seconds=0;
 				initCamera();
@@ -191,74 +194,91 @@
 			private function _prepareAnnouncement(e:TimerEvent):void {
     		    prep_counter--;
                 ExternalInterface.call("countdown", prep_counter);
-
 			}
 
             private function _prepareComplete(e:TimerEvent):void {
                 takePhoto();
-                recorder.record();
+				startRecorder();
             }
-
-			private function stopRecording():void {
+			
+			private function startRecorder():void{
+                recorder.record();
+				recording = true;
+			}
+			private function stopRecorder():void{
 			    recorder.stop();
+				recording = false;
+			}
+			
+			private function stopRecording():void {
                 video.attachCamera(null);
-
+				stopRecorder();
                 // stop timers 
                 micTimer.stop();
-                sound_position=0;
-                still_screen.visible=true;
+                sound_position = 0;
+                still_screen.visible = true;
 			}
 
             private function startPlaying():void {
+			
+				if(sound_position >= externalSound.length)	
+					sound_position = 0;
+					
+				debug('Starting to play');
                 
-                function _showPlayProgress(e:TimerEvent):void {
-                    //
-                }
-
-    			function _autoStopPlaying(e:Event):void {
-                    sound_position=0;
-                    stopPlaying();
-    			}
-    			if (camera) {
-        			still_screen.visible=true;  
-    			}  			
-				playTimer = new Timer(50);
-				playTimer.addEventListener(TimerEvent.TIMER, _showPlayProgress);
-    			playTimer.start();
-
-    			micTimer.stop();
-
-    			playback_channel=sound.play(sound_position);
-				debug('Playback started...');
-    			playback_channel.addEventListener(Event.SOUND_COMPLETE, _autoStopPlaying);
+				soundChannel = externalSound.play(sound_position);
+				soundChannel.addEventListener(Event.SOUND_COMPLETE, _onPlaybackComplete);
+				
+				playTimer = new Timer(32);
+				playTimer.addEventListener(TimerEvent.TIMER, _displayPosition);
+				playTimer.start();
+			
+				function _onPlaybackComplete(e:Event):void{
+					debug('Playing ended');
+					playTimer.stop();
+                    ExternalInterface.call("stopped_playing");
+				}
             }
 
+			private function _displayPosition(e:Event):void{
+				ExternalInterface.call("recording_timer", Math.floor(soundChannel.position / 100));
+			}
 
 
             private function stopPlaying():void {
-                playTimer.stop();            
 				debug('Stopped');
-                playback_channel.stop();
-                ExternalInterface.call("stopped_playing");
-                //sound_position=timeSlider.value*1000;                
+				soundChannel.stop();
+				playTimer.stop();
+				ExternalInterface.call("stopped_playing");
+				//sound_position=timeSlider.value*1000;                
             }
 
             private function movePlaybackToPosition(p:Number):void {
-                if (recording) {return;} // shouldn't happen 
-                if (p < sound.length) {
-                    sound_position=p;
-                } else {
-                    sound_position=sound.length;
-                }
+                // if (recording) {return;} // shouldn't happen
+				if (p < 1) {
+					sound_position = externalSound.length * p;
+				} else {
+					sound_position = externalSound.length;
+				}
             }
 
             private function cancelRecording():void {
-
+				recordCanceled = true;
+				if(recording) { stopRecorder(); }
+                video.attachCamera(null);
+                // stop timers 
+                micTimer.stop();
+				preparationTimer.stop();
+                sound_position = 0;
             }
+			
             private function redoRecording():void {
+				debug('Redoing');
+				captured_shot.visible = false;
                 startRecording();
             }
-            private function saveRecording(server_path:String, title:String, user:String, noteTime:String): void {
+            
+			private function saveRecording(server_path:String, title:String, user:String, noteTime:String): void {
 			
                 var ml:MultipartURLLoader = new MultipartURLLoader();
                 ml.addEventListener(Event.COMPLETE, onReady);         
@@ -267,7 +287,6 @@
                 function onReady(e:Event):void {
                     // notify teamup that we are done
             		ExternalInterface.call("finishedRecording", ml.loader.data);
-					
 					uploaderTimer.stop();
                 }
                 function onError(evt:IOErrorEvent):void {
@@ -304,9 +323,9 @@
                 ml.addFile(mp3Encoder.mp3Data, 'voice.mp3', 'voice', 'audio/mpeg');                 
 
                 try {
-                    ml.load(server_path + "upload.php", false);  
+                    ml.load(server_path + "php/upload.php", false);  
                 } catch (error:Error) {
-                    debug(error.message + error.toString());
+                    debug(error.message + ' ' + error.toString());
                 } finally {};
                 
 				uploaderTimer = new Timer(10000);
@@ -321,11 +340,11 @@
 			}
 
     		private function _onRecording(event:RecordingEvent):void {
-    			debug("Recording : " + (event.time/1000).toFixed(1) + " s.");
-                if (event.time>note_length) {
+    			// debug("Recording : " + (event.time/1000).toFixed(1) + " s.");
+                if (event.time > note_length + 1000) { // Flash cuts one second from the end of recording
                     stopRecording();
                 }
-    			if (Math.floor(event.time/100)>recording_seconds) {
+    			if (Math.floor(event.time / 100) > recording_seconds) {
     			    recording_seconds++;
                     ExternalInterface.call("recording_timer", recording_seconds);
     			}
@@ -333,39 +352,52 @@
     		}
 			
     		private function _onRecordComplete(event:Event):void {
-                ExternalInterface.call("recording_stopped");
-    			debug("Record : " + (record_len/1000).toFixed(1) + " s.");
-        		function _mp3EncodeProgress(event : ProgressEvent) : void {
-        		    encoding.setProgress(event.bytesLoaded,100);
-        		}        
-        		function _mp3EncodeError(event : ErrorEvent) : void {    			
-        			debug('Encode error:' + event.text);
-        		}
-    			function _mp3EncodeComplete(event : Event) : void {
-                    mp3Encoder.removeEventListener(ProgressEvent.PROGRESS, _mp3EncodeProgress);
-        			mp3Encoder.removeEventListener(Event.COMPLETE, _mp3EncodeComplete);
-        			mp3Encoder.removeEventListener(ErrorEvent.ERROR, _mp3EncodeError);
-                    debug('Encoding finished: ' + (mp3Encoder.mp3Data.length/1024).toFixed(1)+' kb.');
-                    encoding_container.visible=false;
-        			sound = new WavSound(recorder.output);
-            		ExternalInterface.call("encodingComplete");
-    			}
-			    mp3Encoder = new ShineMP3Encoder(recorder.output);
-    			mp3Encoder.addEventListener(Event.COMPLETE, _mp3EncodeComplete);
-    			mp3Encoder.addEventListener(ProgressEvent.PROGRESS, _mp3EncodeProgress);
-    			mp3Encoder.addEventListener(ErrorEvent.ERROR, _mp3EncodeError);
-    			mp3Encoder.start();						
-                encoding_container.visible=true;
+				debug(recordCanceled.toString());
+				if(recordCanceled) {
+					recordCanceled = false;
+					return;
+				}
+				else
+				{
+					ExternalInterface.call("recording_stopped");
+					debug("Record : " + (record_len/1000).toFixed(1) + " s.");
+					function _mp3EncodeProgress(event : ProgressEvent) : void {
+						encoding.setProgress(event.bytesLoaded,100);
+					}        
+					function _mp3EncodeError(event : ErrorEvent) : void {
+						debug('Encode error:' + event.text);
+					}
+					function _mp3EncodeComplete(event : Event) : void {
+						mp3Encoder.removeEventListener(ProgressEvent.PROGRESS, _mp3EncodeProgress);
+						mp3Encoder.removeEventListener(Event.COMPLETE, _mp3EncodeComplete);
+						mp3Encoder.removeEventListener(ErrorEvent.ERROR, _mp3EncodeError);
+						debug('Encoding finished: ' + (mp3Encoder.mp3Data.length/1024).toFixed(1)+' kb.');
+						encoding_container.visible = false;
+						sound = new WavSound(recorder.output);
+						ExternalInterface.call("encodingComplete");
+					}
+					mp3Encoder = new ShineMP3Encoder(recorder.output);
+					mp3Encoder.addEventListener(Event.COMPLETE, _mp3EncodeComplete);
+					mp3Encoder.addEventListener(ProgressEvent.PROGRESS, _mp3EncodeProgress);
+					mp3Encoder.addEventListener(ErrorEvent.ERROR, _mp3EncodeError);
+					mp3Encoder.start();						
+					encoding_container.visible=true;
+				}
             }
+			
+			/* Loading and playing external mp3 file */
+			private function loadNote(id:Number, voice:String, picture:String):void {
+				externalSound = new Sound(new URLRequest(voice));
+				captured_shot.source = new URLRequest(picture);
+			}
 
 		]]>
 	</fx:Script>
-
     <mx:UIComponent id="uic" x="0" y="0" width="100%" height="100%" />
     <mx:UIComponent id="still_screen" x="0" y="0" width="100%" height="100%" visible="false" />
 	<s:Image id="captured_shot" width="100%" height="100%" visible="true" scaleMode="stretch" />
 	<mx:Label color="0xffffff" x="10" y="100" id="_error" visible="false" text=""/>
-    <mx:Box id="encoding_container" visible="false" x="0" y="50" width="460" height="60" backgroundColor="#555555" alpha="0.8">
+    <mx:Box id="encoding_container" visible="false" x="0" y="0" width="100%" height="10" backgroundColor="#555555" alpha="0.8">
 	<mx:ProgressBar id="encoding" x="10" y="0" width="100%" mode="manual" label="Encoding..." fontSize="10" chromeColor="0x008844" color="0xdddddd"/>
 	</mx:Box>
 </s:Application>

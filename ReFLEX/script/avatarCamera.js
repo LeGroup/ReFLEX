@@ -4,7 +4,7 @@ var AVA = { };
 AVA.prepareCamera = function() {
 	debug('Preparing camera');
 	$('#avatar-image').animate({opacity: 0}, 600);
-	swfobject.embedSWF('recorder/AvatarCamera.swf', 'AvatarCamera', '150', '150', '10.3.0', 'expressInstall.swf', {}, {}, {});
+	swfobject.embedSWF('recorder/AvatarCamera.swf', 'AvatarCamera', '90', '90', '10.3.0', 'expressInstall.swf', {}, { wmode: 'transparent' }, {});
 }
 
 AVA.recorderInitialized = function() {
@@ -47,7 +47,6 @@ AVA.finishedRecording = function(data) {
 	$('#ava-save').hide();
 	$('#AvatarCameraContainer').html('<div id="AvatarCamera"></div>');
 	$('#avatar-image').attr('src', d.Photo + '?'+(new Date().getTime())).animate({opacity: 1.0}, 600).unbind('click').click(AVA.prepareCamera);
-	debug('It ends');
 }
 
 AVA.tookPhoto = function() {
