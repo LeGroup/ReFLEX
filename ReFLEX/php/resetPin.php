@@ -13,6 +13,7 @@ $q->execute(array('pin' => $pin, 'id' => $user));
 $q = $db->prepare('SELECT email FROM users WHERE id = :id');
 $q->execute(array('id' => $user));
 $email = $q->fetchColumn();
+$return->Mail = $email;
 	
 //Send mail
 //...except if you're using local server which doesn't have a mail server oh well
@@ -23,8 +24,13 @@ if($mail_enabled) {
 	$headers = 'From: reflex@example.com' . "\r\n" .
 	'X-Mailer: PHP/' . phpversion();
 
+	$return->Headers = $headers;
+	$return->Msg = $message;
+	
 	if(!mail($email, $subject, $message, $headers))
 		$return->Success = false;
+	else
+		$return->MailSent = true;
 }
 
 //Delete after mail works
