@@ -112,7 +112,9 @@ function UIChangeState(state) {
 	RECORDER.CurrentState = state;
 	$('.recorder-ui').stop().animate({ opacity: 0.0 }, 300, function() { $(this).hide(); }); 
 	$('.' + state).stop().show(0, function() { $(this).animate({ opacity: 1.0 }, 300) }); 	
-	resizeFix(RECORDER.getRecorder());
+	
+	//Does the layout resize fix
+	//RECORDER.getRecorder();
 }
 
 // **********************************
@@ -142,7 +144,7 @@ RECORDER.prepare_recorder=function() {
 
 
 RECORDER.getRecorder=function() {
-    var rec=swfobject.getObjectById('TeamRecorder');
+    var rec = swfobject.getObjectById('TeamRecorder');
     if (rec && rec.initCamera !== undefined) {
         // debug('Found recorder');
 		resizeFix(rec);
@@ -175,9 +177,8 @@ RECORDER.cameraAccepted=function() {
 	RECORDER.isCameraAccepted = true;
 	
 	if(RECORDER.CurrentState == RECORDER.UiStates.CameraPermission)
-		UIChangeState(RECORDER.UiStates.RecorderInitialized);
-	
-        $('#recorder_toggle').show().css('border-color', '#33aa33').off('click').click(RECORDER.start_recording);
+	{ UIChangeState(RECORDER.UiStates.RecorderInitialized); }
+		
 	debug('camera accepted');
 	$('#record-button-onvideo > img').click(RECORDER.start_recording);
 }
