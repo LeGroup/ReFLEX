@@ -14,6 +14,9 @@ $q = $db->prepare('SELECT email FROM users WHERE id = :id');
 $q->execute(array('id' => $user));
 $email = $q->fetchColumn();
 $return->Mail = $email;
+$return->MailEnabled = $mail_enabled;
+
+$mail_enabled = true;
 	
 //Send mail
 //...except if you're using local server which doesn't have a mail server oh well
