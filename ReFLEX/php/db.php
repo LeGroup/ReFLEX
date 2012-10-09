@@ -1,7 +1,9 @@
 <?php
 //Self-explanatory.
-//Used for disabling mail in local servers.
-$mail_enabled = true;
+//First one is used for disabling mail in local servers.
+define('MAIL_ENABLED', true);
+define('MAIL_HEADERS', 'From: Reflex' . "\r\n" .
+'X-Mailer: PHP/' . phpversion());
 
 //Open log file resource.
 if(!isset($log)) { $log = fopen("../log/log.txt", 'a'); }
@@ -15,18 +17,7 @@ $pass = 'x)*z8uUmpswmjeUh3y';
 //Connect database.
 $db = new PDO('mysql:dbname='.$database.';host='.$host, $user, $pass);
 
-
-
-
-
-
-
-
-
-
-
-
-
+unset($pass);
 
 //The point of these comments is that the file will change and it can be commited to the server. 
 //(Some failing with conflict resolving.)

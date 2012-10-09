@@ -13,24 +13,15 @@ $q->execute(array('pin' => $pin, 'id' => $user));
 $q = $db->prepare('SELECT email FROM users WHERE id = :id');
 $q->execute(array('id' => $user));
 $email = $q->fetchColumn();
-$return->Mail = $email;
-$return->MailEnabled = $mail_enabled;
 
-$mail_enabled = true;
-	
 //Send mail
-//...except if you're using local server which doesn't have a mail server oh well
-if($mail_enabled) {
-	$subject = 'You requested new pin code in ReFLEX.';
-	$message = 'Hello' .
+if(MAIL_ENABLED) {
+	$subject = 'You requested a new pin code in ReFLEX.';
+	$message = 'Hello,' .
 	"\nHere's your new pin code: " . $pin;
-	$headers = 'From: reflex@example.com' . "\r\n" .
-	'X-Mailer: PHP/' . phpversion();
-
-	$return->Headers = $headers;
-	$return->Msg = $message;
-	
-	if(!mail($email, $subject, $message, $headers))
+		
+	//Headers from db.php
+	if(!mail($email, $subject, $message, MAIL_HEADERS))
 		$return->Success = false;
 	else
 		$return->MailSent = true;
@@ -38,7 +29,7 @@ if($mail_enabled) {
 
 //Delete after mail works
 //Otherwise anyone is able to reset pin and see it in POST data
-if(!$mail_enabled)
+if(!MAIL_ENABLED)
 	$return->Pin = $pin;
 	
 echo json_encode($return);
