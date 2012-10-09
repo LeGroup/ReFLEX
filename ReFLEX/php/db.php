@@ -1,6 +1,12 @@
 <?php
+$user = 'root';
+$pass = 'x)*z8uUmpswmjeUh3y';
+$database = 'reflex';
+$host = '127.0.0.1';
 
-$db = new PDO('mysql:dbname=reflex;host=127.0.0.1', 'root', '');
+$mail_enabled = true;
+
+$db = new PDO('mysql:dbname='.$database.';host='.$host, $user, $pass);
 if(!isset($log)) { $log = fopen("../log/log.txt", 'a'); }
 
 function _log($text) {

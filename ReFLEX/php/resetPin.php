@@ -16,7 +16,7 @@ $email = $q->fetchColumn();
 	
 //Send mail
 //...except if you're using local server which doesn't have a mail server oh well
-if("cats are" == "dogs") {
+if($mail_enabled) {
 	$subject = 'You requested new pin code in ReFLEX.';
 	$message = 'Hello' .
 	"\nHere's your new pin code: " . $pin;
@@ -29,7 +29,8 @@ if("cats are" == "dogs") {
 
 //Delete after mail works
 //Otherwise anyone is able to reset pin and see it in POST data
-$return->Pin = $pin;
+if(!$mail_enabled)
+	$return->Pin = $pin;
 	
 echo json_encode($return);
 
