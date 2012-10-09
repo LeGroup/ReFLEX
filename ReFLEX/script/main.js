@@ -1,4 +1,4 @@
-var SERVER_URL = 'http://127.0.0.1/ReFLEX/';
+var SERVER_URL = '';
 var UserId;
 var SelectedNote;
 var Notes = [];
@@ -91,12 +91,12 @@ function RegisterUser() {
 			if(value.Success) {
 				$('#newUsername').remove();	
 				$('#newUserEmail').remove();
-				$('.register-complete').show(200).html('Registration was successful. You will now get an email with link to your page.' +
+				$('.register-complete').show(200).html(i18n('Registration was successful. You will now get an email with link to your page.') +
 				'<br />Actually you won\'t and the link is here: <a href="' + value.Uri + '">Your page</a>, and here\'s your password for private recordings: ' + value.Pin); 
 			}
 			else {
 				debug('User Registration failed: ' + result);
-				$('#newUsername').removeAttr('contentEditable').text('Registration failed. Please try again or contact the administation'); 
+				$('#newUsername').removeAttr('contentEditable').text(i18n('Registration failed. Please try again or contact the administation.')); 
 			}
 		});
 	}
@@ -302,7 +302,6 @@ function NotebarType (obj) {
 		
 		// Self-explanatory
 		UpdateAllNotePositions();
-		
 	}
 }
 var Notebar;
@@ -329,20 +328,19 @@ function initNotebar(start, end) {
 	var weeks = Math.ceil(Notebar.Timespan / msInWeeks);
 	Notebar.End = Notebar.Start + weeks * msInWeeks;
 	setTimeout(Notebar.Reset, 1);
-	
 }
 
 function MakePrivate(note) {
 	note.Private = true;
 	note.Thumb = 'images/private.png';
-	$('#privacy').val('Make public');
+	$('#privacy').val(i18n('Make public'));
 	UpdateNote(note);
 }
 
 function MakePublic(note) {
 	note.Private = false;
 	note.Thumb = note.Picture;
-	$('#privacy').val('Make private');
+	$('#privacy').val(i18n('Make private'));
 	UpdateNote(note);
 }
 
@@ -580,7 +578,7 @@ function localize(){
             })
 			
             $('input.topic').each(function () {
-            if ($(this).val()=='Enter topic') { 
+            if ($(this).val() == 'Enter topic') { 
                 $(this).val(i18n('Enter topic'), lang);
             }
             });

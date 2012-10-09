@@ -27,5 +27,7 @@
 	"September": "September",
 	"October": "October",
 	"November": "November",
-	"December": "December"
+	"December": "December",
+	"Registration was successful. You will now get an email with link to your page.": "Registration was successful. You will now get an email with link to your page.",
+	"Registration failed. Please try again or contact the administation.": "Registration failed. Please try again or contact the administation."
 }
