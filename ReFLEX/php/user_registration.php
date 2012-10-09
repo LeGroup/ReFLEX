@@ -7,6 +7,7 @@ $return->Success = true;
 $return->MailSent = false;
 $user = $_POST['Username'];
 $email = $_POST['Email'];
+$return->Mail = $email;
 $pin = substr(base_convert(rand(10e16, 10e20), 10, 36), 0, 4);
 $return->Pin = $pin;
 
