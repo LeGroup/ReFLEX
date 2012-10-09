@@ -35,15 +35,13 @@ $q->execute(array('url_id' => $hash, 'id' => $ID));
 
 //Send mail
 //...except if you're using local server which doesn't support it.
-if($mail_enabled) {
+if(MAIL_ENABLED) {
 	$subject = 'Your user account in ReFLEX.';
 	$message = 'Hello ' . $user .
 	"\nHere's a link to your personal user page: " . "<a href=\"".$uri."\">Your user page</a>.
 	Here's also your PIN code you need to open private notes: ". $pin;
-	$headers = 'From: reflex@example.com' . "\r\n" .
-	'X-Mailer: PHP/' . phpversion();
 
-	if(!mail($email, $subject, $message, $headers))
+	if(!mail($email, $subject, $message, MAIL_HEADERS))
 		$return->Success = false;
 	else
 		$return->MailSent = true;
