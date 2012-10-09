@@ -4,6 +4,7 @@ require_once('db.php');
 $return = new StdClass();
 
 $return->Success = true;
+$return->MailSent = false;
 $user = $_POST['Username'];
 $email = $_POST['Email'];
 $pin = substr(base_convert(rand(10e16, 10e20), 10, 36), 0, 4);
@@ -43,6 +44,8 @@ if($mail_enabled) {
 
 	if(!mail($email, $subject, $message, $headers))
 		$return->Success = false;
+	else
+		$return->MailSent = true;
 }
 	
 echo json_encode($return);
