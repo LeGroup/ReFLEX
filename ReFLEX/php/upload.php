@@ -68,7 +68,11 @@ $result = $q->execute(array(
 			'private' => $new_note->Private));
 
 if($result) {_log('Database row inserted successfully'); }
-else { _log('Inserting database row failed!'); _log($db->errorInfo()[2]); }
+else { 
+	_log('Inserting database row failed!'); 
+	$e = $db->errorInfo();
+	_log($e[2]); 
+}
 
 //Get the ID
 $new_note->ID = $db->lastInsertId();
