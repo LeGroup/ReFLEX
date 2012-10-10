@@ -13,7 +13,7 @@ body{
 }
 
 h1, h2{
-	font-size: 1.1em;
+	font-size: 1.2em;
 	font-weight: normal;
 	margin-top: 10px;
 	margin-bottom: 10px;
@@ -296,8 +296,7 @@ input[type="button"]{
 }
 .ui-slider-handle{
 	height: 15px !important;
-	width: 15px !important;
-}
+	}
 
 #record-button{
 	margin-top: 8px;
@@ -309,7 +308,7 @@ input[type="button"]{
 	background-size: 100%;
 }
 #recorder-controls-timeline{ width: 92%; float: right; }
-#note-zoom{	width: 10%; }
+#note-zoom{	width: 20%; }
 
 #notes{
 	margin-top: 20px;
@@ -470,4 +469,7 @@ input[type="button"]{
 	#pin-reset{ float: right; width: 75%; margin-top: 10%; }
 	#video-recorder-wrapper{ width: 100%; }
 	#privacy{ position: absolute; right: 0; bottom: 10px; }
+	body{ font-size: 3.5vw; }
+	.ui-slider{ height: 30px !important; }
+	.ui-slider-handle{ height: 150% !important; }
 }
