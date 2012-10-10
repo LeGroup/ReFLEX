@@ -53,6 +53,8 @@ function Init() {
 	DisplayRatio($('#record-button'), 1);
 	DisplayRatio($('#recorder-controls-timeline'));
 	
+	$(window).resize(function() { $('*').css('transform', 'scale(1)'); });
+	
 	
 	localize();
 }
