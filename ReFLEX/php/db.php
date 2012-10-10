@@ -1,7 +1,7 @@
 <?php
 //Self-explanatory.
 //First one is used for disabling mail in local servers.
-define('MAIL_ENABLED', true);
+define('MAIL_ENABLED', false);
 define('MAIL_HEADERS', 'From: Reflex' . "\r\n" .
 'X-Mailer: PHP/' . phpversion());
 
@@ -13,6 +13,7 @@ $database = 'reflex';
 $user = 'root';
 $host = '127.0.0.1';
 $pass = 'x)*z8uUmpswmjeUh3y';
+$pass = ''; //Local
 
 //Connect database.
 $db = new PDO('mysql:dbname='.$database.';host='.$host, $user, $pass);

@@ -6,14 +6,10 @@
 			<?php $avatar = file_exists('images/avatars/avatar_'.$USER->ID.'.jpg') ? 'images/avatars/avatar_'.$USER->ID.'.jpg' : 'images/avatars/avatar_placeholder.png'; ?>
 			<img src="<?php echo $avatar; ?>" alt class="avatar" id="avatar-image"/>
 			<div id="AvatarCameraContainer"><div id="AvatarCamera"></div></div>
-			<div id="ava-countdown" style="width: 80px; height: 80px; background-color: rgba(0,0,0,0.4); position: absolute; top: 50%; left: 50%; margin: -40px; color: #fff; font-size: 50px; line-height: 80px; text-align: center"></div>
-			<div id="ava-save" style="cursor: pointer; display: none; width: 100%; height: 50px; background-color: rgba(0,0,0,0.4); position: absolute; bottom: 0; color: #fff; line-height: 50px; text-align: center">Save picture</div>
+			<div id="ava-countdown"></div>
+			<div id="ava-save">Save picture</div>
 		</div>
 		<p><a id="pin-reset" class="button i18n">Reset your PIN</a></p>
-		<!-- <a id="toggle-settings" class="button">[Dev: Toggle settings screen]</a>
-		<div id="settings">
-			<p><input type="button" id="send-teacher" value="Share the note with your teacher" /></p>
-		</div> -->
 		<div id="note-options">
 		<p><input type="button" id="privacy" class="i18n_value" value="Make private" /></p>
 		</div>
@@ -60,12 +56,8 @@
 			</div>
 		</div>
 		<div id="video-recorder-controls">
-			<div id="record-button" class="button i18n_title" title="Record a new note">re</div>
-			<div id="recorder-controls-timeline" class="rfx-scrollbar">
-				<div id="timeline-active" class="rfx-scrollbar-active">
-				</div>
-				<div id="timeline-cursor" class="rfx-scrollbar-cursor"></div>
-			</div>
+			<div id="record-button" class="button i18n_title" title="Record a new note"></div>
+			<div id="recorder-controls-timeline" class="slider"></div>
 		</div>
 	</div>
 </div>
@@ -86,9 +78,8 @@
 		</div>
 	</div>
 </div>
-<div id="note-scroll" class="rfx-scrollbar"><div id="note-scroll-cursor" class="draggable rfx-scrollbar-cursor"></div></div>
-
-<div id="note-zoom" class="rfx-scrollbar"><div id="note-zoom-cursor" class="draggable rfx-scrollbar-cursor"></div></div>
+<div id="note-scroll" class="slider"></div>
+<div id="note-zoom" class="slider"></div>
 <div id="zoom-title">
 	<span id="zoom-title-months" class="i18n">Months</span>
 	<span id="zoom-title-weeks" class="i18n">Weeks</span>

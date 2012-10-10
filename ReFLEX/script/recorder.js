@@ -87,10 +87,13 @@ function noteDroppedToTimeCapsule(e, ui) {
 }
 
 function UIChangeState(state) {
-	if(state == RECORDER.UiStates.PlaybackFinished || state == RECORDER.UiStates.NoteSelected)
-		$('#timeline-cursor').draggable('enable');
-	else
-		$('#timeline-cursor').draggable('disable');
+	if(TimelineSlider.hasClass('ui-slider')) {
+		if(state == RECORDER.UiStates.PlaybackFinished || state == RECORDER.UiStates.NoteSelected)
+			TimelineSlider.slider('enable');
+		else
+			TimelineSlider.slider('disable');
+	}
+	
 	debug('Changing from ' + RECORDER.CurrentState + ' to ' + state);
 	
 	if($.inArray(state, StatesWhenNoteOptionsAvailable) >= 0) 
@@ -202,9 +205,8 @@ RECORDER.start_recording = function() {
 var note_length = 10000;
 RECORDER.recording_timer = function(t) {
     // every 10th second, max 600 
-	$('#timeline-active').width(((t * 10000)/note_length) + "%");
-	$('#timeline-cursor').css('left', Clamp((t * 10000)/note_length, 0, 97.442143727162) + "%");
-
+	if(TimelineSlider.hasClass('ui-slider'))
+		TimelineSlider.slider('option', 'value', (t * 10000)/(note_length - 1000) * 0.01);
 }
 
 RECORDER.countdown = function(t) {

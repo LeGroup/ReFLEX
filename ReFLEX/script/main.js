@@ -11,9 +11,18 @@ var weeksShown = 1.5;
 var are_notes_draggable = false;
 var localizedStrings;
 
+var ScrollSlider;
+var ZoomSlider;
+var TimelineSlider;
+
 $(function() { Init(); });
 
+//To enable drag'n drop in mobile devices?
+$(document).bind('touchmove', function(e) { e.preventDefault(); }, false);
+
+
 function Init() {
+	
 	var t = document.URL;
 	SERVER_URL = t.substr(0, t.indexOf('?'));
 	
@@ -41,6 +50,8 @@ function Init() {
 		$('#newUserAdd').click(RegisterUser);
 	}
 	DisplayRatio($('#video-recorder-wrapper'), 354/242);
+	DisplayRatio($('#record-button'), 1);
+	DisplayRatio($('#recorder-controls-timeline'));
 	
 	
 	localize();
@@ -59,6 +70,11 @@ function LosePlaceholder() {
 	{ $(this).text(''); }
 }
 function InitializeUserInterface() {
+	
+	ScrollSlider = $('#note-scroll');
+	ZoomSlider = $('#note-zoom');
+	TimelineSlider = $('#recorder-controls-timeline');
+	
 		$('#prev-week').click(PreviousWeek);
 		$('#next-week').click(NextWeek);
 		$('#toggle-settings').click(function() { $('#settings').toggle(200); });
@@ -91,8 +107,7 @@ function RegisterUser() {
 			if(value.Success) {
 				$('#newUsername').remove();	
 				$('#newUserEmail').remove();
-				$('.register-complete').show(200).html(i18n('Registration was successful. You will now get an email with link to your page.') +
-				'<br />Actually you won\'t and the link is here: <a href="' + value.Uri + '">Your page</a>, and here\'s your password for private recordings: ' + value.Pin); 
+				$('.register-complete').show(200).html(i18n('Registration was successful. You will now get link to your page by email.')); 
 			}
 			else {
 				debug('User Registration failed: ' + result);
@@ -108,32 +123,29 @@ function ValidateUserRegistration() {
 
 
 function InitLayout() {
-	//end = end.getTime();
-	wrapperResize();
-	$(window).resize(wrapperResize);
 	
-	
-	$('#note-zoom-cursor').draggable({
-		axis: 'x',
-		containment: 'parent',
-		drag: setZoom,
-	});
-	$('#note-scroll-cursor').draggable({
-		axis: 'x',
-		containment: 'parent',
-		drag: setScroll,
+	//Default settings
+	$('.slider').slider({
+		max: 1,
+		min: 0,
+		step: 0.001,
+		animate: 400,
+		range: 'min'
 	});
 	
-	$('#timeline-cursor').draggable({
-		axis: 'x',
-		containment: 'parent',
-		drag: function() {
-			$('#timeline-active').css('width', (getScrollbarRatio('#timeline-cursor') * 100) + '%');
-		},
+	//Specific
+	ScrollSlider.slider({
+		slide: setScroll,
+		stop: setScroll,
+	});
+	ZoomSlider.slider({
+		slide: setZoom,
+		stop: setZoom
+	});
+	TimelineSlider.slider({
 		stop: playbackPositionScroll,
 		disabled: true
 	});
-	
 	
 	setZoom();
 }
@@ -157,16 +169,15 @@ function getScrollbarRatio(id) {
 }
 
 function setZoom() {
-	Zoom = getScrollbarRatio('#note-zoom-cursor');
-	
-	if(Zoom > 0.6)
-		zoomDisplayChange('day', 'week', 'month');
-	else if(Zoom > 0.27)
+	Zoom = ZoomSlider.slider('option', 'value');
+	if((1 - Zoom) * Notebar.GetWeekCount() > 8)
+		zoomDisplayChange('month', 'day', 'week');
+	else if((1 - Zoom) * Notebar.GetWeekCount() > 1.5)
 		zoomDisplayChange('week', 'day', 'month');
 	else
-		zoomDisplayChange('month', 'day', 'week');
+		zoomDisplayChange('day', 'week', 'month');
 		
-	$('#note-timeline').css('width', (100 * Clamp(Zoom * Notebar.WeekCount, 1, Notebar.WeekCount)) + "%");
+	$('#note-timeline').css('width', (100 * (1 + Clamp(Zoom * (Notebar.WeekCount - 1), 0, Notebar.WeekCount - 1))) + "%");
 	setScroll();
 }
 
@@ -181,13 +192,12 @@ function zoomDisplayChange(show, hide1, hide2) {
 }
 
 function setScroll() {
-	var scroll = getScrollbarRatio('#note-scroll-cursor');
+	scroll = ScrollSlider.slider('option', 'value');
 	$('#note-timeline').css('margin-left', -(scroll * ($('#note-timeline').width() - $('#notes').width())) + "px");
 }
 
 function playbackPositionScroll() {
-	$('#timeline-active').css('width', (getScrollbarRatio('#timeline-cursor') * 100) + '%');
-	RECORDER.movePlaybackToPosition(getScrollbarRatio('#timeline-cursor'));
+	RECORDER.movePlaybackToPosition(TimelineSlider.slider('option', 'value'));
 }
 
 
@@ -366,8 +376,8 @@ function NextWeek() {
 	Notebar.Reset();
 }
 
-function wrapperResize() 
-{ $('#wrapper').height($(window).outerHeight()); }
+// function wrapperResize() 
+// { $('#wrapper').height($(window).outerHeight()); }
  
 function Clamp(val, min, max)
 { return Math.max(min, Math.min(val, max)); }
@@ -479,9 +489,6 @@ function OpenNote(note) {
 	RECORDER.loadNote(note, pin);
 }
 
-
-
-// noteObject: { Day: 1, Hour: 15, Image: 'images/Desert.jpg', Voice: 'path', Position: (Math.random()), Object: outerHTML }
 function LoadNotes() {
 	debug('Preparing to load notes from user ' + UserId + '.');
 	$.post('php/notes.php', { User: UserId }, function(data) {
