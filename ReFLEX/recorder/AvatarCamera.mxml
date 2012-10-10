@@ -39,8 +39,8 @@
 			private function init():void {
 				debug('init()');
 				
-                camw=90;
-                camh=90;
+                camw=200;
+                camh=200;
            				
 				_flash=new BitmapData(camw,camh,false, 0xaaFF88);
 				

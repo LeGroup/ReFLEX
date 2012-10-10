@@ -4,7 +4,7 @@ var AVA = { };
 AVA.prepareCamera = function() {
 	debug('Preparing camera');
 	$('#avatar-image').animate({opacity: 0}, 600);
-	swfobject.embedSWF('recorder/AvatarCamera.swf', 'AvatarCamera', '90', '90', '10.3.0', 'expressInstall.swf', {}, { wmode: 'transparent' }, {});
+	swfobject.embedSWF('recorder/AvatarCamera.swf', 'AvatarCamera', '100%', 'auto', '10.3.0', 'expressInstall.swf', {}, { wmode: 'transparent' }, {});
 }
 
 AVA.recorderInitialized = function() {
