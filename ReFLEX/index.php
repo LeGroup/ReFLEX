@@ -7,8 +7,8 @@
 <head>
 	<title>ReFLEX</title>
 	<meta charset="utf-8">
-	<link rel="stylesheet" type="text/css" href="css/style.css" />
 	<link rel="stylesheet" type="text/css" href="css/dot-luv/jquery-ui-1.9.0.custom.min.css" />
+	<link rel="stylesheet" type="text/css" href="css/style.css" />
 	<script src="script/jquery-1.8.2.js" type="text/javascript"></script>
 	<script src="script/jquery-ui-1.9.0.custom.min.js" type="text/javascript"></script>
 	<script src="script/jquery.ui.touch-punch.min.js" type="text/javascript"></script>

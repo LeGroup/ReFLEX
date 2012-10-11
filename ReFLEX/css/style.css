@@ -86,43 +86,14 @@ input[type="button"]{
 #video-recorder{
 	width: 100%;
 	height: 100%;
-
 	position: relative;
 	background-size: cover !important;
 }
-#video-player{
-	border: 2px solid #6698cf;
-}
+
 #video-recorder{
 	background-color: #efef95;
 	border: 2px solid #fce162;
 }
-
-#video-player-play{
-	top: 50%;
-	left: 50%;
-	position: absolute;
-	
-}
-#video-player-play img{
-	top: -46px;
-	left: -46px;
-	position: absolute;
-	transition: opacity 1s;
-	-moz-transition: opacity 1s; /* Firefox 4 */
-	-webkit-transition: opacity 1s; /* Safari and Chrome */
-	-o-transition: opacity 1s; /* Opera */
-	opacity: 1;
-	cursor: pointer;
-}
-#video-player-play img:hover{ opacity: 0.3; }
-
-#video-player-ui audio{
-	width: 100%;
-	position: absolute;
-	bottom: 0;
-}
-
 
 .recorder-ui#record-button-onvideo{
 	position: absolute;
@@ -272,11 +243,11 @@ input[type="button"]{
 	border-radius: 1000px;
 }
 
-#video-player{ float: left; }
-#video-recorder{ float: right; background-color: #ededaf; }
+#video-recorder{ background-color: #ededaf; }
 
 #video-recorder-controls{
 	width: 100%;
+	margin-top: 5px;
 }
 
 #recorder-controls-button{
@@ -289,25 +260,27 @@ input[type="button"]{
 	display: inline-block;
 }
 
-#note-zoom, #note-scroll{ margin: 0 0 15px 0; }
-#recorder-controls-timeline{ margin: 15px 0 15px 0; }
+#note-zoom, #note-scroll{  }
 .ui-slider{
 	height: 5px !important;
+	margin: 8px;
+	margin-bottom: 15px;
 }
 .ui-slider-handle{
 	height: 15px !important;
+	width: 16px !important;
+	position: absolute !important;
 	}
 
 #record-button{
-	margin-top: 8px;
-	float: left;
-	width: 5%;
-	height: auto;
+	width: 25px;
+	height: 25px;
 	background-image: url(../images/small_rec.png);
 	background-repeat: no-repeat;
 	background-size: 100%;
+	margin-bottom: -25px;
 }
-#recorder-controls-timeline{ width: 92%; float: right; }
+#recorder-controls-timeline{ margin-left: 40px; }
 #note-zoom{	width: 20%; }
 
 #notes{
@@ -320,6 +293,7 @@ input[type="button"]{
 	width: 100%;
 	overflow: hidden;
 	height: 85%;
+	margin-top: 40px;
 }
 #note-timeline{
 	position: relative;
@@ -470,6 +444,8 @@ input[type="button"]{
 	#video-recorder-wrapper{ width: 100%; }
 	#privacy{ position: absolute; right: 0; bottom: 10px; }
 	body{ font-size: 3.5vw; }
-	.ui-slider{ height: 30px !important; }
+	#note-scroll, #note-zoom{ height: 30px !important; }
+	#recorder-controls-timeline{ height: 15px !important; margin-top: 5px; }
+	#recorder-controls-timeline .ui-slider-handle{ height: 15px; top: -0.2em; margin-left: -0.3em; }
 	.ui-slider-handle{ height: 150% !important; }
 }
