@@ -46,7 +46,6 @@ function Init() {
 	DisplayRatio($('#record-button'), 1);
 	DisplayRatio($('#recorder-controls-timeline'));
 	
-	$(window).resize(function() { $('*').css('transform', 'scale(1)'); });
 	
 	
 	localize();
@@ -82,7 +81,23 @@ function InitializeUserInterface() {
 		
 		$('#pin-reset').click(ResetPin);
 	LoadNotes(); //After loading notes the program initializes notebar, weekblock etc.
-	
+	SetColorPalette();
+}
+
+function SetColorPalette() {
+	var i = 0;
+	var t = $('#color-palette > li').length;
+	var color;
+	$('#color-palette > li').each(function() {
+		color = 'hsl('+ 360 * i/t + ', 50%, 65%)';
+		$(this).css('backgroundColor', color).attr('data-color', color).addClass('button');
+		i++;
+		
+		$(this).click(function() {
+			SelectedNote.Color = $(this).attr('data-color');
+			UpdateNote(SelectedNote);
+		});
+	});
 }
 
 function ResetPin() {
@@ -338,14 +353,14 @@ function initNotebar(start, end) {
 function MakePrivate(note) {
 	note.Private = true;
 	note.Thumb = 'images/private.png';
-	$('#privacy').val(i18n('Make public'));
+	$('#privacy').text(i18n('Make public'));
 	UpdateNote(note);
 }
 
 function MakePublic(note) {
 	note.Private = false;
 	note.Thumb = note.Picture;
-	$('#privacy').val(i18n('Make private'));
+	$('#privacy').text(i18n('Make private'));
 	UpdateNote(note);
 }
 
@@ -402,8 +417,10 @@ function UpdateNotePosition(note) {
 	note.Object.css('left', Notebar.GetRatio(note.Time) * 100 + '%');
 }
 
+var verticalOffset  = 0;
 function AddNoteElement(note) {
-	note.Object = $('<div class="note button"><div><img src="' + note.Thumb + '" alt /></div></div>');
+	
+	note.Object = $('<div class="note button" style="margin-top: ' + (Math.random() * 2 * verticalOffset - verticalOffset) + 'px; background-color: '+note.Color+'"><div class="single-note-background"><div class="single-note-triangle"></div><img src="' + note.Thumb + '" alt /></div></div>');
 	note.Object.attr('title', datetimeFormat(note.Time));
 	note.Object.css('left', Notebar.GetRatio(note.Time) * 100 + '%');
 	if(are_notes_draggable) {
@@ -459,6 +476,8 @@ function SelectNote(note) {
 	$('.selected').removeClass('selected');
 	note.Object.addClass('selected');
 	
+	$('#video-recorder').css('borderColor', note.Color);
+	
 	if(RECORDER.CurrentState == RECORDER.UiStates.Playing)
 		RECORDER.stop_playing();
 	
@@ -505,7 +524,13 @@ function LoadNotes() {
 		debug('Found ' + noteArray.length + ' notes.');
 		for(var i = 0; i < noteArray.length; i++) {
 			
-			AddNote({ ID: noteArray[i].ID, Time: noteArray[i].Time, Thumb: noteArray[i].Thumb, Student: noteArray[i].Student, Private: (noteArray[i].Private == 'yes')});
+			AddNote({ 
+				ID: noteArray[i].ID, 
+				Time: noteArray[i].Time, 
+				Thumb: noteArray[i].Thumb, 
+				Student: noteArray[i].Student, 
+				Private: (noteArray[i].Private == 'yes'),
+				Color: noteArray[i].Color });
 		}
 		
 		//If there are already notes, select the most recent.

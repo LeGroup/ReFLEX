@@ -352,7 +352,8 @@
     		}
 			
     		private function _onRecordComplete(event:Event):void {
-				debug(recordCanceled.toString());
+				
+				video.visible = false;
 				if(recordCanceled) {
 					recordCanceled = false;
 					return;

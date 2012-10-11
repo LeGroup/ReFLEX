@@ -76,6 +76,17 @@ input[type="button"]{
 	line-height: 50px; 
 	text-align: center;
 }
+#color-palette{ max-height: 300px; width: 100px; margin-top: 20px; }
+
+#color-palette li{
+	display: block;
+	margin: 3px;
+	border-radius: 6px;
+	float: left;
+	height: 30px;
+	width: 30px;
+	border: 3px solid rgba(0,0,0,0.5);
+}
 
 #video-recorder-wrapper{ width: 90%; margin: auto; }
 
@@ -88,11 +99,8 @@ input[type="button"]{
 	height: 100%;
 	position: relative;
 	background-size: cover !important;
-}
-
-#video-recorder{
 	background-color: #efef95;
-	border: 2px solid #fce162;
+	border: 2px solid #fff;
 }
 
 .recorder-ui#record-button-onvideo{
@@ -220,9 +228,9 @@ input[type="button"]{
 }
 
 #vumeters div{
-	width: 10px;
+	width: 7px;
 	height: 30px;
-	background-color: rgba(23, 187, 69, 0.5);
+	background-color: rgba(230,230,230, 1);
 	position: absolute;
 	bottom: 0;
 }
@@ -360,20 +368,41 @@ input[type="button"]{
 	
 }
 
-.note div{
-	background-image: url(../images/note.png);
-	height: 70px;
-	width: 70px;
-	background-size: 100%;
+.single-note-background{
+	height: 49px;
+	width: 64px;
 	background-repeat: no-repeat;
 	margin-left: -34px;
-	z-index: auto;
+	background-color: inherit;
+	border-radius: 6px;
+	position: relative;
+	box-shadow: -1px 0 2px rgba(0,0,0,0.5);
+	padding: 3px;
 }
-.note div img{ 
+.single-note-background img{
+	height: 100%;
+	width: 100%;
     -moz-transition: box-shadow 0.3s;
     -webkit-transition: box-shadow 0.3s;
     -o-transition:  box-shadow 0.3s;
     transition: box-shadow 0.3s;
+	border-radius: 3px;
+	position: relative;
+}
+.single-note-triangle{
+	width: 10px;
+	height: 10px; 
+	background-color: inherit;
+	margin-left: -5px;
+	position: absolute;
+	bottom: -4px;
+	left: 50%;
+	
+	transform: rotate(45deg);
+	-ms-transform:rotate(45deg); /* IE 9 */
+	-moz-transform:rotate(45deg); /* Firefox */
+	-webkit-transform:rotate(45deg); /* Safari and Chrome */
+	-o-transform:rotate(45deg); /* Opera */
 }
 
 .note.selected{ z-index: 100; }
@@ -381,7 +410,6 @@ input[type="button"]{
 	box-shadow: 0 0 10px 3px rgba(255,255,255,0.8);
 }
 
-.note img{ width: 95%; height: 70%; margin: 2.5%; border-radius: 3px; }
 .yellow{ background-image: url(../images/yellow_note.png); }
 
 /* Registration interface */
@@ -440,12 +468,14 @@ input[type="button"]{
 	#videos{ width: 100%; min-height: 100px; }
 	#avatar{ width: 20%; float: left; }
 	#username-title{ float: right; width: 75%; margin-bottom: -10%; }
-	#pin-reset{ float: right; width: 75%; margin-top: 10%; }
+	#pin-reset{ margin-top: 10%; margin-left: 5%; float: left; }
 	#video-recorder-wrapper{ width: 100%; }
-	#privacy{ position: absolute; right: 0; bottom: 10px; }
-	body{ font-size: 3.5vw; }
 	#note-scroll, #note-zoom{ height: 30px !important; }
 	#recorder-controls-timeline{ height: 15px !important; margin-top: 5px; }
 	#recorder-controls-timeline .ui-slider-handle{ height: 15px; top: -0.2em; margin-left: -0.3em; }
 	.ui-slider-handle{ height: 150% !important; }
+	body{ font-size: 3.5vw; }
+	#privacy{ float: right; }
+	#color-palette{ width: 100%; float: left; margin: 0;}
+	#color-palette li{ width: 20px; height: 20px; }
 }
