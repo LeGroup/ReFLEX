@@ -47,10 +47,7 @@
 				<div class="pincode recorder-ui note-sealed">
 					<div>
 						<h2><span class="i18n">This note is private!</span><br /><span class="i18n">Enter your pin code to open it</span></h2>
-						<input type="text" maxlength="1" />
-						<input type="text" maxlength="1" />
-						<input type="text" maxlength="1" />
-						<input type="text" maxlength="1" />
+						<input type="text" maxlength="4" />
 					</div>
 				</div>
 			</div>
