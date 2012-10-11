@@ -27,16 +27,9 @@ function Init() {
 	SERVER_URL = t.substr(0, t.indexOf('?'));
 	
 	// Focus moves to the next element automatically
-	$('.pincode > div > input').keyup(function(e) {
-		if(e.which <= 90 && e.which >= 48 && $(this).val().length > 0)
-			var index = $('.pincode > div > input').index($(this)) + 1;
-			if(index >= $('.pincode > div > input').length) {
-				OpenNote(SelectedNote);
-			}
-			else {
-				if(typeof(index) != 'undefined')
-					$('.pincode > div > input').get(index).focus(); 
-			}
+	$('.pincode > div > input').keyup(function() {
+		if($(this).val().length == 4) 
+			OpenNote(SelectedNote);
 	});
 	
 	UserId = $('#user-data').data('id');
