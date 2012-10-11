@@ -4,11 +4,12 @@ require_once('db.php');
 $note = json_decode($_POST['Note']);
 $value = new StdClass();
 
-$q = $db->prepare('UPDATE notes SET Time = :time, Student = :student, Private = :private WHERE ID = :id');
+$q = $db->prepare('UPDATE notes SET Time = :time, Student = :student, Private = :private, Color = :color WHERE ID = :id');
 $result = $q->execute(array(
 				'time' => $note->Time,
 				'student' => $note->Student,
 				'private' => $note->Private ? 'yes' : 'no',
+				'color' => $note->Color,
 				'id' => $note->ID));
 if($result)
 	$value->Success = true;

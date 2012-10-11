@@ -11,7 +11,19 @@
 		</div>
 		<p><a id="pin-reset" class="button i18n">Reset your PIN</a></p>
 		<div id="note-options">
-		<p><input type="button" id="privacy" class="i18n_value" value="Make private" /></p>
+		<a class="i18n button" id="privacy">Make private</a>
+			<ul id="color-palette">
+				<li></li>
+				<li></li>
+				<li></li>
+				<li></li>
+				<li></li>
+				<li></li>
+				<li></li>
+				<li></li>
+				<li></li>
+				<li></li>
+			</ul>
 		</div>
 	</div>
 <!-- Video player and recorder -->
@@ -32,6 +44,10 @@
 				<div class="recorder-ui record-on i18n" id="ilearned">I learned...</div>
 				<div class="recorder-ui record-on" id="countdown">...</div>
 				<div class="recorder-ui record-on" id="vumeters">
+					<div></div>
+					<div></div>
+					<div></div>
+					<div></div>
 					<div></div>
 					<div></div>
 					<div></div>

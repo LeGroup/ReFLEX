@@ -2,7 +2,6 @@
 // Team recorder UI Reflex
 RECORDER = { on:false, vumeter_values:[], isCameraAccepted: false }
 
-
 // UIChangeState function changes the current UI state
 // This means hiding UI elements that shouldn't be displayed in the current state
 // Technically this means hiding all ui elements except the ones which have the current state as a class
@@ -21,7 +20,6 @@ RECORDER.UiStates = {
 };
 
 var StatesWhenNoteOptionsAvailable = [RECORDER.UiStates.NoteSelected, RECORDER.UiStates.Playing, RECORDER.UiStates.PlaybackFinished];
-
 
 $(function() {
 	UIChangeState(RECORDER.UiStates.VideoOff);
@@ -62,7 +60,6 @@ function resizeFix(rec) {
 	}
 }
 
-var RecorderNote;
 
 function dragStarted() { $('#note-drag-area').css('zIndex', 1); }
 function dragStopped() { $('#note-drag-area').css('zIndex', -1); }
@@ -132,7 +129,7 @@ RECORDER.prepare_recorder=function() {
 	
 	var i = 0;
 	$('#vumeters > div').each(function() {
-		$(this).css('left', ($(this).width() + 3) * i);
+		$(this).css('left', ($(this).width() + 1) * i);
 		i++;
     });
 	if(RECORDER.isCameraAccepted)
@@ -279,19 +276,19 @@ RECORDER.encodingComplete= function() {
 	$('#record-video-drag').draggable('enable');
 	$('#re-record-button-onvideo > img').click(RECORDER.redo_recording);
 }
-
+var alpha = 0;
 RECORDER.audioLevel=function(level) {
     //RECORDER.vumeter.height(level*3);
 	var count = $('#vumeters > div').length;
-	level = Math.min(level/30, 1);
-	RECORDER.vumeter_values.splice(0, 0, 3 + level* 50);
+	level = Math.min(level/50, 1);
+	RECORDER.vumeter_values.splice(0, 0, 3 + level* 80);
 	
 	if(RECORDER.vumeter_values.length > count)
 		RECORDER.vumeter_values.splice(count, RECORDER.vumeter_values.length - count);
-	
+
 	var i = 0;
 	$('#vumeters > div').each(function() {
-		$(this).height(RECORDER.vumeter_values[i]);
+		$(this).height(RECORDER.vumeter_values[i]).css('opacity', 1 - i/RECORDER.vumeter_values.length);
 		i++;
     });
 
@@ -329,11 +326,6 @@ RECORDER.finishedRecording = function(path) {
 }
 
 RECORDER.uploadingRecording= function() {
-    // debug('Uploading recording...');
-    // //$('#upload-panel').dialog('open');
-    // var notes=$('#available_recordings');
-    // $('#record_note img').show();
-    // $('#record_note span').hide();
 }
 
 RECORDER.loadNote = function(note, pin) {	
