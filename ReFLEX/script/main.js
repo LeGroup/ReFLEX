@@ -42,7 +42,7 @@ function Init() {
 		debug('User no logged in. Displaying registration screen.');
 		$('#newUserAdd').click(RegisterUser);
 	}
-	DisplayRatio($('#video-recorder-wrapper'), 354/242);
+	// DisplayRatio($('#video-recorder-wrapper'), 354/242);
 	DisplayRatio($('#record-button'), 1);
 	DisplayRatio($('#recorder-controls-timeline'));
 	
@@ -417,7 +417,7 @@ function UpdateNotePosition(note) {
 	note.Object.css('left', Notebar.GetRatio(note.Time) * 100 + '%');
 }
 
-var verticalOffset  = 0;
+var verticalOffset = 0;
 function AddNoteElement(note) {
 	
 	note.Object = $('<div class="note button" style="margin-top: ' + (Math.random() * 2 * verticalOffset - verticalOffset) + 'px; background-color: '+note.Color+'"><div class="single-note-background"><div class="single-note-triangle"></div><img src="' + note.Thumb + '" alt /></div></div>');
