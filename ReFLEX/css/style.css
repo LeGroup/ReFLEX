@@ -91,7 +91,7 @@ input[type="button"]{
 	border: 3px solid rgba(0,0,0,0.5);
 }
 
-#video-recorder-wrapper{ width: 90%; height: 100%; margin: auto; }
+#video-recorder-wrapper{ width: 90%; height: 100%; max-width: 100%; margin: auto; }
 
 #video-player, #video-recorder{
 	width: 100%;
@@ -468,11 +468,11 @@ input[type="button"]{
 @media all and (max-width: 640px), all and (orientation: portrait) {
 	#wrapper{ min-width: 320px; }
 	#left{ width: 100%; }
-	#videos{ width: 100%; min-height: 100px; }
+	#videos{ width: 100%; min-height: 100px; height: 50%; }
 	#avatar{ width: 20%; float: left; }
 	#username-title{ float: right; width: 75%; margin-bottom: -10%; }
 	#pin-reset{ margin-top: 10%; margin-left: 5%; float: left; }
-	#video-recorder-wrapper{ width: 100%; }
+	#video-recorder-wrapper{ width: 100%;}
 	#note-scroll, #note-zoom{ height: 30px !important; }
 	#recorder-controls-timeline{ height: 15px !important; margin-top: 5px; }
 	#recorder-controls-timeline .ui-slider-handle{ height: 15px; top: -0.2em; margin-left: -0.3em; }

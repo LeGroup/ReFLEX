@@ -195,7 +195,7 @@ function setZoom() {
 	else
 		zoomDisplayChange('day', 'week', 'month');
 		
-	$('#note-timeline').css('width', (100 * (1 + Clamp(Zoom * (Notebar.WeekCount - 1), 0, Notebar.WeekCount - 1))) + "%");
+	$('#note-timeline').css('width', (100 * (1 + Clamp(Zoom * (Notebar.WeekCount - 1) * 10, 0, (Notebar.WeekCount - 1) * 10))) + "%");
 	setScroll();
 }
 
