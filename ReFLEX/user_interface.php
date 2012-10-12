@@ -25,7 +25,7 @@
 				<li></li>
 			</ul>
 		</div>
-	</div>
+	</div><!-- left -->
 <!-- Video player and recorder -->
 <div id="videos">
 	<div id="video-recorder-wrapper">
@@ -73,7 +73,7 @@
 			<div id="recorder-controls-timeline" class="slider"></div>
 		</div>
 	</div>
-</div>
+</div> <!-- videos -->
 	<div style="width: 100%; clear:both"></div>
 
 <!-- Saved recordings show up here -->
@@ -90,11 +90,11 @@
 			<div id="now-indicator"><div class="i18n">Now</div></div>
 		</div>
 	</div>
-</div>
-<div id="note-scroll" class="slider"></div>
-<div id="note-zoom" class="slider"></div>
-<div id="zoom-title">
-	<span id="zoom-title-months" class="i18n">Months</span>
-	<span id="zoom-title-weeks" class="i18n">Weeks</span>
-	<span id="zoom-title-days" class="i18n">Days</span>
-</div>
+	<div id="note-scroll" class="slider"></div>
+	<div id="note-zoom" class="slider"></div>
+	<div id="zoom-title">
+		<span id="zoom-title-months" class="i18n">Months</span>
+		<span id="zoom-title-weeks" class="i18n">Weeks</span>
+		<span id="zoom-title-days" class="i18n">Days</span>
+	</div>
+</div><!-- notes -->

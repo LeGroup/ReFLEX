@@ -6,10 +6,12 @@
 	color: #6475BE;
 }
 
-body{
+html, body{
 	background-color: #343432;
 	font-family: Tahoma, sans-serif;
 	color: #aaabab;
+	position: relative;
+	height: 100%;
 }
 
 h1, h2{
@@ -29,6 +31,7 @@ input[type="button"]{
 	margin: auto;
 	position: relative;
 	max-width: 1300px;
+	height: 100%;
 }
 
 #avatar{
@@ -40,7 +43,7 @@ input[type="button"]{
 	
 }
 #left{ width: 20%; float: left; position: relative; }
-#videos{ width: 80%; float: right; min-height: 100px; }
+#videos{ width: 80%; float: right; min-height: 100px; height: 60%; }
 
 
 #avatar img{
@@ -88,7 +91,7 @@ input[type="button"]{
 	border: 3px solid rgba(0,0,0,0.5);
 }
 
-#video-recorder-wrapper{ width: 90%; margin: auto; }
+#video-recorder-wrapper{ width: 90%; height: 100%; margin: auto; }
 
 #video-player, #video-recorder{
 	width: 100%;
@@ -293,7 +296,7 @@ input[type="button"]{
 
 #notes{
 	margin-top: 20px;
-	height: 100px;
+	height: 20%;
 	width: 100%;
 	position: relative;
 }
@@ -305,11 +308,11 @@ input[type="button"]{
 }
 #note-timeline{
 	position: relative;
-	height: 100%;
+	height: 90%;
 }
 
 #note-background{
-	height: 70%;
+	height: 65%;
 	background-color: rgba(255,255,255,0.1);
 	width: 100%;
 	position: absolute;
@@ -363,14 +366,14 @@ input[type="button"]{
 	width: 0;
 	background-color: #fff;
 	width: 0px;
-	top: 8%;
+	top: 10%;
 	position: absolute !important;
 	
 }
 
 .single-note-background{
-	height: 49px;
-	width: 64px;
+	height: 65%;
+	width: 120px;
 	background-repeat: no-repeat;
 	margin-left: -34px;
 	background-color: inherit;
@@ -388,6 +391,7 @@ input[type="button"]{
     transition: box-shadow 0.3s;
 	border-radius: 3px;
 	position: relative;
+	margin-bottom: -3px;
 }
 .single-note-triangle{
 	width: 10px;
@@ -448,7 +452,7 @@ input[type="button"]{
 	color: rgba(255,255,255,0.7);
 	text-align: center;
 	line-height: 20px;
-	height: 70%;
+	height: 75%;
 	width: 25px;
 	margin-left: -12.5px;
 	box-shadow: 0 0 4px 15px rgba(255,255,255,0.2);
