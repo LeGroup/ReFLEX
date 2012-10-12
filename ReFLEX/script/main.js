@@ -42,10 +42,9 @@ function Init() {
 		debug('User no logged in. Displaying registration screen.');
 		$('#newUserAdd').click(RegisterUser);
 	}
-	// DisplayRatio($('#video-recorder-wrapper'), 354/242);
+	DisplayRatioByHeight($('#video-recorder-wrapper'), 354/242);
 	DisplayRatio($('#record-button'), 1);
 	DisplayRatio($('#recorder-controls-timeline'));
-	
 	
 	
 	localize();
@@ -57,6 +56,15 @@ function DisplayRatio(o, ratio) {
 		o.data('display-ratio', o.width() / o.height());		
 	o.css('height', o.width() / o.data('display-ratio') + "px"); 
 	$(window).resize(function() { o.css('height', o.width() / o.data('display-ratio') + "px"); }); 
+}
+
+function DisplayRatioByHeight(o, ratio) {
+	if(ratio)
+		o.data('display-ratio', ratio);
+	else
+		o.data('display-ratio', o.width() / o.height());		
+	o.css('width', o.height() * o.data('display-ratio') + "px"); 
+	$(window).resize(function() { o.css('width', o.height() * o.data('display-ratio') + "px"); }); 
 }
 
 function LosePlaceholder() {
@@ -423,6 +431,8 @@ function AddNoteElement(note) {
 	note.Object = $('<div class="note button" style="margin-top: ' + (Math.random() * 2 * verticalOffset - verticalOffset) + 'px; background-color: '+note.Color+'"><div class="single-note-background"><div class="single-note-triangle"></div><img src="' + note.Thumb + '" alt /></div></div>');
 	note.Object.attr('title', datetimeFormat(note.Time));
 	note.Object.css('left', Notebar.GetRatio(note.Time) * 100 + '%');
+	
+	
 	if(are_notes_draggable) {
 		note.Object.draggable({ 
 			axis: 'x',
@@ -443,6 +453,7 @@ function AddNoteElement(note) {
 	}
 	note.Object.click(function() { SelectNote(note); });
 	$('#note-timeline').append(note.Object);
+	DisplayRatioByHeight($(note.Object.find('.single-note-background').get(0)), 420/280);
 }
 
 function UpdateNote(note) {
