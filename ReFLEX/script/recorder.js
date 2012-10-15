@@ -122,7 +122,7 @@ function UIChangeState(state) {
 
 RECORDER.prepare_recorder=function() {
 	if (!RECORDER.getRecorder()) {
-        swfobject.embedSWF('recorder/TeamRecorder4.swf', 'TeamRecorder', '100%', '100%', '10.3.0', 'expressInstall.swf', {},{ scale: 'exactfit', wmode: 'transparent' },{});
+        swfobject.embedSWF('recorder/NoteRecorder.swf', 'NoteRecorder', '100%', '100%', '10.3.0', 'expressInstall.swf', {},{ scale: 'exactfit', wmode: 'transparent' },{});
     }
 	
     debug('record mode on');
@@ -144,7 +144,7 @@ RECORDER.prepare_recorder=function() {
 
 
 RECORDER.getRecorder=function() {
-    var rec = swfobject.getObjectById('TeamRecorder');
+    var rec = swfobject.getObjectById('NoteRecorder');
     if (rec && rec.initCamera !== undefined) {
         // debug('Found recorder');
 		resizeFix(rec);
