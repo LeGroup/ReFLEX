@@ -21,7 +21,7 @@ RECORDER.UiStates = {
 
 var StatesWhenNoteOptionsAvailable = [RECORDER.UiStates.NoteSelected, RECORDER.UiStates.Playing, RECORDER.UiStates.PlaybackFinished];
 
-$(function() {
+function InitRecorder() {
 	UIChangeState(RECORDER.UiStates.VideoOff);
 	RECORDER.prepare_recorder();
 	$('#record-video-drag').draggable({ 
@@ -52,7 +52,7 @@ $(function() {
 		if(RECORDER.CurrentState == RECORDER.UiStates.Playing)
 			$('#stop-button-onvideo').stop().animate({opacity: 0.0}, 500);
 	});
-});
+}
 
 function resizeFix(rec) {
 	if(rec) {
@@ -330,7 +330,7 @@ RECORDER.uploadingRecording= function() {
 
 RECORDER.loadNote = function(note, pin) {	
 
-	$.post('php/loadMedia.php', { id: note.ID, user: UserId, pin: pin }, function(data) {
+	$.getJSON(PHP_LIB + 'loadMedia.php', { id: note.ID, user: UserId, pin: pin }, function(data) {
 		try{ var loadedNote = $.parseJSON(data); }
 		catch(e) { debug(data); }
 		if(loadedNote.Success) {
