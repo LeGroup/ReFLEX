@@ -660,5 +660,6 @@ function getJson(url, post, finished, onError, dontDebugRespond) {
 		}
 		
 		finished(json);
-	});
+	},
+	'jsonop');
 }
