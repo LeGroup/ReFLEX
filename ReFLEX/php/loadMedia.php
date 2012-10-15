@@ -1,4 +1,5 @@
 <?php
+header('Access-Control-Allow-Origin: *'); 
 require_once('db.php');
 $q = $db->prepare('SELECT Private FROM notes WHERE ID = :id');
 $q->execute(array('id' => $_POST['id']));

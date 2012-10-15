@@ -1,4 +1,5 @@
 <?php
+header('Access-Control-Allow-Origin: *'); 
 $o = new StdClass();
 $o->User = $_POST['user_id'];
 $o->PhotoTmp = $_FILES['photo']['tmp_name'];

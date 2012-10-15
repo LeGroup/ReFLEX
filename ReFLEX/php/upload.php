@@ -1,4 +1,5 @@
 ﻿<?php
+header('Access-Control-Allow-Origin: *'); 
 require_once('db.php');
 
 $new_note = new StdClass();
