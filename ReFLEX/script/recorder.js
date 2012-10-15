@@ -330,13 +330,11 @@ RECORDER.uploadingRecording= function() {
 
 RECORDER.loadNote = function(note, pin) {	
 
-	getJson(PHP_LIB + 'loadMedia.php', { id: note.ID, user: UserId, pin: pin }, function(data) {
-		try{ var loadedNote = $.parseJSON(data); }
-		catch(e) { debug(data); }
-		if(loadedNote.Success) {
+	getJson('loadMedia.php', { id: note.ID, user: UserId, pin: pin }, function(data) {}
+		if(data.Success) {
 			var rec = RECORDER.getRecorder();
 			if(rec) {
-				rec.loadNote(note.ID, loadedNote.Voice, loadedNote.Picture);
+				rec.loadNote(note.ID, data.Voice, data.Picture);
 				UIChangeState(RECORDER.UiStates.NoteSelected);
 				$('.pincode > div > input').each(function() { $(this).val('').blur(); });
 			}
