@@ -387,9 +387,9 @@
             }
 			
 			/* Loading and playing external mp3 file */
-			private function loadNote(id:Number, voice:String, picture:String):void {
-				externalSound = new Sound(new URLRequest(voice));
-				captured_shot.source = new URLRequest(picture);
+			private function loadNote(id:Number, voice:String, picture:String, server_url:String):void {
+				externalSound = new Sound(new URLRequest(server_url + voice));
+				captured_shot.source = new URLRequest(server_url + picture);
 			}
 
 		]]>
