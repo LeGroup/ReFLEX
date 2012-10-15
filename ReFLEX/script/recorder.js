@@ -330,7 +330,7 @@ RECORDER.uploadingRecording= function() {
 
 RECORDER.loadNote = function(note, pin) {	
 
-	getJSON(PHP_LIB + 'loadMedia.php', { id: note.ID, user: UserId, pin: pin }, function(data) {
+	getJson(PHP_LIB + 'loadMedia.php', { id: note.ID, user: UserId, pin: pin }, function(data) {
 		try{ var loadedNote = $.parseJSON(data); }
 		catch(e) { debug(data); }
 		if(loadedNote.Success) {
