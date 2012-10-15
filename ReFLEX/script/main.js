@@ -1,4 +1,5 @@
 var SERVER_URL = '';
+var PHP_LIB = 'http://reflex.aalto.fi/php/';
 var UserId;
 var SelectedNote;
 var Notes = [];
@@ -31,21 +32,18 @@ function Init() {
 		if($(this).val().length == 4) 
 			OpenNote(SelectedNote);
 	});
+	var query = getQueryData(document.URL);
 	
-	UserId = $('#user-data').data('id');
-	
-	if(typeof UserId != 'undefined') {
-		debug('User logged in. Displaying basic user interface.');
-		InitializeUserInterface();
+	if(query['i']) {
+		getJson('login.php', { id: query['i'] }, function(object) {
+			if(object.Success)
+				InitializeUserInterface(object.ID);
+			else
+				InitializeRegistrationInterface();
+		});
 	}
-	else {
-		debug('User no logged in. Displaying registration screen.');
-		$('#newUserAdd').click(RegisterUser);
-	}
-	DisplayRatioByHeight($('#video-recorder-wrapper'), 354/242);
-	DisplayRatio($('#record-button'), 1);
-	DisplayRatio($('#recorder-controls-timeline'));
-	
+	else
+		InitializeRegistrationInterface();
 	
 	localize();
 }
@@ -71,11 +69,19 @@ function LosePlaceholder() {
 	if($(this).text() == $(this).data('placeholder'))
 	{ $(this).text(''); }
 }
-function InitializeUserInterface() {
+function InitializeUserInterface(id) {
+	debug('User logged in. Displaying basic user interface.');
+	$('#user-page').show();
+	UserId = id;
 	
 	ScrollSlider = $('#note-scroll');
 	ZoomSlider = $('#note-zoom');
 	TimelineSlider = $('#recorder-controls-timeline');
+	DisplayRatioByHeight($('#video-recorder-wrapper'), 177/121);
+	DisplayRatio($('#record-button'), 1);
+	DisplayRatio($('#recorder-controls-timeline'));
+	
+	InitRecorder();
 	
 		$('#prev-week').click(PreviousWeek);
 		$('#next-week').click(NextWeek);
@@ -90,6 +96,12 @@ function InitializeUserInterface() {
 		$('#pin-reset').click(ResetPin);
 	LoadNotes(); //After loading notes the program initializes notebar, weekblock etc.
 	SetColorPalette();
+}
+
+function InitializeRegistrationInterface() {
+	$('#register-page').show();
+	debug('User no logged in. Displaying registration screen.');
+	$('#newUserAdd').click(RegisterUser);
 }
 
 function SetColorPalette() {
@@ -109,30 +121,27 @@ function SetColorPalette() {
 }
 
 function ResetPin() {
-	$.post('php/resetPin.php', { id: UserId }, function(data) {
-		debug('Pin Reset, PHP responds: ' + data);
+	getJson('resetPin.php', { id: UserId }, function() {
 		alert(i18n('Your pin has been reset. Please check your email.'));
 	});
 }
 
 function RegisterUser() {
-	if(ValidateUserRegistration()) {
-		$.post('php/user_registration.php', { Username: $('#newUsername').val(), Email: $('#newUserEmail').val() }, function(result) { 
-			debug('PHP respond from user registration: ' + result);
-			var value = $.parseJSON(result);
-			$('#newUserAdd').hide();
-			// $('#newUserEmail').hide();
-			if(value.Success) {
-				$('#newUsername').remove();	
-				$('#newUserEmail').remove();
-				$('.register-complete').show(200).html(i18n('Registration was successful. You will now get link to your page by email.')); 
-			}
-			else {
-				debug('User Registration failed: ' + result);
-				$('#newUsername').removeAttr('contentEditable').text(i18n('Registration failed. Please try again or contact the administation.')); 
-			}
-		});
-	}
+	// if(ValidateUserRegistration()) {
+		// getJson('user_registration.php', { Username: $('#newUsername').val(), Email: $('#newUserEmail.val() }, function(object) {
+			// $('#newUserAdd').hide();
+			// // $('#newUserEmail').hide();
+			// if(object.Success) {
+				// $('#newUsername').remove();	
+				// $('#newUserEmail').remove();
+				// $('.register-complete').show(200).html(i18n('Registration was successful. You will now get link to your page by email.')); 
+			// }
+			// else {
+				// debug('User Registration failed: ' + result);
+				// $('#newUsername').removeAttr('contentEditable').text(i18n('Registration failed. Please try again or contact the administation.')); 
+			// }
+		// });
+	// }
 }
 
 function ValidateUserRegistration() {
@@ -462,13 +471,9 @@ function UpdateNote(note) {
 	var obj = note.Object;
 	note.Object.remove();
 	delete note.Object;
-	$.post('php/update.php', { Note: JSON.stringify(note) }, function(data) { 
-		debug('PHP responds on note update: ' + data);
-		var ret = $.parseJSON(data);
-		
-		if(!ret.Private)
-			note.Thumb = ret.Picture;
-		
+	getJson('update.php', { Note: JSON.stringify(note) }, function(object) {
+		if(!object.Private)
+			note.Thumb = object.Picture;
 		AddNoteElement(note);
 	});
 }
@@ -516,39 +521,37 @@ function OpenNote(note) {
 
 function LoadNotes() {
 	debug('Preparing to load notes from user ' + UserId + '.');
-	$.post('php/notes.php', { User: UserId }, function(data) {
-		var noteArray = $.parseJSON(data);
-		debug('Notes loaded.');
+	getJson('notes.php', { User: UserId }, function(object) {
 		//Notebar need to be initialized before any notes are added
 		//However we need to know the date of the first note in order to set notebar's timespan
 		var start = new Date();
 		var end = new Date();
 		
 		//If there are notes, set the beginning of the notebar's timespan to the date of the first note.
-		if(noteArray.length > 0) {
-			start = new Date().getTime() > noteArray[0].Time ? noteArray[0].Time : new Date().getTime();
-			end = new Date().getTime() > noteArray[noteArray.length - 1].Time ? new Date().getTime() : noteArray[noteArray.length].Time;
+		if(object.length > 0) {
+			start = new Date().getTime() > object[0].Time ? object[0].Time : new Date().getTime();
+			end = new Date().getTime() > object[object.length - 1].Time ? new Date().getTime() : object[object.length].Time;
 		}
 		initNotebar(start, end);
 		
 		//Add notes
-		debug('Found ' + noteArray.length + ' notes.');
-		for(var i = 0; i < noteArray.length; i++) {
+		debug('Found ' + object.length + ' notes.');
+		for(var i = 0; i < object.length; i++) {
 			
 			AddNote({ 
-				ID: noteArray[i].ID, 
-				Time: noteArray[i].Time, 
-				Thumb: noteArray[i].Thumb, 
-				Student: noteArray[i].Student, 
-				Private: (noteArray[i].Private == 'yes'),
-				Color: noteArray[i].Color });
+				ID: object[i].ID, 
+				Time: object[i].Time, 
+				Thumb: object[i].Thumb, 
+				Student: object[i].Student, 
+				Private: (object[i].Private == 'yes'),
+				Color: object[i].Color });
 		}
 		
 		//If there are already notes, select the most recent.
-		if(noteArray.length > 0)
+		if(object.length > 0)
 			SelectNote(Notes[Notes.length - 1]);
 		InitLayout();
-	});
+	}, false, true);
 }
 
 function i18n(str, lang){
@@ -623,4 +626,36 @@ function localize(){
             }
         }           
     );
+}
+
+function getQueryData(url) {
+	
+	url = url.split('?');
+	url.splice(0,1);
+	
+	var vars = url.join().split("&");
+	var result = [];
+	for(v in vars) {
+		vars[v] = vars[v].split("=");
+		debug(vars[v][0] + ': ' + vars[v][1]);
+		result[vars[v][0]] = vars[v][1];
+	}
+	return result;
+}
+
+function getJson(url, post, finished, onError, dontDebugRespond) {
+	$.post(PHP_LIB + url, post, function (data) {
+		if(!dontDebugRespond) {
+			debug('Requested ' + url + ', PHP responds: ' + data);
+		}
+		var json;
+		try { json = $.parseJSON(data); }
+		catch(e) { 
+			debug("Couldn't parse Json"); 
+			if(onError) onError();
+			return; 
+		}
+		
+		finished(json);
+	});
 }
