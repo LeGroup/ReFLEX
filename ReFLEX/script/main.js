@@ -647,19 +647,17 @@ function getQueryData(url) {
 }
 
 function getJson(url, post, finished, onError, dontDebugRespond) {
-	$.post(PHP_LIB + url, post, function (data) {
-		if(!dontDebugRespond) {
-			debug('Requested ' + url + ', PHP responds: ' + data);
+	$.ajax({
+		type: 'POST',
+		url: PHP_LIB + url,
+		data: post,
+		dataType: 'json',
+		crossDomain: true,
+		success: function (data) {
+			if(!dontDebugRespond) 
+				debug('Requested ' + url + ', PHP responds: ' + JSON.stringify(data));
+			
+			finished(data);
 		}
-		var json;
-		try { json = $.parseJSON(data); }
-		catch(e) { 
-			debug("Couldn't parse Json"); 
-			if(onError) onError();
-			return; 
-		}
-		
-		finished(json);
-	},
-	'jsonop');
+	});
 }
