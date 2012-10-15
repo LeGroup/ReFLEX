@@ -434,13 +434,28 @@ function UpdateNotePosition(note) {
 }
 
 var verticalOffset = 0;
+
+function CreateNoteElement(thumb, color) {
+	var img = $('<img>');
+	var noteBackground = $('<div class="single-note-background">');
+	var o = $('<div class="note button">');
+	
+	if(thumb)
+		img.attr('src', SERVER_URL + thumb).attr('alt', '');
+	
+	o.css({ 
+		marginTop: Math.random() * 2 * verticalOffset - verticalOffset,
+		backgroundColor: color
+	});
+	
+	noteBackground.append($('<div class="single-note-triangle">'));
+	noteBackground.append(img);
+	o.append(noteBackground);
+	return o;
+}
+
 function AddNoteElement(note) {
-	
-	note.Object = $('<div class="note button" style="margin-top: ' + (Math.random() * 2 * verticalOffset - verticalOffset) + 'px; background-color: '+note.Color+'">');
-	note.Object.append('<div class="single-note-background"><div class="single-note-triangle"></div><img src="' + SERVER_URL + note.Thumb + '" alt /></div></div>');
-	
-	
-	
+	note.Object = CreateNoteElement(note.Thumb, note.Color);
 	
 	note.Object.attr('title', datetimeFormat(note.Time));
 	note.Object.css('left', Notebar.GetRatio(note.Time) * 100 + '%');
