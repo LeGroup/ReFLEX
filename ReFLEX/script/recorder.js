@@ -16,7 +16,8 @@ RECORDER.UiStates = {
 	Finished: 'recorder-finished',
 	NoteSelected: 'note-selected',
 	NoteSealed: 'note-sealed',
-	CameraPermission: 'camera-permission'
+	CameraPermission: 'camera-permission',
+	Uploading: 'uploading'
 };
 
 var StatesWhenNoteOptionsAvailable = [RECORDER.UiStates.NoteSelected, RECORDER.UiStates.Playing, RECORDER.UiStates.PlaybackFinished];
@@ -25,12 +26,22 @@ function InitRecorder() {
 	UIChangeState(RECORDER.UiStates.VideoOff);
 	RECORDER.prepare_recorder();
 	$('#record-video-drag').draggable({ 
-	helper: function() { 
-		return $('<div class="note"><div></div></div>');
-	}, 
+	helper: function() {
+		var helper = $('<div>');
+		helper.css({
+			backgroundColor: '#ffffff',
+			width: '110px',
+			height: '70px',
+			borderRadius: '8px',
+			backgroundImage: 'url(images/note.png)',
+			backgroundSize: '100%',
+			opacity: 0.0
+		});
+		return helper;
+	},
 	cursorAt: {
 		top: 30,
-		left: 0
+		left: 55
 	},
 	start: dragStarted, 
 	stop: dragStopped, 
@@ -61,7 +72,7 @@ function resizeFix(rec) {
 }
 
 
-function dragStarted() { $('#note-drag-area').css('zIndex', 1); }
+function dragStarted(event, ui) { $('#note-drag-area').css('zIndex', 1); ui.helper.animate({opacity: 1.0}, 800); }
 function dragStopped() { $('#note-drag-area').css('zIndex', -1); }
 
 function noteDropped(event, ui) {
@@ -295,6 +306,7 @@ RECORDER.audioLevel=function(level) {
 }
 
 RECORDER.save_note= function() {
+	UIChangeState(RECORDER.UiStates.Uploading);
     var rec = RECORDER.getRecorder();
 	
     debug('Trying to save a note');
