@@ -1,4 +1,5 @@
 <?php
+header('Access-Control-Allow-Origin: *'); 
 require_once('db.php');
 
 $note = json_decode($_POST['Note']);

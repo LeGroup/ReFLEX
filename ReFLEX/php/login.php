@@ -1,4 +1,5 @@
 <?php
+header('Access-Control-Allow-Origin: *'); 
 require_once 'db.php';
 if(isset($_POST['id']))
 {
