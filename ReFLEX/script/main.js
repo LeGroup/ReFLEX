@@ -1,4 +1,4 @@
-var SERVER_URL = '';
+var SERVER_URL = 'http://reflex.aalto.fi/';
 var PHP_LIB = 'http://reflex.aalto.fi/php/';
 var UserId;
 var SelectedNote;
@@ -23,10 +23,6 @@ $(document).bind('touchmove', function(e) { e.preventDefault(); }, false);
 
 
 function Init() {
-	
-	var t = document.URL;
-	SERVER_URL = t.substr(0, t.indexOf('?'));
-	
 	// Focus moves to the next element automatically
 	$('.pincode > div > input').keyup(function() {
 		if($(this).val().length == 4) 
@@ -440,7 +436,12 @@ function UpdateNotePosition(note) {
 var verticalOffset = 0;
 function AddNoteElement(note) {
 	
-	note.Object = $('<div class="note button" style="margin-top: ' + (Math.random() * 2 * verticalOffset - verticalOffset) + 'px; background-color: '+note.Color+'"><div class="single-note-background"><div class="single-note-triangle"></div><img src="' + note.Thumb + '" alt /></div></div>');
+	note.Object = $('<div class="note button" style="margin-top: ' + (Math.random() * 2 * verticalOffset - verticalOffset) + 'px; background-color: '+note.Color+'">');
+	note.Object.append('<div class="single-note-background"><div class="single-note-triangle"></div><img src="' + SERVER_URL + note.Thumb + '" alt /></div></div>');
+	
+	
+	
+	
 	note.Object.attr('title', datetimeFormat(note.Time));
 	note.Object.css('left', Notebar.GetRatio(note.Time) * 100 + '%');
 	
