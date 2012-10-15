@@ -127,21 +127,24 @@ function ResetPin() {
 }
 
 function RegisterUser() {
-	// if(ValidateUserRegistration()) {
-		// getJson('user_registration.php', { Username: $('#newUsername').val(), Email: $('#newUserEmail.val() }, function(object) {
-			// $('#newUserAdd').hide();
-			// // $('#newUserEmail').hide();
-			// if(object.Success) {
-				// $('#newUsername').remove();	
-				// $('#newUserEmail').remove();
-				// $('.register-complete').show(200).html(i18n('Registration was successful. You will now get link to your page by email.')); 
-			// }
-			// else {
-				// debug('User Registration failed: ' + result);
-				// $('#newUsername').removeAttr('contentEditable').text(i18n('Registration failed. Please try again or contact the administation.')); 
-			// }
-		// });
-	// }
+	if(ValidateUserRegistration()) {
+		getJson('user_registration.php', { 
+		Username: $('#newUsername').val(), 
+		Email: $('#newUserEmail').val() 
+		}, function(object) {
+			$('#newUserAdd').hide();
+			// $('#newUserEmail').hide();
+			if(object.Success) {
+				$('#newUsername').remove();	
+				$('#newUserEmail').remove();
+				$('.register-complete').show(200).html(i18n('Registration was successful. You will now get link to your page by email.')); 
+			}
+			else {
+				debug('User Registration failed: ' + result);
+				$('#newUsername').removeAttr('contentEditable').text(i18n('Registration failed. Please try again or contact the administation.')); 
+			}
+		});
+	}
 }
 
 function ValidateUserRegistration() {
