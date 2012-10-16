@@ -318,7 +318,7 @@ RECORDER.save_note= function() {
 	
 	debug('Using upload path: ' + SERVER_URL);
     if (rec) {
-        rec.saveRecording(SERVER_URL, RecordedNote.Title, UserId, RecordedNote.Time); 
+        rec.saveRecording(SERVER_URL, RecordedNote.Title, User.ID, RecordedNote.Time); 
     }        
 }
 
@@ -342,7 +342,7 @@ RECORDER.uploadingRecording= function() {
 
 RECORDER.loadNote = function(note, pin) {	
 
-	getJson('loadMedia.php', { id: note.ID, user: UserId, pin: pin }, function(data) {
+	getJson('loadMedia.php', { id: note.ID, user: User.ID, pin: pin }, function(data) {
 		if(data.Success) {
 			var rec = RECORDER.getRecorder();
 			if(rec) {

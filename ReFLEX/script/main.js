@@ -1,6 +1,6 @@
 var SERVER_URL = 'http://reflex.aalto.fi/';
 var PHP_LIB = 'http://reflex.aalto.fi/php/';
-var UserId;
+var User;
 var SelectedNote;
 var Notes = [];
 var Wrapper;
@@ -33,7 +33,7 @@ function Init() {
 	if(query['i']) {
 		getJson('login.php', { id: query['i'] }, function(object) {
 			if(object.Success)
-				InitializeUserInterface(object.ID);
+				InitializeUserInterface(object);
 			else
 				InitializeRegistrationInterface();
 		});
@@ -65,10 +65,11 @@ function LosePlaceholder() {
 	if($(this).text() == $(this).data('placeholder'))
 	{ $(this).text(''); }
 }
-function InitializeUserInterface(id) {
+function InitializeUserInterface(userObject) {
+	User = userObject;
 	debug('User logged in. Displaying basic user interface.');
+	$('#username-title').text(User.username);
 	$('#user-page').show();
-	UserId = id;
 	
 	ScrollSlider = $('#note-scroll');
 	ZoomSlider = $('#note-zoom');
@@ -79,17 +80,21 @@ function InitializeUserInterface(id) {
 	
 	InitRecorder();
 	
-		$('#prev-week').click(PreviousWeek);
-		$('#next-week').click(NextWeek);
-		$('#toggle-settings').click(function() { $('#settings').toggle(200); });
-		$('#privacy').click(function() { 
-			if(SelectedNote.Private)
-				MakePublic(SelectedNote); 
-			else
-				MakePrivate(SelectedNote);
-		});
-		
-		$('#pin-reset').click(ResetPin);
+	$('#prev-week').click(PreviousWeek);
+	$('#next-week').click(NextWeek);
+	$('#toggle-settings').click(function() { $('#settings').toggle(200); });
+	$('#privacy').click(function() { 
+		if(SelectedNote.Private)
+			MakePublic(SelectedNote); 
+		else
+			MakePrivate(SelectedNote);
+	});
+	
+	$('#pin-reset').click(ResetPin);
+	
+	$(window).resize(function() {
+		$('.single-note-background').each(function() { $(this).css('marginLeft', -($(this).width()/2) + 'px'); });
+	});
 	LoadNotes(); //After loading notes the program initializes notebar, weekblock etc.
 	SetColorPalette();
 }
@@ -117,7 +122,7 @@ function SetColorPalette() {
 }
 
 function ResetPin() {
-	getJson('resetPin.php', { id: UserId }, function() {
+	getJson('resetPin.php', { id: User.ID }, function() {
 		alert(i18n('Your pin has been reset. Please check your email.'));
 	});
 }
@@ -451,6 +456,7 @@ function CreateNoteElement(thumb, color) {
 	noteBackground.append($('<div class="single-note-triangle">'));
 	noteBackground.append(img);
 	o.append(noteBackground);
+	o.Image = img;
 	return o;
 }
 
@@ -481,7 +487,9 @@ function AddNoteElement(note) {
 	}
 	note.Object.click(function() { SelectNote(note); });
 	$('#note-timeline').append(note.Object);
+	
 	DisplayRatioByHeight($(note.Object.find('.single-note-background').get(0)), 420/280);
+	note.Object.Image.load(function() { debug(note.Object.Image.width()); note.Object.css('marginLeft', -(note.Object.Image.width()/2) + 'px') }); 
 }
 
 function UpdateNote(note) {
@@ -539,8 +547,8 @@ function OpenNote(note) {
 }
 
 function LoadNotes() {
-	debug('Preparing to load notes from user ' + UserId + '.');
-	getJson('notes.php', { User: UserId }, function(object) {
+	debug('Preparing to load notes from user ' + User.ID + '.');
+	getJson('notes.php', { User: User.ID }, function(object) {
 		//Notebar need to be initialized before any notes are added
 		//However we need to know the date of the first note in order to set notebar's timespan
 		var start = new Date();

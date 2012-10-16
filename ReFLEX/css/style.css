@@ -34,7 +34,7 @@ input[type="button"]{
 }
 
 #wrapper{
-	padding: 10px;
+	padding: 1%;
 	margin: auto;
 	position: relative;
 	max-width: 1300px;
@@ -371,17 +371,13 @@ input[type="button"]{
 
 .note{
 	width: 0;
-	background-color: #fff;
-	width: 0px;
 	top: 10%;
 	position: absolute !important;
-	
 }
 
 .single-note-background{
 	height: 65%;
 	background-repeat: no-repeat;
-	margin-left: -34px;
 	background-color: inherit;
 	border-radius: 6px;
 	position: relative;
@@ -398,6 +394,7 @@ input[type="button"]{
 	border-radius: 3px;
 	margin-bottom: -3px;
 	position: relative;
+	
 }
 .single-note-triangle{
 	width: 10px;
