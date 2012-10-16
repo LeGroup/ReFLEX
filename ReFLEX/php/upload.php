@@ -18,25 +18,28 @@ $new_note->Title = isset($_POST['note_title']) ? $_POST['note_title'] : '';
 $new_note->Time = $_POST['time'];
 $new_note->Private = 'no';
 
+$q = $db->prepare('SELECT name FROM users WHERE id = :id');
+$q->execute(array('id' => $new_note->Student));
+$username = $q->fetchColumn();
+
+
 $root = '../';
 $base='uploads';
-$class_id = 'class';
+$student_folder = $username.'_'.$new_note->Student;
 $class_hash= md5($class_id);
-$dir1=substr($class_hash, 0,2);
 
 CreateDirectoryIfNotExist($root.$base);
-CreateDirectoryIfNotExist($root.$base . '/' . $dir1);
-CreateDirectoryIfNotExist($root.$base . '/' . $dir1 . '/' . $class_id);
+CreateDirectoryIfNotExist($root.$base . '/' . $student_folder);
 
-$directory = $base . '/' . $dir1 . '/' . $class_id . '/';
+$directory = $base . '/' . $student_folder . '/';
 
 //Saving photo
 $picture = $_FILES['photo']['tmp_name'];
 $i = 1;
-$pic_name= $directory.$new_note->Student.'_'.$i.'_pic.jpg';
+$pic_name= $directory.$new_note->Student.'_'.sha1($i).'_pic.jpg';
 
 while(file_exists($root.$pic_name))
-{ $i++; $pic_name = $directory.$new_note->Student.'_'.$i.'_pic.jpg'; }
+{ $i++; $pic_name = $directory.$new_note->Student.'_'.sha1($i).'_pic.jpg'; }
 
 if(!move_uploaded_file($picture, $root.$pic_name))
 { _log('Uploading photo failed!'); }
@@ -47,9 +50,9 @@ else
 //Saving audio
 $audio = $_FILES['voice']['tmp_name'];
 $i = 1;
-$aud_name = $directory.$new_note->Student.'_'.$i.'_rec.mp3';
+$aud_name = $directory.$new_note->Student.'_'.sha1($i).'_rec.mp3';
 while(file_exists($root.$aud_name))
-{ $i++; $aud_name = $directory.$new_note->Student.'_'.$i.'_rec.mp3'; }
+{ $i++; $aud_name = $directory.$new_note->Student.'_'.sha1($i).'_rec.mp3'; }
 
 if(!move_uploaded_file($audio, $root.$aud_name)){
 	_log('Uploading audio failed!');
