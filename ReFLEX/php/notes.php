@@ -16,5 +16,9 @@ $obj = $q->fetchAll();
 if($obj->Time > time() * 1000)
 	$obj->Thumb = 'images/private.png';
 
-echo json_encode($obj);
+$o = new StdClass();
+$o->Time = $obj->Time;
+$o->Time2 = time() * 1000;
+	
+echo json_encode($o);
 ?>
