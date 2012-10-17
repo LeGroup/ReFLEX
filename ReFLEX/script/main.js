@@ -505,7 +505,7 @@ function AddNoteElement(note) {
 	$('#note-timeline').append(note.Object);
 	
 	DisplayRatioByHeight($(note.Object.find('.single-note-background').get(0)), 420/280);
-	note.Object.Image.load(function() { debug(note.Object.Image.width()); note.Object.css('marginLeft', -(note.Object.Image.width()/2) + 'px') }); 
+	note.Object.Image.load(function() { note.Object.css('marginLeft', -(note.Object.Image.width()/2) + 'px') }); 
 }
 
 function UpdateNote(note) {
@@ -597,6 +597,7 @@ function LoadNotes() {
 				Color: object[i].Color,
 				Locked: (object[i].Time > new Date().getTime()) 
 			});
+			debug(Notes[Notes.length - 1].Thumb);
 		}
 		
 		//If there are already notes, select the most recent.
