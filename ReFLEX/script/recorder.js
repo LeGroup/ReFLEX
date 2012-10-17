@@ -17,7 +17,8 @@ RECORDER.UiStates = {
 	NoteSelected: 'note-selected',
 	NoteSealed: 'note-sealed',
 	CameraPermission: 'camera-permission',
-	Uploading: 'uploading'
+	Uploading: 'uploading',
+	NoteTimeSealed: 'note-timesealed'
 };
 
 var StatesWhenNoteOptionsAvailable = [RECORDER.UiStates.NoteSelected, RECORDER.UiStates.Playing, RECORDER.UiStates.PlaybackFinished];

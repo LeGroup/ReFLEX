@@ -10,5 +10,11 @@ $q = $db->prepare('SELECT
 	Color
 	FROM notes WHERE Student = '.$_POST['User'].' ORDER BY time');
 $q->execute();
-echo json_encode($q->fetchAll());
+
+$obj = $q->fetchAll();
+
+if($obj->Time > time() * 1000)
+	$obj->Thumb = 'images/private.png';
+
+echo json_encode($obj);
 ?>

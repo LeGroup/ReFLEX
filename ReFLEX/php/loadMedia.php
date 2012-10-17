@@ -28,7 +28,7 @@ if($result == 0) {
 else {
 	$obj->CorrectPin = true;
 	
-	$q = $db->prepare('SELECT Picture, Voice FROM notes WHERE 
+	$q = $db->prepare('SELECT Picture, Voice, Time FROM notes WHERE 
 		Student = :user AND 
 		ID = :id
 		ORDER BY time');
@@ -41,7 +41,13 @@ else {
 	
 	if($q->rowCount() == 1) {
 		$obj = $q->fetchObject();
-		$obj->Success = true;
+		
+		if($obj->Time > time() * 1000) {
+			$obj->Success = false;
+			$obj->Message = 'Note is closed for now.';
+		}
+		else
+			$obj->Success = true;
 	}
 	else
 		$obj->Success = false;

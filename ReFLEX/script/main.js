@@ -531,6 +531,7 @@ function Is_note_new(note) {
 
 
 function SelectNote(note) {
+	//Camera has be accepted before doing any actions in recorder screen
 	if(!RECORDER.isCameraAccepted)
 		return; 
 		
@@ -547,7 +548,10 @@ function SelectNote(note) {
 	
 	SelectedNote = note;
 	debug('Selected a note');
-	if(SelectedNote.Private) {
+	if(SelectedNote.Locked) {
+		UIChangeState(RECORDER.UiStates.NoteTimeSealed);
+	}
+	else if(SelectedNote.Private) {
 		$('#privacy').val(i18n('Make public'));
 		UIChangeState(RECORDER.UiStates.NoteSealed);
 	} else {
@@ -576,7 +580,7 @@ function LoadNotes() {
 		//If there are notes, set the beginning of the notebar's timespan to the date of the first note.
 		if(object.length > 0) {
 			start = new Date().getTime() > object[0].Time ? object[0].Time : new Date().getTime();
-			end = new Date().getTime() > object[object.length - 1].Time ? new Date().getTime() : object[object.length].Time;
+			end = new Date().getTime() > object[object.length - 1].Time ? new Date().getTime() : object[object.length - 1].Time;
 		}
 		initNotebar(start, end);
 		
@@ -590,7 +594,9 @@ function LoadNotes() {
 				Thumb: object[i].Thumb, 
 				Student: object[i].Student, 
 				Private: (object[i].Private == 'yes'),
-				Color: object[i].Color });
+				Color: object[i].Color,
+				Locked: (object[i].Time > new Date().getTime()) 
+			});
 		}
 		
 		//If there are already notes, select the most recent.
