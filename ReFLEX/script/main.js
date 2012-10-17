@@ -61,15 +61,30 @@ function DisplayRatioByHeight(o, ratio) {
 	$(window).resize(function() { o.css('width', o.height() * o.data('display-ratio') + "px"); }); 
 }
 
-function LosePlaceholder() {
-	if($(this).text() == $(this).data('placeholder'))
-	{ $(this).text(''); }
+function Centerize(object) {
+	object.css({
+		left: object.width() / 2 + 'px',
+		top: object.height() / 2 + 'px'
+	});
+	$(window).resize(function() { 
+		object.css({
+			left: object.width() / 2 + 'px',
+			top: object.height() / 2 + 'px'
+		});
+	});
 }
+
 function InitializeUserInterface(userObject) {
 	User = userObject;
 	debug('User logged in. Displaying basic user interface.');
 	$('#username-title').text(User.username);
 	$('#user-page').show();
+	$('#timecapsule-datepicker-field').datepicker({
+		onSelect: function(date, inst) {
+			RecordedNote.Time = new Date(date).getTime();
+			RECORDER.save_note();
+			}
+		});
 	
 	ScrollSlider = $('#note-scroll');
 	ZoomSlider = $('#note-zoom');
@@ -116,6 +131,7 @@ function SetColorPalette() {
 		
 		$(this).click(function() {
 			SelectedNote.Color = $(this).attr('data-color');
+			$('#video-recorder').css('borderColor', SelectedNote.Color);
 			UpdateNote(SelectedNote);
 		});
 	});
