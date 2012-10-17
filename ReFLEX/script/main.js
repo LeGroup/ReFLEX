@@ -604,7 +604,7 @@ function LoadNotes() {
 		if(object.length > 0)
 			SelectNote(Notes[Notes.length - 1]);
 		InitLayout();
-	}, false, true);
+	}, false, false);
 }
 
 function i18n(str, lang){

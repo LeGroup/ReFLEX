@@ -12,13 +12,9 @@ $q = $db->prepare('SELECT
 $q->execute();
 
 $obj = $q->fetchAll();
-
-if($obj->Time > time() * 1000)
-	$obj->Thumb = 'images/private.png';
-
-$o = new StdClass();
-$o->Time = $obj->Time;
-$o->Time2 = time() * 1000;
-	
-echo json_encode($o);
+foreach($obj as $note) {
+	if($note->Time > time() * 1000)
+		$note->Thumb = 'images/private.png';
+}	
+echo json_encode($obj);
 ?>
