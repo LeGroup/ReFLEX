@@ -79,7 +79,9 @@ else {
 //Get the ID
 $new_note->ID = $db->lastInsertId();
 
-if($new_note->Private == 'no') 
+if($new_note->Time > time() * 1000)
+	$new_note->Thumb = 'images/private.png';
+else if($new_note->Private == 'no') 
 	$new_note->Thumb = $new_note->Picture;
 else
 	$new_note->Thumb = 'images/private.png';
