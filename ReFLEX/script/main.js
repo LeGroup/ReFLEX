@@ -515,7 +515,7 @@ function Is_note_new(note) {
 
 
 function SelectNote(note) {
-	if(!RECORDER.cameraAccepted)
+	if(!RECORDER.isCameraAccepted)
 		return; 
 		
 	//Highlighting
