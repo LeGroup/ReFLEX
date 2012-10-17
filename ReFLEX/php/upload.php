@@ -22,11 +22,9 @@ $q = $db->prepare('SELECT name FROM users WHERE id = :id');
 $q->execute(array('id' => $new_note->Student));
 $username = $q->fetchColumn();
 
-
 $root = '../';
 $base='uploads';
 $student_folder = $username.'_'.$new_note->Student;
-$class_hash= md5($class_id);
 
 CreateDirectoryIfNotExist($root.$base);
 CreateDirectoryIfNotExist($root.$base . '/' . $student_folder);

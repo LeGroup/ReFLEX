@@ -515,6 +515,9 @@ function Is_note_new(note) {
 
 
 function SelectNote(note) {
+	if(!RECORDER.cameraAccepted)
+		return; 
+		
 	//Highlighting
 	$('.selected').removeClass('selected');
 	note.Object.addClass('selected');
