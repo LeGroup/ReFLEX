@@ -12,6 +12,8 @@ $q = $db->prepare('SELECT
 $q->execute();
 
 $obj = $q->fetchAll();
+print_r($obj);
+die();
 foreach($obj as $note) {
 	if($note->Time > time() * 1000)
 		$note->Thumb = 'images/private.png';
