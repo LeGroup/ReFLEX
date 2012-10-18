@@ -14,7 +14,6 @@ _log('Audio error code: ' . $_FILES['voice']['error']);
 $new_note->Picture = "";
 $new_note->Voice = "";
 $new_note->Student = $_POST['user_id'];
-$new_note->Title = isset($_POST['note_title']) ? $_POST['note_title'] : '';
 $new_note->Time = $_POST['time'];
 $new_note->Private = 'no';
 
@@ -26,48 +25,13 @@ $root = '../';
 $base='uploads';
 $student_folder = $username.'_'.$new_note->Student;
 
-CreateDirectoryIfNotExist($root.$base);
-CreateDirectoryIfNotExist($root.$base . '/' . $student_folder);
-
-$directory = $base . '/' . $student_folder . '/';
-
-//Saving photo
-$picture = $_FILES['photo']['tmp_name'];
-$i = 1;
-$pic_name= $directory.$new_note->Student.'_'.sha1($i).'_pic.jpg';
-
-while(file_exists($root.$pic_name))
-{ $i++; $pic_name = $directory.$new_note->Student.'_'.sha1($i).'_pic.jpg'; }
-
-if(!move_uploaded_file($picture, $root.$pic_name))
-{ _log('Uploading photo failed!'); }
-else
-{ $new_note->Picture = $pic_name; }
-
-
-//Saving audio
-$audio = $_FILES['voice']['tmp_name'];
-$i = 1;
-$aud_name = $directory.$new_note->Student.'_'.sha1($i).'_rec.mp3';
-while(file_exists($root.$aud_name))
-{ $i++; $aud_name = $directory.$new_note->Student.'_'.sha1($i).'_rec.mp3'; }
-
-if(!move_uploaded_file($audio, $root.$aud_name)){
-	_log('Uploading audio failed!');
-}
-else { $new_note->Voice = $aud_name; }
-
-
 //Insert a row in the database
-$q = $db->prepare('INSERT INTO notes(Time, Picture, Voice, Title, Student, Private) 
-VALUES(:time, :picture, :voice, :title, :student, :private)');
+$q = $db->prepare('INSERT INTO notes(Time, Student, Private) 
+VALUES(:time, :student, :private)');
 $result = $q->execute(array(
-			'time' => $new_note->Time,
-			'picture' => $new_note->Picture,
-			'voice' => $new_note->Voice,
-			'title' => $new_note->Title,
-			'student' => $new_note->Student,
-			'private' => $new_note->Private));
+'time' => $new_note->Time,
+'student' => $new_note->Student,
+'private' => $new_note->Private));
 
 if($result) {_log('Database row inserted successfully'); }
 else { 
@@ -78,6 +42,47 @@ else {
 
 //Get the ID
 $new_note->ID = $db->lastInsertId();
+
+//Hash
+$hash = sha1($_SERVER['WEBSITE_SALT'].sha1($_SERVER['WEBSITE_SALT'].sha1(microtime().$new_note->ID)));
+
+CreateDirectoryIfNotExist($root.$base);
+CreateDirectoryIfNotExist($root.$base . '/' . $student_folder);
+
+$directory = $base . '/' . $student_folder . '/';
+
+//Saving photo
+$picture = $_FILES['photo']['tmp_name'];
+$i = 1;
+$pic_name= $directory.$new_note->Student.'_'.$hash.$i.'_pic.jpg';
+
+while(file_exists($root.$pic_name))
+{ $i++; $pic_name = $directory.$new_note->Student.'_'.$hash.$i.'_pic.jpg'; }
+
+if(!move_uploaded_file($picture, $root.$pic_name))
+{ _log('Uploading photo failed!'); }
+else
+{ $new_note->Picture = $pic_name; }
+
+
+//Saving audio
+$audio = $_FILES['voice']['tmp_name'];
+$i = 1;
+$aud_name = $directory.$new_note->Student.'_'.$hash.$i.'_rec.mp3';
+while(file_exists($root.$aud_name))
+{ $i++; $aud_name = $directory.$new_note->Student.'_'.$hash.$i.'_rec.mp3'; }
+
+if(!move_uploaded_file($audio, $root.$aud_name)){
+	_log('Uploading audio failed!');
+}
+else { $new_note->Voice = $aud_name; }
+
+$q = $db->prepare('UPDATE notes SET Voice = :voice, Picture = :picture WHERE ID = :id');
+$q->execute(array(
+		'voice' => $aud_name,
+		'picture' => $pic_name,
+		'id' => $new_note->ID
+		));
 
 if($new_note->Time > time() * 1000)
 	$new_note->Thumb = 'images/private.png';
