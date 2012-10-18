@@ -556,6 +556,7 @@ function SelectNote(note) {
 	debug('Selected a note');
 	if(SelectedNote.Locked) {
 		UIChangeState(RECORDER.UiStates.NoteTimeSealed);
+		$('#timecapsule-date').text(dateFormat(new Date().setTime(SelectedNote.Time)));
 	}
 	else if(SelectedNote.Private) {
 		$('#privacy').val(i18n('Make public'));

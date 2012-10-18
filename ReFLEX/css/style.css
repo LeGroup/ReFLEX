@@ -248,9 +248,10 @@ input[type="button"] {
   background-color: #444;
   position: absolute; }
   #timecapsule-background h2 {
+    width: 100%;
+    position: absolute;
     top: 50%;
-    left: 50%;
-    margin: -50%;
+    margin-top: -2%;
     text-align: center; }
 
 #countdown {
