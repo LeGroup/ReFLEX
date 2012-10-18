@@ -464,6 +464,7 @@ function CreateNoteElement(thumb, color) {
 	if(thumb)
 		img.attr('src', SERVER_URL + thumb).attr('alt', '');
 	
+	
 	o.css({ 
 		marginTop: Math.random() * 2 * verticalOffset - verticalOffset,
 		backgroundColor: color
@@ -477,6 +478,10 @@ function CreateNoteElement(thumb, color) {
 }
 
 function AddNoteElement(note) {
+	
+	if(!note.Color)
+		note.Color = 'rgba(244,244,244,0.9)';
+	
 	note.Object = CreateNoteElement(note.Thumb, note.Color);
 	
 	note.Object.attr('title', datetimeFormat(note.Time));
@@ -539,7 +544,8 @@ function SelectNote(note) {
 	$('.selected').removeClass('selected');
 	note.Object.addClass('selected');
 	
-	$('#video-recorder').css('borderColor', note.Color);
+
+		$('#video-recorder').css('borderColor', note.Color);
 	
 	if(RECORDER.CurrentState == RECORDER.UiStates.Playing)
 		RECORDER.stop_playing();
