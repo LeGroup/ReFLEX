@@ -5,7 +5,7 @@ $q = $db->prepare('SELECT
 	ID, 
 	Time, 
 	Student, 
-	IF(Private = "yes", "images/private.png", IF(Time > :time, Picture, "images/timecapsule.png")) as Thumb, 
+	IF(Private = "yes", "images/private.png", IF(Time > :time, "images/timecapsule.png", Picture)) as Thumb, 
 	Private,
 	Color
 	FROM notes WHERE Student = '.$_POST['User'].' ORDER BY time');
