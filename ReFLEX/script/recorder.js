@@ -108,9 +108,9 @@ function UIChangeState(state) {
 	debug('Changing from ' + RECORDER.CurrentState + ' to ' + state);
 	
 	if($.inArray(state, StatesWhenNoteOptionsAvailable) >= 0) 
-		$('#note-options').show(200);
+		$('#note-options').show(0);
 	else 
-		$('#note-options').hide(50);
+		$('#note-options').hide(0);
 	
 	
 	// Cancel recording if Ui state changed

@@ -57,7 +57,9 @@ input[type="button"] {
 #left {
   width: 20%;
   float: left;
-  position: relative; }
+  height: 60%;
+  position: relative;
+  min-height: 450px; }
 
 #videos {
   width: 80%;
@@ -93,8 +95,10 @@ input[type="button"] {
 
 #color-palette {
   max-height: 300px;
-  width: 100px;
-  margin-top: 20px; }
+  width: 210px;
+  bottom: 0;
+  position: absolute;
+  max-width: 100%; }
   #color-palette li {
     display: block;
     margin: 3px;
@@ -102,6 +106,7 @@ input[type="button"] {
     float: left;
     height: 30px;
     width: 30px;
+    max-width: 20%;
     border: 3px solid rgba(0, 0, 0, 0.5); }
 
 #video-recorder-wrapper {
@@ -140,7 +145,7 @@ input[type="button"] {
   border-color: rgba(255, 255, 255, 0.1);
   color: rgba(255, 255, 255, 0.9);
   padding: 9px;
-  margin: 4px;
+  margin: 4px 4px 4px 0;
   border-width: 1px;
   font-size: 1.2em; }
 
@@ -190,7 +195,8 @@ input[type="button"] {
   margin: -10.3%; }
   #save-recorded-video.recorder-ui img {
     width: 100%;
-    height: auto; }
+    height: auto;
+    margin: 0 0 -4px 0; }
 
 #re-record-button-onvideo.recorder-ui {
   left: 75%;
@@ -204,10 +210,23 @@ input[type="button"] {
     width: 100%;
     height: auto; }
 
+#datepicker-calendar {
+  position: absolute;
+  top: -80%;
+  left: -80%; }
+  #datepicker-calendar .ui-datepicker {
+    position: absolute;
+    left: -50%;
+    top: -50%;
+    display: none;
+    opacity: 0.95; }
+
 #play-button-onvideo.recorder-ui, #stop-button-onvideo.recorder-ui, #record-button-onvideo.recorder-ui {
   left: 50%;
   top: 50%;
   position: absolute; }
+  #play-button-onvideo.recorder-ui img, #stop-button-onvideo.recorder-ui img, #record-button-onvideo.recorder-ui img {
+    margin: -50%; }
 
 #what-did-i-learn.recorder-ui {
   position: absolute;
@@ -491,10 +510,15 @@ input[type="button"] {
 /* Need to be down here so changes take effect */
 @media all and (max-width: 640px), all and (orientation: portrait) {
   #wrapper {
-    min-width: 320px; }
+    min-width: 420px; }
 
   #left {
-    width: 100%; }
+    width: 100%;
+    height: auto;
+    min-height: 0; }
+
+  #left p {
+    margin-top: 30px; }
 
   #videos {
     width: 100%;
@@ -503,16 +527,20 @@ input[type="button"] {
 
   #avatar {
     width: 20%;
-    float: left; }
+    float: left;
+    margin-right: 15px; }
 
   #username-title {
     float: right;
-    width: 75%;
-    margin-bottom: -10%; }
+    width: 76.5%;
+    margin: 0;
+    margin-bottom: -8%; }
 
   #pin-reset {
-    margin-top: 10%;
-    margin-left: 5%;
+    float: left;
+    margin-top: -5px; }
+
+  #pin-field {
     float: left; }
 
   #video-recorder-wrapper {
@@ -537,13 +565,17 @@ input[type="button"] {
     font-size: 14px; }
 
   #privacy {
-    float: right; }
+    float: right;
+    bottom: 5px;
+    position: absolute;
+    right: 10px; }
 
   #color-palette {
-    width: 100%;
+    width: 80%;
     float: left;
-    margin: 0; }
+    margin: 0;
+    position: static; }
 
   #color-palette li {
-    width: 20px;
+    width: 6%;
     height: 20px; } }
