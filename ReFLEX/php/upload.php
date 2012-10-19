@@ -84,7 +84,7 @@ $q->execute(array(
 		'id' => $new_note->ID
 		));
 
-if($new_note->Time > time() * 1000)
+if($new_note->Time > time() * 1000 + 2 * 60 * 1000)
 	$new_note->Thumb = 'images/timecapsule.png';
 else if($new_note->Private == 'no') 
 	$new_note->Thumb = $new_note->Picture;

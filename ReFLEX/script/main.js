@@ -79,13 +79,14 @@ function InitializeUserInterface(userObject) {
 	debug('User logged in. Displaying basic user interface.');
 	$('#username-title').text(User.username);
 	$('#user-page').show();
-	$('#timecapsule-datepicker > img').datepicker({
+	$('#datepicker-calendar').datepicker({
 		onSelect: function(date, inst) {
 			RecordedNote.Time = new Date(date).getTime();
 			RECORDER.save_note();
 			},
 		minDate: 1
 		});
+		$('#timecapsule-datepicker > img').click(function() { $('#datepicker-calendar').datepicker('show'); });
 	
 	ScrollSlider = $('#note-scroll');
 	ZoomSlider = $('#note-zoom');
@@ -111,6 +112,7 @@ function InitializeUserInterface(userObject) {
 	});
 	LoadNotes(); //After loading notes the program initializes notebar, weekblock etc.
 	SetColorPalette();
+
 }
 
 function InitializeRegistrationInterface() {
@@ -124,7 +126,7 @@ function SetColorPalette() {
 	var t = $('#color-palette > li').length;
 	var color;
 	$('#color-palette > li').each(function() {
-		color = 'hsl('+ 360 * i/t + ', 50%, 65%)';
+		color = 'hsl('+ 360 * i/t + ', 70%, 65%)';
 		$(this).css('backgroundColor', color).attr('data-color', color).addClass('button');
 		i++;
 		
