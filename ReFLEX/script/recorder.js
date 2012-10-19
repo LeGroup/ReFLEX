@@ -47,7 +47,9 @@ function InitRecorder() {
 	start: dragStarted, 
 	stop: dragStopped, 
 	zIndex: 9999 
-	}).dblclick(function() {
+	});
+	
+	$('#save-recorded-video').click(function() {
 		RecordedNote.Time = (new Date).getTime(); 
 		RECORDER.save_note();
 		});
