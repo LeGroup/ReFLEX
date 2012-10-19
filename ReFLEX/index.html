@@ -9,6 +9,7 @@
 	<script src="script/jquery-ui-1.9.0.custom.min.js" type="text/javascript"></script>
 	<script src="script/jquery.ui.touch-punch.min.js" type="text/javascript"></script>
 	<script src="script/main.js" type="text/javascript"></script>
+	<script src="script/note.js" type="text/javascript"></script>
 	<script src="script/swfobject.js" type="text/javascript"></script>
 	<script src="script/recorder.js" type="text/javascript"></script>
 	<script src="script/avatarCamera.js" type="text/javascript"></script>
@@ -25,7 +26,10 @@
 					<div id="ava-countdown"></div>
 					<div id="ava-save">Save picture</div>
 				</div>
-				<a id="pin-reset" class="button i18n">Reset your PIN</a>
+				<p class="i18n">Enter your pin code to open private notes.</p>
+				<input type="password" id="pin-field" maxlength="4" size="4" /><br />
+				<a id="pin-reset" class="button i18n">Forgot your PIN?</a>
+				
 				<div id="note-options">
 				<a class="i18n button" id="privacy">Make private</a>
 				<ul id="color-palette">
@@ -52,14 +56,14 @@
 				<span class="recorder-ui video-off i18n" id="what-did-i-learn">What did I learn?</span>
 				<div class="recorder-ui video-off recorder-initialized note-sealed" id="record-init-background"></div>
 				<div class="recorder-ui video-off recorder-initialized button" id="record-button-onvideo"><img src="images/record.png" alt /></div>
-				<div class="recorder-ui recorder-finished button save-recorded-video i18n" id="save-recorded-video">Drag your clip to the timeline</div>
+				<div class="recorder-ui recorder-finished button save-recorded-video i18n" id="save-recorded-video"><img src="images/save.png" alt /></div>
 				<div class="recorder-ui recorder-finished save-recorded-video" id="record-video-drag"></div>
 				<div class="recorder-ui recorder-finished button" id="re-record-button-onvideo"><img src="images/record.png" alt /></div>
 				<div class="recorder-ui note-selected note-playback-finished button" id="play-button-onvideo"><img src="images/play.png" alt /></div>
 				<div class="recorder-ui note-playing button" id="stop-button-onvideo"><img src="images/stop.png" alt /></div>
 				<div class="recorder-ui record-on i18n" id="ilearned">I learned...</div>
 				<div class="recorder-ui record-on" id="countdown">...</div>
-				<div class="recorder-ui recorder-finished" id="timecapsule-datepicker">Set note date to the future<input type="text" id="timecapsule-datepicker-field" /></div>
+				<div class="recorder-ui recorder-finished" id="timecapsule-datepicker"><img src="images/calendar.png" alt /></div>
 				<div class="recorder-ui record-on" id="vumeters">
 					<div></div>
 					<div></div>
@@ -81,10 +85,7 @@
 			</div>
 			
 			<div class="pincode recorder-ui note-sealed">
-			<div>
-			<h2><span class="i18n">This note is private!</span><br /><span class="i18n">Enter your pin code to open it</span></h2>
-			<input type="text" maxlength="4" />
-			</div>
+				<h2 class="i18n">This note is private!</h2>
 			</div>
 			</div>
 			<div id="video-recorder-controls">
