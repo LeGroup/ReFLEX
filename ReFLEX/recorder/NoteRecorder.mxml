@@ -396,6 +396,7 @@
 				soundLoader.addEventListener(Event.COMPLETE, soundLoadComplete);
 				
 				imageLoader = new URLLoader();
+				soundLoader.dataFormat = URLLoaderDataFormat.BINARY;
 				imageLoader.addEventListener(Event.COMPLETE, imageLoadComplete);
 				
 				debug('Start loading');
@@ -404,14 +405,14 @@
 			}
 			
 			private function imageLoadComplete(event:Event):void{
-				debug('ImageLoadComplete');
 				var loader:URLLoader = URLLoader(event.target);
+				debug('ImageLoadComplete' + loader.data);
 				captured_shot.source = loader.data;
 			}
 			
 			private function soundLoadComplete(event:Event):void{
-				debug('SoundLoadComplete');
 				var loader:URLLoader = URLLoader(event.target);
+				debug('SoundLoadComplete' + loader.data);
 				externalSound = new Sound(loader.data);
 			}
 
