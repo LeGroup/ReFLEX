@@ -223,13 +223,14 @@
 
             private function startPlaying():void {
 			
-				if(sound_position >= externalSound.length)	
-					sound_position = 0;
-					
-				debug('Starting to play');
-                
-				soundChannel = externalSound.play(sound_position);
-				soundChannel.addEventListener(Event.SOUND_COMPLETE, _onPlaybackComplete);
+                try {
+					if(sound_position >= externalSound.length)	
+						sound_position = 0;
+						
+					debug('Starting to play');
+					soundChannel = externalSound.play(sound_position);
+					soundChannel.addEventListener(Event.SOUND_COMPLETE, _onPlaybackComplete);
+				} catch(e:Error) { debug(e.message); }
 				
 				playTimer = new Timer(32);
 				playTimer.addEventListener(TimerEvent.TIMER, _displayPosition);
@@ -406,13 +407,13 @@
 			
 			private function imageLoadComplete(event:Event):void{
 				var loader:URLLoader = URLLoader(event.target);
-				debug('ImageLoadComplete' + loader.data);
+				debug('ImageLoadComplete' + loader.bytesLoaded);
 				captured_shot.source = loader.data;
 			}
 			
 			private function soundLoadComplete(event:Event):void{
 				var loader:URLLoader = URLLoader(event.target);
-				debug('SoundLoadComplete' + loader.data);
+				debug('SoundLoadComplete' + loader.bytesLoaded);
 				externalSound = new Sound(loader.data);
 			}
 
