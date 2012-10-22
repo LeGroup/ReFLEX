@@ -397,7 +397,7 @@
 				soundLoader.addEventListener(Event.COMPLETE, soundLoadComplete);
 				
 				imageLoader = new URLLoader();
-				soundLoader.dataFormat = URLLoaderDataFormat.BINARY;
+				imageLoader.dataFormat = URLLoaderDataFormat.BINARY;
 				imageLoader.addEventListener(Event.COMPLETE, imageLoadComplete);
 				
 				debug('Start loading');
