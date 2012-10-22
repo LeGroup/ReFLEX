@@ -54,6 +54,8 @@
 			private var resizeTimer:Timer;
 			private var flashDuration:Number = 50;
 			private var recordCanceled:Boolean = false;
+			private var soundLoader:URLLoader;
+			private var imageLoader:URLLoader;
 			
 			private function init():void {
 			    //Security.loadPolicyFile(server_path+'crossdomain.php');
@@ -388,8 +390,29 @@
 			
 			/* Loading and playing external mp3 file */
 			private function loadNote(id:Number, voice:String, picture:String, server_url:String):void {
-				externalSound = new Sound(new URLRequest(server_url + voice));
-				captured_shot.source = new URLRequest(server_url + picture);
+				
+				soundLoader = new URLLoader();
+				soundLoader.dataFormat = URLLoaderDataFormat.VARIABLES;
+				soundLoader.addEventListener(Event.COMPLETE, soundLoadComplete);
+				
+				imageLoader = new URLLoader();
+				imageLoader.addEventListener(Event.COMPLETE, imageLoadComplete);
+				
+				debug('Start loading');
+				soundLoader.load(new URLRequest(server_url + voice));
+				imageLoader.load(new URLRequest(server_url + picture));
+			}
+			
+			private function imageLoadComplete(event:Event):void{
+				debug('ImageLoadComplete');
+				var loader:URLLoader = URLLoader(event.target);
+				captured_shot.source = loader.data;
+			}
+			
+			private function soundLoadComplete(event:Event):void{
+				debug('SoundLoadComplete');
+				var loader:URLLoader = URLLoader(event.target);
+				externalSound = new Sound(loader.data);
 			}
 
 		]]>

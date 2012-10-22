@@ -11,7 +11,6 @@ var Zoom;
 var weeksShown = 1.5;
 var are_notes_draggable = false;
 var localizedStrings;
-
 var ScrollSlider;
 var ZoomSlider;
 var TimelineSlider;
@@ -80,11 +79,13 @@ function InitializeUserInterface(userObject) {
 	$('#username-title').text(User.username);
 	$('#user-page').show();
 	$('#datepicker-calendar').datepicker({
+		minDate: 1,
+		firstDay: 1,
+		monthNames: months,
 		onSelect: function(date, inst) {
 			RecordedNote.Time = new Date(date).getTime();
 			RECORDER.save_note();
-			},
-		minDate: 1
+		},
 		});
 		$('#timecapsule-datepicker > img').click(function() { $('#datepicker-calendar').datepicker('show'); });
 	
@@ -112,7 +113,7 @@ function InitializeUserInterface(userObject) {
 	});
 	LoadNotes(); //After loading notes the program initializes notebar, weekblock etc.
 	SetColorPalette();
-
+	
 }
 
 function InitializeRegistrationInterface() {
@@ -182,17 +183,22 @@ function InitLayout() {
 	});
 	
 	//Specific
+	
 	ScrollSlider.slider({
 		slide: setScroll,
 		stop: setScroll,
+		value: Notebar.GetRatio(new Date())
 	});
 	ZoomSlider.slider({
 		slide: setZoom,
-		stop: setZoom
+		stop: setZoom,
+		min: 1,
+		max: Notebar.GetWeekCount(),
+		value: Notebar.GetWeekCount()
 	});
 	TimelineSlider.slider({
 		stop: playbackPositionScroll,
-		disabled: true
+		disabled: true,
 	});
 	
 	setZoom();
@@ -218,14 +224,16 @@ function getScrollbarRatio(id) {
 
 function setZoom() {
 	Zoom = ZoomSlider.slider('option', 'value');
-	if((1 - Zoom) * Notebar.GetWeekCount() > 8)
+	var d = ZoomSlider.slider('option', 'max') - Zoom;
+	var y = Zoom;
+	if(d > 8)
 		zoomDisplayChange('month', 'day', 'week');
-	else if((1 - Zoom) * Notebar.GetWeekCount() > 1.5)
+	else if(d > 1.5)
 		zoomDisplayChange('week', 'day', 'month');
 	else
 		zoomDisplayChange('day', 'week', 'month');
-		
-	$('#note-timeline').css('width', (100 * (1 + Clamp(Zoom * (Notebar.WeekCount - 1) * 10, 0, (Notebar.WeekCount - 1) * 10))) + "%");
+	
+	$('#note-timeline').css('width', (y * 100) + "%");
 	setScroll();
 }
 
@@ -386,7 +394,7 @@ function initNotebar(start, end) {
 	
 	var weeks = Math.ceil(Notebar.Timespan / msInWeeks);
 	Notebar.End = Notebar.Start + weeks * msInWeeks;
-	setTimeout(Notebar.Reset, 1);
+	Notebar.Reset();
 }
 
 function MakePrivate(note) {
