@@ -408,7 +408,7 @@
 			private function imageLoadComplete(event:Event):void{
 				var loader:URLLoader = URLLoader(event.target);
 				debug('ImageLoadComplete' + loader.bytesLoaded);
-				captured_shot.source = loader.data;
+				captured_shot = loader.data;
 			}
 			
 			private function soundLoadComplete(event:Event):void{
