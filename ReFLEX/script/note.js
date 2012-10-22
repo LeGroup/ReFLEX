@@ -131,10 +131,24 @@ function SelectNote(note) {
 	else if(SelectedNote.Private) {
 		$('#privacy').val(i18n('Make public'));
 		UIChangeState(RECORDER.UiStates.NoteSealed);
+		
+		if($('#pin-field').val().length == 4)
+			OpenNote(SelectedNote);
+		else
+			flashred($('#pin-field'), 5);
 	} else {
 		$('#privacy').val(i18n('Make private'));
 		OpenNote(SelectedNote);
 	}
+}
+
+function flashred(o, times) {
+	o.animate({ borderColor: 'rgba(255, 0, 0, 1)' }, 400, function() { 
+		o.animate({ borderColor: 'rgba(255,255,255,0.1)' }, 400, function() { 
+			if(times - 1 > 0)
+				flashred(o, times - 1); 
+		}); 
+	});
 }
 
 function OpenNote(note) {

@@ -29,5 +29,8 @@
 	"November": "November",
 	"December": "December",
 	"Registration was successful. You will now get an email with link to your page.": "Registration was successful. You will now get an email with link to your page.",
-	"Registration failed. Please try again or contact the administation.": "Registration failed. Please try again or contact the administation."
+	"Registration failed. Please try again or contact the administation.": "Registration failed. Please try again or contact the administation.",
+	"Enter your pin code to open private notes.": "Enter your pin code to open private notes.",
+	"Forgot your PIN?": "Forgot your PIN?",
+	"This note will be open on": "This note will be open on"
 }

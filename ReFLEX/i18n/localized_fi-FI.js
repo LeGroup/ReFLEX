@@ -29,5 +29,8 @@
 	"November": "Marraskuu",
 	"December": "Joulukuu"
 	"Registration was successful. You will now get an email with link to your page.": "Käyttäjätunnuksen luominen onnistui. Saat kohta sähköpostiviestin, jossa on linkki omalle sivullesi.",
-	"Registration failed. Please try again or contact the administation.": "Käyttäjätunnuksen luominen epäonnistu. Ole hyvä ja ota yhteyttä ylläpitoon."
+	"Registration failed. Please try again or contact the administation.": "Käyttäjätunnuksen luominen epäonnistu. Ole hyvä ja ota yhteyttä ylläpitoon.",
+	"Enter your pin code to open private notes.": "Syötä Pin-koodisi avataksesi lukitut tallennukset.",
+	"Forgot your PIN?": "Unohditko koodisi?",
+	"This note will be open on": "Tämä tallennus on avattavissa"
 }
