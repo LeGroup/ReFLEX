@@ -1,5 +1,5 @@
 var SERVER_URL = 'http://reflex.aalto.fi/';
-var PHP_LIB = 'http://reflex.aalto.fi/php/';
+var PHP_LIB = 'php/'; //'http://reflex.aalto.fi/php/';
 var User;
 var SelectedNote;
 var Notes = [];
