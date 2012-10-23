@@ -523,6 +523,8 @@ function getJson(url, post, finished, onError, dontDebugRespond) {
 		dataType: 'json',
 		crossDomain: true,
 		success: function (data) {
+			debug('Got json request back ' + url);
+			
 			if(!dontDebugRespond) 
 				debug('Requested ' + url + ', PHP responds: ' + JSON.stringify(data));
 			
