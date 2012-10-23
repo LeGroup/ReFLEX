@@ -515,13 +515,12 @@ function getQueryData(url) {
 }
 
 function getJson(url, post, finished, onError, dontDebugRespond) {
-	debug('Start json request ' + url);
+	debug('Start json request ' + PHP_LIB + url);
 	$.ajax({
 		type: 'POST',
 		url: PHP_LIB + url,
 		data: post,
 		dataType: 'json',
-		crossDomain: true,
 		success: function (data) {
 			debug('Got json request back ' + url);
 			
