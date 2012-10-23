@@ -8,6 +8,16 @@ function AddNote(note) {
 	{
 		AddNoteElement(note);
 		Notes.push(note);
+		
+		if(note.Time > Notebar.End) {
+			Notebar.End = note.Time;
+			Notebar.Reset();
+		}
+		else if(note.Time < Notebar.Start) {
+			Notebar.Start = note.Time;
+			Notebar.Reset();
+		}
+		
 		debug('Added a note. Notes.length = ' + Notes.length);
 	}
 	else

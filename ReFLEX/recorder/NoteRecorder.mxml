@@ -180,6 +180,7 @@
 
 			// Recording 
 			private function startRecording():void {
+				uic.visible = true;	
 				captured_shot.source = null;
                 // make sure that vumeter is on
                 micTimer.start(); // --> _miclevel
@@ -391,24 +392,30 @@
 			
 			/* Loading and playing external mp3 file */
 			private function loadNote(id:Number, voice:String, picture:String, server_url:String):void {
-				
-				soundLoader = new URLLoader();
-				soundLoader.dataFormat = URLLoaderDataFormat.BINARY;
-				soundLoader.addEventListener(Event.COMPLETE, soundLoadComplete);
-				
-				imageLoader = new URLLoader();
-				imageLoader.dataFormat = URLLoaderDataFormat.BINARY;
-				imageLoader.addEventListener(Event.COMPLETE, imageLoadComplete);
-				
-				debug('Start loading');
-				soundLoader.load(new URLRequest(server_url + voice));
-				imageLoader.load(new URLRequest(server_url + picture));
+				uic.visible = false;
+				if(false) {
+					soundLoader = new URLLoader();
+					soundLoader.dataFormat = URLLoaderDataFormat.BINARY;
+					soundLoader.addEventListener(Event.COMPLETE, soundLoadComplete);
+					
+					imageLoader = new URLLoader();
+					imageLoader.dataFormat = URLLoaderDataFormat.BINARY;
+					imageLoader.addEventListener(Event.COMPLETE, imageLoadComplete);
+					
+					debug('Start loading');
+					soundLoader.load(new URLRequest(server_url + voice));
+					imageLoader.load(new URLRequest(server_url + picture));
+				}
+				else {
+					externalSound = new Sound(new URLRequest(server_url + voice));
+					captured_shot.source = new URLRequest(server_url + picture);
+				}
 			}
 			
 			private function imageLoadComplete(event:Event):void{
 				var loader:URLLoader = URLLoader(event.target);
 				debug('ImageLoadComplete ' + loader.bytesLoaded + ', ' + typeof loader.data);
-				captured_shot.source = loader.data.bitmapData;
+				captured_shot.source = new Bitmap(loader.data);
 			}
 			
 			private function soundLoadComplete(event:Event):void{
