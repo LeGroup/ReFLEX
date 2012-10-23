@@ -44,20 +44,20 @@ function Init() {
 }
 function DisplayRatio(o, ratio) {
 	if(ratio)
-		o.data('display-ratio', ratio);
+		o.attr('data-display-ratio', ratio);
 	else
-		o.data('display-ratio', o.width() / o.height());		
-	o.css('height', o.width() / o.data('display-ratio') + "px"); 
-	$(window).resize(function() { o.css('height', o.width() / o.data('display-ratio') + "px"); }); 
+		o.attr('data-display-ratio', o.width() / o.height());		
+	o.css('height', o.width() / o.attr('data-display-ratio') + "px"); 
+	$(window).resize(function() { o.css('height', o.width() / o.attr('data-display-ratio') + "px"); }); 
 }
 
 function DisplayRatioByHeight(o, ratio) {
 	if(ratio)
-		o.data('display-ratio', ratio);
+		o.attr('data-display-ratio', ratio);
 	else
-		o.data('display-ratio', o.width() / o.height());		
-	o.css('width', o.height() * o.data('display-ratio') + "px"); 
-	$(window).resize(function() { o.css('width', o.height() * o.data('display-ratio') + "px"); }); 
+		o.attr('data-display-ratio', o.width() / o.height());		
+	o.css('width', o.height() * o.attr('data-display-ratio') + "px"); 
+	$(window).resize(function() { o.css('width', o.height() * o.attr('data-display-ratio') + "px"); }); 
 }
 
 function Centerize(object) {
