@@ -57,7 +57,7 @@ function DisplayRatioByHeight(o, ratio) {
 	else
 		o.attr('data-display-ratio', o.width() / o.height());		
 		
-	debug('New width: ' + (o.height() * o.attr('data-display-ratio') + "px"));
+	debug('New width: ' + (o.height() * o.attr('data-display-ratio') + "px") + ', Old width: ' + o.width());
 	o.css('width', o.height() * o.attr('data-display-ratio') + "px"); 
 	$(window).resize(function() { o.css('width', o.height() * o.attr('data-display-ratio') + "px"); }); 
 }
