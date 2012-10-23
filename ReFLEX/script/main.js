@@ -29,7 +29,7 @@ function Init() {
 	});
 	var query = getQueryData(document.URL);
 	
-	if(query['i']) {
+	if(query['i']) {	
 		getJson('login.php', { id: query['i'] }, function(object) {
 			if(object.Success)
 				InitializeUserInterface(object);
@@ -515,6 +515,7 @@ function getQueryData(url) {
 }
 
 function getJson(url, post, finished, onError, dontDebugRespond) {
+	debug('Start json request ' + url);
 	$.ajax({
 		type: 'POST',
 		url: PHP_LIB + url,
