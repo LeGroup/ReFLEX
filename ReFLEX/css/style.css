@@ -363,7 +363,8 @@ input[type="button"] {
   background-color: rgba(255, 255, 255, 0.1);
   width: 100%;
   position: absolute;
-  border-radius: 12px; }
+  border-radius: 12px;
+  top: 0; }
 
 #note-options {
   display: none; }
@@ -402,7 +403,8 @@ input[type="button"] {
 .note {
   width: 0;
   top: 10%;
-  position: absolute !important; }
+  position: absolute !important;
+  height: 100%; }
 
 .single-note-background {
   height: 65%;
@@ -418,7 +420,7 @@ input[type="button"] {
   -o-transition: background-color 0.3s;
   transition: background-color 0.3s; }
   .single-note-background img {
-    height: 100%;
+    max-height: 100%;
     width: auto;
     border-radius: 3px;
     margin-bottom: -3px;

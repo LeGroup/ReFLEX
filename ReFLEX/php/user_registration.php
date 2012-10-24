@@ -29,6 +29,7 @@ $hash = sha1($ID . $user);
 //Create uri to the new user's page
 $uri = '?i='.$hash;
 $return->Uri = $uri;
+$uri = 'http://reflex.aalto.fi/'.$uri;
 
 //Save the uri in the database
 $q = $db->prepare('UPDATE users SET url_id = :url_id WHERE id = :id');
@@ -40,7 +41,7 @@ if(MAIL_ENABLED) {
 	$subject = 'Your user account in ReFLEX.';
 	$message = 'Hello ' . $user .
 	"\nHere's a link to your personal user page: " . "<a href=\"".$uri."\">Your user page</a>.
-	Here's also your PIN code you need to open private notes: ". $pin;
+	Here's also your PIN code you need to open private notes: <b>". $pin . '</b>';
 
 	if(!mail($email, $subject, $message, MAIL_HEADERS))
 		$return->Success = false;
