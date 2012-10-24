@@ -1,4 +1,4 @@
-var SERVER_URL = 'http://reflex.aalto.fi/';
+var SERVER_URL = ''; //'http://reflex.aalto.fi/';
 var PHP_LIB = 'php/'; //'http://reflex.aalto.fi/php/';
 var User;
 var SelectedNote;
@@ -57,7 +57,6 @@ function DisplayRatioByHeight(o, ratio) {
 	else
 		o.attr('data-display-ratio', o.width() / o.height());		
 		
-	debug('New width: ' + (o.height() * o.attr('data-display-ratio') + "px") + ', Height: ' + o.height());
 	o.css('width', o.height() * o.attr('data-display-ratio') + "px"); 
 	$(window).resize(function() { o.css('width', o.height() * o.attr('data-display-ratio') + "px"); }); 
 }
@@ -81,6 +80,11 @@ function InitializeUserInterface(userObject) {
 	$('#username-title').text(User.username);
 	$('#user-page').show();
 	$('#datepicker-calendar').datepicker({
+		dayNames: [ i18n("Sunday"), i18n("Monday"), i18n("Tuesday"), i18n("Wednesday"), i18n("Thursday"), i18n("Friday"), i18n("Saturday") ], 
+		dayNamesShort: [ i18n("Sun"), i18n("Mon"), i18n("Tue"), i18n("Wed"), i18n("Thu"), i18n("Fri"), i18n("Sat") ], 
+		dayNamesMin: [ i18n("Su"), i18n("Mo"), i18n("Tu"), i18n("We"), i18n("Th"), i18n("Fr"), i18n("Sa") ], 
+		monthNames: [ i18n("January"), i18n("February"), i18n("March"), i18n("April"), i18n("May"), i18n("June"), i18n("July"), i18n("August"), i18n("September"), i18n("October"), i18n("November"), i18n("December") ], 
+		monthNamesShort: [ i18n("Jan"), i18n("Feb"), i18n("Mar"), i18n("Apr"), i18n("May"), i18n("Jun"), i18n("Jul"), i18n("Aug"), i18n("Sep"), i18n("Oct"), i18n("Nov"), i18n("Dec") ], 
 		minDate: 1,
 		firstDay: 1,
 		monthNames: months,
@@ -268,7 +272,7 @@ function weekBlockWidths(weekCount) {
 	$('#month-blocks').width(Notebar.MonthTime/Notebar.Timespan * 100 + '%');
 }
 
-var months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+var months = [ i18n('January'), i18n('February'), i18n('March'), i18n('April'), i18n('May'), i18n('June'), i18n('July'), i18n('August'), i18n('September'), i18n('October'), i18n('November'), i18n('December') ];
 
 function dateFormat(date) { date = new Date(date); return date.getDate() + '.' + (date.getMonth() + 1) + '.' + date.getFullYear(); }
 function monthFormat(date) { return i18n(months[new Date(date).getMonth()]); }
@@ -510,7 +514,6 @@ function getQueryData(url) {
 	var result = [];
 	for(v in vars) {
 		vars[v] = vars[v].split("=");
-		debug(vars[v][0] + ': ' + vars[v][1]);
 		result[vars[v][0]] = vars[v][1];
 	}
 	return result;
@@ -524,7 +527,6 @@ function getJson(url, post, finished, onError, dontDebugRespond) {
 		data: post,
 		dataType: 'json',
 		success: function (data) {
-			debug('Got json request back ' + url);
 			
 			if(!dontDebugRespond) 
 				debug('Requested ' + url + ', PHP responds: ' + JSON.stringify(data));
