@@ -3,9 +3,8 @@
 //First one is used for disabling mail in local servers.
 define('MAIL_ENABLED', true);
 define('MAIL_HEADERS', 
-'From: Reflex' . "/r/n" .
-'X-Mailer: PHP/' . phpversion() .'/r/n'.
-'Content-type: text/html; charset=utf-8' . "/r/n");
+'From: Reflex' . "\r\n" .
+'Content-type: text/html; charset=utf-8' . "\r\n");
 
 //Open log file resource.
 if(!isset($log)) { $log = fopen("../log/log.txt", 'a'); }
