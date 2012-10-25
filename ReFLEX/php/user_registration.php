@@ -40,7 +40,7 @@ $q->execute(array('url_id' => $hash, 'id' => $ID));
 if(MAIL_ENABLED) {
 	$subject = 'Your user account in ReFLEX.';
 	$message = '<h3>Hello ' . $user . '</h3>'.
-	"<p>Here's a link to your personal user page: " . "<a href=\"".$uri."\">Your user page</a></p>.
+	"<p>Here's a link to your personal user page: " . "<a href=\"".$uri."\">Your user page</a>.</p>
 	<p>Here's also your PIN code you need to open private notes: <b>". $pin . '</b></p>'.
 	'<p style="color: #565656;">Reflex</p>';
 
