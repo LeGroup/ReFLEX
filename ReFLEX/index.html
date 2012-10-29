@@ -90,6 +90,7 @@
 			</div>
 			<div id="video-recorder-controls">
 			<div id="record-button" class="button i18n_title" title="Record a new note"></div>
+			<div id="stop-button" class="button i18n_title" title="Record a new note"></div>
 			<div id="recorder-controls-timeline" class="slider"></div>
 			</div>
 			</div>
@@ -121,9 +122,16 @@
 			<p class="register" style="display: block; text-align: center">
 				<input type="text" id="newUsername" class="i18n_placeholder" placeholder="Your name" value="" /><br /> 
 				<input type="text" id="newUserEmail" class="i18n_placeholder" placeholder="Your email address" value="" /><br /> 
-				<a id="newUserAdd" class="button i18n">Add new user</a>
+				<a id="newUserAdd" class="button i18n">Add new user</a><br />
+				<a id="resendEmail" class="button i18n">Lost your URL?</a>
 			</p>
 			<p class="register-complete" style="display: none"></p>
+		</div>
+		<div id="recover-url-page" class="page">
+			<p class="recover" style="display: block; text-align: center">
+				<input type="text" id="recoverMailAddress" class="i18n_placeholder" placeholder="Your email address" value="" /><br /> 
+				<a id="recoverMail" class="button i18n">Reset lost URL</a>
+			</p>
 		</div>
 	</div>
 </body>

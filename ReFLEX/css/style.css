@@ -43,7 +43,8 @@ input[type="button"] {
   height: auto;
   max-height: 100%;
   position: relative;
-  margin-bottom: 10px; }
+  margin-bottom: 10px;
+  min-width: 215px; }
   #avatar img {
     width: 100%;
     border-radius: 10px;
@@ -52,7 +53,8 @@ input[type="button"] {
 
 #AvatarCameraContainer {
   position: absolute;
-  top: 0; }
+  top: 0;
+  height: 100%; }
 
 #left {
   width: 20%;
@@ -328,13 +330,19 @@ input[type="button"] {
   width: 16px !important;
   position: absolute !important; }
 
-#record-button {
+#record-button, #stop-button {
   width: 25px;
   height: 25px;
-  background-image: url(../images/small_rec.png);
   background-repeat: no-repeat;
   background-size: 100%;
   margin-bottom: -25px; }
+
+#record-button {
+  background-image: url(../images/small_rec.png); }
+
+#stop-button {
+  background-image: url(../images/small_stop.png);
+  display: none; }
 
 #recorder-controls-timeline {
   margin-left: 40px; }
@@ -457,15 +465,10 @@ input[type="button"] {
   background-image: url(../images/yellow_note.png); }
 
 /* Registration interface */
-.register input {
-  background-color: transparent;
-  color: rgba(255, 255, 255, 0.7); }
-
-#newUsername {
-  margin-top: 200px; }
-
-#newUsername, #newUserEmail {
+.register input, .recover input {
   border: 1px solid rgba(255, 255, 255, 0.1);
+  background-color: transparent;
+  color: rgba(255, 255, 255, 0.7);
   padding: 11px;
   font-size: 1.3em;
   text-align: center;
@@ -495,6 +498,9 @@ input[type="button"] {
     margin-left: -12.5px;
     box-shadow: 0 0 4px 15px rgba(255, 255, 255, 0.2);
     font-size: 0.9em; }
+
+.recover, .register {
+  padding-top: 25%; }
 
 #zoom-title {
   position: relative; }

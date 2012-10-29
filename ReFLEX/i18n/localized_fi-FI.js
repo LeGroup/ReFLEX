@@ -65,5 +65,11 @@
 	"We": "Ke",
 	"Th": "To",
 	"Fr": "Pe",
-	"Sa": "La"
+	"Sa": "La",
+	"Your user account in ReFLEX": "Käyttäjätunnuksesi ReFLEXissä.",
+	"Hello": "Hei",
+	"Here's a link to your personal user page:": "Tässä linkki henkilökohtaiselle sivullesi:",
+	"Your user page": "Henkilökohtainen sivusi",
+	"Here's also your PIN code you need to open private notes:": "Tässä myös PIN-koodisi lukittujen tallennusten avaamiseen:",
+	"Registration was successful. You will now get link to your page by email.": "Rekisteröinti onnistui. Saat nyt linkin omalle sivullesi sähköpostin kautta."
 }

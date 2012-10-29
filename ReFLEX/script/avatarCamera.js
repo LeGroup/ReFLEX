@@ -4,7 +4,7 @@ var AVA = { };
 AVA.prepareCamera = function() {
 	debug('Preparing camera');
 	$('#avatar-image').animate({opacity: 0}, 600);
-	swfobject.embedSWF('recorder/AvatarCamera.swf', 'AvatarCamera', '100%', 'auto', '10.3.0', 'expressInstall.swf', {}, { wmode: 'transparent' }, {});
+	swfobject.embedSWF('recorder/AvatarCamera.swf', 'AvatarCamera', '100%', '100%', '10.3.0', 'expressInstall.swf', {}, { wmode: 'transparent' }, {});
 }
 
 AVA.recorderInitialized = function() {
@@ -14,7 +14,7 @@ AVA.recorderInitialized = function() {
 		$('#avatar-image').animate({opacity: 0}, 200);
 		AVA.Camera.startRecording();
 	}
-	AVA.savePicture = function() { AVA.Camera.savePicture('http://127.0.0.1/ReFLEX/', $('#user-data').data('id')); }
+	AVA.savePicture = function() { AVA.Camera.savePicture(SERVER_URL, $('#user-data').data('id')); }
 	AVA.Camera.initCamera();
 }
 	

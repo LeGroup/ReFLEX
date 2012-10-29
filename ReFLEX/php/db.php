@@ -28,4 +28,7 @@ function _log($text) {
 	fwrite($log, date('Y.m.d H:i:s') . " - ".$text."\n");
 }
 
+function DoubleSaltedHash($pw, $salt) {
+    return sha1($salt.sha1($salt.sha1($pw)));
+}
 ?>
