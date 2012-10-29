@@ -190,7 +190,8 @@ function ResendEmail() {
 	getJson('resend_email.php', { 
 		email: $('#recoverMailAddress').val() },
 		function(object) {
-			debug(dump(object));
+			if(object.Success)
+				OpenPage('recover-url-done');
 		}, true, true);
 }
 

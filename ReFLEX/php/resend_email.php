@@ -3,9 +3,11 @@ header('Access-Control-Allow-Origin: *');
 require_once('db.php');
 
 $return = new StdClass();
-$return->Success = false;
+$return->Success = true;
+$email = $_POST['email'];
+
 $q = $db->prepare('SELECT id, name FROM users WHERE email = :email');
-$q->execute(array('email' => $_POST['email']));
+$q->execute(array('email' => $email));
 
 $user = $q->fetch();
 
