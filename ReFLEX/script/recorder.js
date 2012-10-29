@@ -58,6 +58,7 @@ function InitRecorder() {
 	$('#play-button-onvideo').click(RECORDER.play);
 	$('#stop-button-onvideo').click(RECORDER.stop_playing);
 	$('#record-button').click(RECORDER.prepare_recorder);
+	$('#stop-button').click(RECORDER.stop_recording);
 	
 	$('#video-recorder').mouseenter(function() {
 		if(RECORDER.CurrentState == RECORDER.UiStates.Playing)
@@ -121,6 +122,15 @@ function UIChangeState(state) {
 	if(false && RECORDER.CurrentState == RECORDER.UiStates.Playing && state != RECORDER.UiStates.Playing) {
 		RECORDER.CurrentState = state;
 		RECORDER.stop_playing();
+	}
+	
+	if(RECORDER.CurrentState == RECORDER.UiStates.Recording) {
+		$('#record-button').show();
+		$('#stop-button').hide();
+	}
+	if(state == RECORDER.UiStates.Recording) {
+		$('#stop-button').show();
+		$('#record-button').hide();
 	}
 	
 	RECORDER.CurrentState = state;

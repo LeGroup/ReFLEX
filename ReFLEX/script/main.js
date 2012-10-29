@@ -126,6 +126,13 @@ function InitializeRegistrationInterface() {
 	$('#register-page').show();
 	debug('User no logged in. Displaying registration screen.');
 	$('#newUserAdd').click(RegisterUser);
+	$('#resendEmail').click(function() { OpenPage('recover-url'); });
+	$('#recoverMail').click(ResendEmail);
+}
+
+function OpenPage(id) {
+	$('.page').hide();
+	$('#' + id + '-page').fadeIn(600);
 }
 
 function SetColorPalette() {
@@ -155,7 +162,12 @@ function RegisterUser() {
 	if(ValidateUserRegistration()) {
 		getJson('user_registration.php', { 
 		Username: $('#newUsername').val(), 
-		Email: $('#newUserEmail').val() 
+		Email: $('#newUserEmail').val(),
+		Title: i18n('Your user account in ReFLEX'),
+		Greeting: i18n('Hello'),
+		HeresLink: i18n("Here's a link to your personal user page:"),
+		YourUserPage: i18n('Your user page'),
+		PinCode: i18n("Here's also your PIN code you need to open private notes:")
 		}, function(object) {
 			$('#newUserAdd').hide();
 			// $('#newUserEmail').hide();
@@ -165,11 +177,22 @@ function RegisterUser() {
 				$('.register-complete').show(200).html(i18n('Registration was successful. You will now get link to your page by email.')); 
 			}
 			else {
-				debug('User Registration failed: ' + result);
-				$('#newUsername').removeAttr('contentEditable').text(i18n('Registration failed. Please try again or contact the administation.')); 
+				debug('User Registration failed: ' + object.Message);
+				$('#newUsername').remove();	
+				$('#newUserEmail').remove();
+				$('.register-complete').show(200).html(i18n('Registration was unsuccessful. ' + object.Message));  
 			}
 		});
 	}
+}
+
+function ResendEmail() {
+	getJson('resend_email.php', { 
+		email: $('#recoverMailAddress').val() },
+		function(object) {
+			alert('asd');
+			debug(object);
+		}, true, true);
 }
 
 function ValidateUserRegistration() {

@@ -12,6 +12,16 @@ $return->Mail = $email;
 $pin = substr(base_convert(rand(10e16, 10e20), 10, 36), 0, 4);
 $return->Pin = $pin;
 
+$q = $db->prepare('SELECT id FROM users WHERE email = :email');
+$q->execute(array('email' => $email));
+
+if($q->rowCount() > 0) {
+	$return->Success = false;
+	$return->Message = 'User for this email address exists already!';
+	echo json_encode($return);
+	die();
+}
+
 //Insert a new row
 $q = $db->prepare('INSERT INTO users(name, email, pin) VALUES(:name, :email, :pin)');
 if(!$q->execute(array(
@@ -25,7 +35,9 @@ $ID = $db->lastInsertId();
 	
 //Let's create hash from id and username
 $hash = sha1($ID . $user);
-	
+
+
+
 //Create uri to the new user's page
 $uri = '?i='.$hash;
 $return->Uri = $uri;

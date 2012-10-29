@@ -64,5 +64,11 @@
 	"We": "We",
 	"Th": "Th",
 	"Fr": "Fr",
-	"Sa": "Sa"
+	"Sa": "Sa",
+	"Your user account in ReFLEX": "Your user account in ReFLEX",
+	"Hello": "Hello",
+	"Here's a link to your personal user page:": "Here's a link to your personal user page:",
+	"Your user page": "Your user page",
+	"Here's also your PIN code you need for opening private notes:": "Here's also your PIN code you need to open private notes:",
+	"Registration was successful. You will now get link to your page by email.": "Registration was successful. You will now get link to your page by email."
 }
