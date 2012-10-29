@@ -2,6 +2,8 @@
 //Self-explanatory.
 //First one is used for disabling mail in local servers.
 define('MAIL_ENABLED', true);
+define('WEBSITE_SALT', $_SERVER['WEBSITE_SALT']);
+define('SERVER_URL', 'http://reflex.aalto.fi/');
 define('MAIL_HEADERS', 
 'From: Reflex' . "\r\n" .
 'Content-type: text/html; charset=utf-8' . "\r\n");
@@ -28,7 +30,7 @@ function _log($text) {
 	fwrite($log, date('Y.m.d H:i:s') . " - ".$text."\n");
 }
 
-function DoubleSaltedHash($pw, $salt) {
+function DoubleSaltedHash($pw, $salt = WEBSITE_SALT) {
     return sha1($salt.sha1($salt.sha1($pw)));
 }
 ?>

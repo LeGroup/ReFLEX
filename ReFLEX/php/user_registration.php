@@ -34,14 +34,14 @@ if(!$q->execute(array(
 $ID = $db->lastInsertId();
 	
 //Let's create hash from id and username
-$hash = sha1($ID . $user);
+$hash = DoubleSaltedHash($ID . $user . time());
 
 
 
 //Create uri to the new user's page
 $uri = '?i='.$hash;
 $return->Uri = $uri;
-$uri = 'http://reflex.aalto.fi/'.$uri;
+$uri = SERVER_URL.$uri;
 
 //Save the uri in the database
 $q = $db->prepare('UPDATE users SET url_id = :url_id WHERE id = :id');
