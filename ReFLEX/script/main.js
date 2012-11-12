@@ -14,34 +14,28 @@ var localizedStrings;
 var ScrollSlider;
 var ZoomSlider;
 var TimelineSlider;
+var Timeline = { }
 
 $(function() { Init(); });
 
 //To enable drag'n drop in mobile devices?
 $(document).bind('touchmove', function(e) { e.preventDefault(); }, false);
 
-
 function Init() {
-	// Focus moves to the next element automatically
-	$('#pin-field').keyup(function() {
-		if($(this).val().length == 4 && SelectedNote) 
-			OpenNote(SelectedNote);
-	});
-	var query = getQueryData(document.URL);
-	
-	if(query['i']) {	
-		getJson('login.php', { id: query['i'] }, function(object) {
-			if(object.Success)
-				InitializeUserInterface(object);
-			else
-				InitializeRegistrationInterface();
-		});
-	}
-	else
-		InitializeRegistrationInterface();
+	InitializeRegistrationInterface();
 	
 	localize();
 }
+
+function LogIn() {
+	getJson('login.php', { email: $('#login-email').val(), pin: $('#login-pass').val() }, function(object) {
+		if(object.Success)
+			InitializeUserInterface(object);
+		else
+			alert('Logging in failed. Check your email and PIN');
+	});
+}
+
 function DisplayRatio(o, ratio) {
 	if(ratio)
 		o.attr('data-display-ratio', ratio);
@@ -75,9 +69,12 @@ function Centerize(object) {
 }
 
 function InitializeUserInterface(userObject) {
+	OpenPage('user');
 	User = userObject;
+	User.Pin = $('#login-pass').val();
+	User.Email = $('#login-email').val();
 	debug('User logged in. Displaying basic user interface.');
-	$('#username-title').text(User.username);
+	$('#username-title > span').text(User.username);
 	$('#user-page').show();
 	$('#datepicker-calendar').datepicker({
 		dayNames: [ i18n("Sunday"), i18n("Monday"), i18n("Tuesday"), i18n("Wednesday"), i18n("Thursday"), i18n("Friday"), i18n("Saturday") ], 
@@ -98,9 +95,8 @@ function InitializeUserInterface(userObject) {
 	ScrollSlider = $('#note-scroll');
 	ZoomSlider = $('#note-zoom');
 	TimelineSlider = $('#recorder-controls-timeline');
-	DisplayRatioByHeight($('#video-recorder-wrapper'), 177/121);
-	DisplayRatio($('#record-button'), 1);
-	DisplayRatio($('#recorder-controls-timeline'));
+	// DisplayRatio($('#video-recorder-wrapper'), 305/210);
+	// DisplayRatio($('#record-button'), 1);
 	
 	InitRecorder();
 	
@@ -117,43 +113,111 @@ function InitializeUserInterface(userObject) {
 	$(window).resize(function() {
 		$('.single-note-background').each(function() { $(this).css('marginLeft', -($(this).width()/2) + 'px'); });
 	});
-	LoadNotes(); //After loading notes the program initializes notebar, weekblock etc.
-	SetColorPalette();
 	
+	
+	Timeline.Start = GetLastMonday(new Date());
+	Timeline.End = Timeline.Start + msInDay * 7 - 1;
+	ZoomLevel = Levels.Week;
+	SetTimeline(Timeline.Start, Timeline.End);
+	
+	//Default settings
+	$('.slider').slider({
+		
+		max: 1,
+		min: 0,
+		step: 0.001,
+		animate: 400,
+		range: 'min'
+	});
+	
+	//Specific
+	
+	TimelineSlider.slider({
+		stop: playbackPositionScroll,
+		disabled: true,
+	});
+	
+	$('#zoom-buttons').buttonset();
+	$('#today').button();
+	setZoom();
+	
+	$('#zoom-alltime').click(ShowAllNotes);
+	$('#zoom-month').click(ShowNotesMonth);
+	$('#zoom-week').click(ShowNotesWeek);
+	$('#zoom-day').click(ShowNotesDay);
+	$('#timeline-back').click(Back);
+	$('#timeline-forward').click(Forward);
+	$('#favorite').click(Favorite);
+	$('#today').click(Today);
+	$('#avatar-camera-trigger').click(AVA.action);
+	
+	getJson('avatar.php', { user: User.ID }, function (data) {
+		debug(data);
+		$('.avatar-image').attr('src', data);
+	});
+}
+
+function GetLastMonday(date) {
+	var dateTime = date.setHours(0,0,0,0);
+	if(date.getDay() > 0)
+		dateTime -= (date.getDay() - 1) * msInDay;
+	else
+		dateTime -= 6 * msInDay;
+	return dateTime;
 }
 
 function InitializeRegistrationInterface() {
-	$('#register-page').show();
+	OpenPage('register');
 	debug('User no logged in. Displaying registration screen.');
 	$('#newUserAdd').click(RegisterUser);
 	$('#resendEmail').click(function() { OpenPage('recover-url'); });
 	$('#recoverMail').click(ResendEmail);
+	$('#login-button').click(LogIn);
+}
+
+function SetTimeline(start, end) {
+	Timeline.Start = start;
+	Timeline.End = end;
+	
+	
+	var start = new Date();
+	start.setTime(Timeline.Start);
+	$('#timeline-start').text(dateFormat(start.getTime()));	
+	
+	var end = new Date();
+	end.setTime(Timeline.End);
+	$('#timeline-end').text(dateFormat(end.getTime()));
+	Timeline.Timespan = Timeline.End - Timeline.Start;
+	// EmptyNotes(Timeline.Start - Timeline.Timespan, Timeline.End + Timeline.Timespan);
+	// LoadNewNote(Timeline.Start - Timeline.Timespan, Timeline.End + Timeline.Timespan);	
+	EmptyNotes(Timeline.Start, Timeline.End);
+	LoadNewNote(Timeline.Start, Timeline.End);
+}
+
+function EmptyNotes(start, end) {
+	for(i = 0; i < Notes.length; i++) {
+		if(Notes[i].Time < start || Notes[i].Time > end) {
+			
+			if(Notes[i].Object)
+				Notes[i].Object.remove();
+			Notes.splice(i, 1);
+			i--;
+		}
+	}
 }
 
 function OpenPage(id) {
+	SelectedNote = false;
+	if(RECORDER.CurrentState) {
+		RECORDER.isCameraAccepted = false;
+		RECORDER.prepare_recorder();
+	}
 	$('.page').hide();
 	$('#' + id + '-page').fadeIn(600);
 }
 
-function SetColorPalette() {
-	var i = 0;
-	var t = $('#color-palette > li').length;
-	var color;
-	$('#color-palette > li').each(function() {
-		color = 'hsl('+ 360 * i/t + ', 70%, 65%)';
-		$(this).css('backgroundColor', color).attr('data-color', color).addClass('button');
-		i++;
-		
-		$(this).click(function() {
-			SelectedNote.Color = $(this).attr('data-color');
-			$('#video-recorder').css('borderColor', SelectedNote.Color);
-			UpdateNote(SelectedNote);
-		});
-	});
-}
-
 function ResetPin() {
-	getJson('resetPin.php', { id: User.ID }, function() {
+	getJson('resetPin.php', { id: User.ID, email: User.Email }, function() {
 		alert(i18n('Your pin has been reset. Please check your email.'));
 	});
 }
@@ -174,7 +238,8 @@ function RegisterUser() {
 			if(object.Success) {
 				$('#newUsername').remove();	
 				$('#newUserEmail').remove();
-				$('.register-complete').show(200).html(i18n('Registration was successful. You will now get link to your page by email.')); 
+				$('#resendEmail').remove();
+				$('.register-complete').show(200).html(i18n('Registration was successful. You will now get your login details by email.')); 
 			}
 			else {
 				debug('User Registration failed: ' + object.Message);
@@ -195,67 +260,8 @@ function ResendEmail() {
 		}, true, true);
 }
 
-function dump(arr,level) {
-	var dumped_text = "";
-	if(!level) level = 0;
-	
-	//The padding given at the beginning of the line.
-	var level_padding = "";
-	for(var j=0;j<level+1;j++) level_padding += "    ";
-	
-	if(typeof(arr) == 'object') { //Array/Hashes/Objects 
-		for(var item in arr) {
-			var value = arr[item];
-			
-			if(typeof(value) == 'object') { //If it is an array,
-				dumped_text += level_padding + "'" + item + "' ...\n";
-				dumped_text += dump(value,level+1);
-			} else {
-				dumped_text += level_padding + "'" + item + "' => \"" + value + "\"\n";
-			}
-		}
-	} else { //Stings/Chars/Numbers etc.
-		dumped_text = "===>"+arr+"<===("+typeof(arr)+")";
-	}
-	return dumped_text;
-}
-
 function ValidateUserRegistration() {
 	return !($('#newUsername').val() == '' || $('#newUserEmail').val() == '');
-}
-
-
-function InitLayout() {
-	
-	//Default settings
-	$('.slider').slider({
-		max: 1,
-		min: 0,
-		step: 0.001,
-		animate: 400,
-		range: 'min'
-	});
-	
-	//Specific
-	
-	ScrollSlider.slider({
-		slide: setScroll,
-		stop: setScroll,
-		value: Notebar.GetRatio(new Date())
-	});
-	ZoomSlider.slider({
-		slide: setZoom,
-		stop: setZoom,
-		min: 1,
-		max: Notebar.GetWeekCount(),
-		value: Notebar.GetWeekCount()
-	});
-	TimelineSlider.slider({
-		stop: playbackPositionScroll,
-		disabled: true,
-	});
-	
-	setZoom();
 }
 
 function debug(msg) { 
@@ -277,35 +283,32 @@ function getScrollbarRatio(id) {
 }
 
 function setZoom() {
-	Zoom = ZoomSlider.slider('option', 'value');
-	var d = ZoomSlider.slider('option', 'max') - Zoom;
-	var y = Zoom;
-	if(d > 8)
-		zoomDisplayChange('month', 'day', 'week');
-	else if(d > 1.5)
-		zoomDisplayChange('week', 'day', 'month');
-	else
-		zoomDisplayChange('day', 'week', 'month');
-	
-	$('#note-timeline').css('width', (y * 100) + "%");
-	setScroll();
+	// Notebar.Zoom(ZoomSlider.slider('option', 'value'));
 }
 
 function zoomDisplayChange(show, hide1, hide2) {
-		$('#' + show + '-blocks').show().stop().animate({opacity: 1.0}, 400);
-		$('#' + hide1 + '-blocks').stop().animate({opacity: 0.0}, 400, function() { $(this).hide(); });
-		$('#' + hide2 + '-blocks').stop().animate({opacity: 0.0}, 400, function() { $(this).hide(); });
+		$('#' + show + '-blocks').show().stop().animate({opacity: 1.0}, 200);
+		$('#' + hide1 + '-blocks').stop().animate({opacity: 0.0}, 200, function() { $(this).hide(); });
+		$('#' + hide2 + '-blocks').stop().animate({opacity: 0.0}, 200, function() { $(this).hide(); });
 		
-		$('#zoom-title-' + show + 's').show().stop().animate({opacity: 1.0}, 400);
-		$('#zoom-title-' + hide1 + 's').stop().animate({opacity: 0.0}, 400, function() { $(this).hide(); });
-		$('#zoom-title-' + hide2 + 's').stop().animate({opacity: 0.0}, 400, function() { $(this).hide(); });
+		$('#zoom-title-' + show + 's').show().stop().animate({opacity: 1.0}, 200);
+		$('#zoom-title-' + hide1 + 's').stop().animate({opacity: 0.0}, 200, function() { $(this).hide(); });
+		$('#zoom-title-' + hide2 + 's').stop().animate({opacity: 0.0}, 200, function() { $(this).hide(); });
 }
 
 function setScroll() {
-	scroll = ScrollSlider.slider('option', 'value');
-	$('#note-timeline').css('margin-left', -(scroll * ($('#note-timeline').width() - $('#notes').width())) + "px");
+	// Notebar.Scroll(ScrollSlider.slider('option', 'value'));
 }
-
+	
+	function zoomDisplayChange(show, hide1, hide2) {
+		$('#' + show + '-blocks').show().stop().animate({opacity: 1.0}, 200);
+		$('#' + hide1 + '-blocks').stop().animate({opacity: 0.0}, 200, function() { $(this).hide(); });
+		$('#' + hide2 + '-blocks').stop().animate({opacity: 0.0}, 200, function() { $(this).hide(); });
+		
+		$('#zoom-title-' + show + 's').show().stop().animate({opacity: 1.0}, 200);
+		$('#zoom-title-' + hide1 + 's').stop().animate({opacity: 0.0}, 200, function() { $(this).hide(); });
+		$('#zoom-title-' + hide2 + 's').stop().animate({opacity: 0.0}, 200, function() { $(this).hide(); });
+	}
 function playbackPositionScroll() {
 	RECORDER.movePlaybackToPosition(TimelineSlider.slider('option', 'value'));
 }
@@ -339,128 +342,18 @@ function weekDay(date) { date = new Date(date); return date.getDay(); }
 function daysInMonth(month,year) { return new Date(year, month + 1, 0).getDate(); }
 function monthInTime(month, year) { return new Date(year, month + 2, 0).getTime() - new Date(year, month + 1, 0).getTime(); }
 
-function NotebarType (obj) { 
-	this.Object = obj;
-	this.Timespan = 0; 	
-	this.Start = 0; 
-	this.End = 0; 
-	this.DayCount;
-	this.WeekCount;
-	this.MonthCount;
-	
-	this.GetRatio = function (time) {
-		var t = time - this.Start;
-		return Clamp(t/this.Timespan, 0, 1);
-	}
-	
-	this.GetTime = function (positionX) {
-		return this.Start + this.Timespan * (Clamp((positionX - this.Object.offset().left)/this.Object.width(), 0, 1));
-	}
-	
-	this.GetWeekCount = function() {
-		return Math.ceil(Notebar.Timespan / msInWeeks);
-	}
-	
-	this.Reset = function() {
-		
-		Notebar.Timespan = Notebar.End - Notebar.Start;
-		// Now
-		$('#now-indicator').css('left', Notebar.GetRatio(new Date().getTime()) * 100 + '%');
-		
-		var weeks = Notebar.GetWeekCount();
-		
-		var daysElement = $('#day-blocks');
-		var weeksElement = $('#week-blocks');
-		var monthsElement = $('#month-blocks');
-		daysElement.empty();
-		weeksElement.empty();
-		monthsElement.empty();
-		
-		
-		// day blocks
-		var t = Notebar.Start;
-		for(var i = 0; i < weeks; i++) {
-			for(var d = 0; d < 7; d++) {
-				daysElement.append('<div><span>' + dateFormat(t) + '</span></div>');
-				t = nextDay(t);
-			}
-		}
-		// week blocks
-		t = Notebar.Start;
-		for(var i = 0; i < weeks; i++) {
-			weeksElement.append('<div><span>' + dateFormat(t) + '</span></div>');
-			t += msInWeeks;
-		}
-		
-		// month blocks
-		// this is ridiculous
-		t = new Date(Notebar.Start).setDate(1);
-		var monthDayOffset = Notebar.Start - t;
-		var time = -monthDayOffset;
-		var months = 0;
-		var dayCount = 0;
-		while(time <= Notebar.Timespan) {
-			var monthTime = monthInTime(new Date(t).getMonth() - 1, new Date(t).getFullYear());
-			dayCount += daysInMonth(new Date(t).getMonth(), new Date(t).getFullYear());
-			monthsElement.append('<div data-dayCount="' + daysInMonth(new Date(t).getMonth(), new Date(t).getFullYear()) + '"><span>' + monthFormat(t) + '</span></div>');
-			t = nextMonth(t);
-			time = nextMonth(time);
-			months++;
-		}
-		Notebar.DayCount = Notebar.GetWeekCount() * 7;
-		Notebar.WeekCount = Notebar.GetWeekCount();
-		Notebar.MonthCount = months;
-		
-		var monthTimeStart = new Date(Notebar.Start).getTime();
-		var monthTimeEnd = new Date(Notebar.Start).setMonth(new Date(Notebar.Start).getMonth() + months + 1, 0);
-		Notebar.MonthTime = monthTimeEnd - monthTimeStart;
-		monthsElement.css('marginLeft', -(monthDayOffset/Notebar.Timespan) * 100 + '%');
-		
-		$('#month-blocks > div').each(function() { $(this).css('width', ($(this).attr('data-dayCount') / dayCount) * 100 + '%'); });
-		
-		//Setting correct week block widths
-		weekBlockWidths(Notebar.WeekCount);
-		
-		// Self-explanatory
-		UpdateAllNotePositions();
-	}
-}
 var Notebar;
 var msInWeeks = 1000 * 60 * 60 * 24 * 7;
 var msInDay = 1000 * 60 * 60 * 24;
-function initNotebar(start, end) {
-	Notebar = new NotebarType($('#note-timeline'));
-	
-	//Time of the first note
-	Notebar.Start = new Date();
-	Notebar.Start.setTime(start);
-	Notebar.Start.setHours(0, 0, 0, 0);
-	Notebar.Start.setDate(1);
-	Notebar.Start = Notebar.Start.getTime() - msInDay * (Math.abs((Notebar.Start.getDay() + 6) % 7));
-	
-	//Now
-	Notebar.End = new Date();
-	Notebar.End.setTime(end);
-	Notebar.End.setHours(0, 0, 0, 0);
-	Notebar.End = Notebar.End.getTime() + msInDay * 3;
-	
-	Notebar.Timespan = Notebar.End - Notebar.Start;
-	
-	var weeks = Math.ceil(Notebar.Timespan / msInWeeks);
-	Notebar.End = Notebar.Start + weeks * msInWeeks;
-	Notebar.Reset();
-}
 
 function MakePrivate(note) {
 	note.Private = true;
-	note.Thumb = 'images/private.png';
 	$('#privacy').text(i18n('Make public'));
 	UpdateNote(note);
 }
 
 function MakePublic(note) {
 	note.Private = false;
-	note.Thumb = note.Picture;
 	$('#privacy').text(i18n('Make private'));
 	UpdateNote(note);
 }
@@ -569,17 +462,33 @@ function getQueryData(url) {
 
 function getJson(url, post, finished, onError, dontDebugRespond) {
 	debug('Start json request ' + PHP_LIB + url);
+	if(User) {
+		post.email = User.Email;
+		post.pin = User.Pin;
+	}
 	$.ajax({
 		type: 'POST',
 		url: PHP_LIB + url,
 		data: post,
 		dataType: 'json',
 		success: function (data) {
-			
+	
 			if(!dontDebugRespond) 
 				debug('Requested ' + url + ', PHP responds: ' + JSON.stringify(data));
 			
 			finished(data);
 		}
 	});
+}
+
+function zero(n, length) {
+	n = String(n);
+	if(!length)
+		length = 2;
+		
+	while(n.length < length) {
+		n = '0' + n;
+	}
+	
+	return n;
 }

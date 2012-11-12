@@ -23,6 +23,7 @@
             import flash.system.Security;
             import flash.external.ExternalInterface;
             import mx.core.FlexGlobals;
+
 			private var mymic:Microphone;
 			private var playback_channel:WavSoundChannel;
 			private var micTimer:Timer;
@@ -59,8 +60,8 @@
 			
 			private function init():void {
 			    //Security.loadPolicyFile(server_path+'crossdomain.php');
-                camw=420;
-                camh=280;
+                camw=420 * 2;
+                camh=280 * 2;
 				
 				_flash=new BitmapData(camw,camh,false, 0xaaFF88);
 				sound_position=0;
@@ -81,11 +82,13 @@
                 ExternalInterface.addCallback("saveRecording", saveRecording);
                 ExternalInterface.addCallback("resizeFix", resizeFix);
                 ExternalInterface.addCallback("loadNote", loadNote);
+                ExternalInterface.addCallback("loadPic", loadPic);
+                ExternalInterface.addCallback("soundLength", soundLength);
                 ExternalInterface.call("recorderInitialized");
 			}
 			
-			private function debug(msg:String):void { 
-				ExternalInterface.call('debug', 'FLASH: ' + msg);
+			private function debug(msg:Object):void { 
+				ExternalInterface.call('debug', 'FLASH: ' + String(msg));
 			}
 			
 			private function resizeFix():void {
@@ -96,7 +99,11 @@
 			}
 			
 			private function initCamera():void {
-                // get Camera
+                
+				
+				note_length = FlexGlobals.topLevelApplication.parameters.noteLength;
+				
+				// get Camera
 				try{
 				
                 video= new Video(camw,camh);
@@ -245,7 +252,7 @@
             }
 
 			private function _displayPosition(e:Event):void{
-				ExternalInterface.call("recording_timer", Math.floor(soundChannel.position / 100));
+				ExternalInterface.call("recording_timer", Math.floor(soundChannel.position / 100), false);
 			}
 
 
@@ -282,7 +289,7 @@
                 startRecording();
             }
             
-			private function saveRecording(server_path:String, title:String, user:String, noteTime:String): void {
+			private function saveRecording(server_path:String, user:String, noteTime:String, email:String, pin:String): void {
 			
                 var ml:MultipartURLLoader = new MultipartURLLoader();
                 ml.addEventListener(Event.COMPLETE, onReady);         
@@ -315,9 +322,10 @@
                 //$_POST['class_name']
 				//ml.addVariable('class_id', class_name);
 				var id:Date = new Date();
-                ml.addVariable('note_title', title);
-                ml.addVariable('user_id', user);
                 ml.addVariable('time', noteTime);
+                ml.addVariable('email', email);
+                ml.addVariable('pin', pin);
+				ml.addVariable('length', record_len);
 				debug('Starting to upload photo');
                 if (photo_jpg) {
                     ml.addFile(photo_jpg, 'photo.jpg', 'photo', 'image/jpeg'); 
@@ -342,6 +350,10 @@
 			private function _miclevel(event:TimerEvent):void {
                 ExternalInterface.call("audioLevel", mymic.activityLevel);
 			}
+			
+			private function soundLength():Number {
+				return externalSound.length;
+			}
 
     		private function _onRecording(event:RecordingEvent):void {
     			// debug("Recording : " + (event.time/1000).toFixed(1) + " s.");
@@ -350,7 +362,7 @@
                 }
     			if (Math.floor(event.time / 100) > recording_seconds) {
     			    recording_seconds++;
-                    ExternalInterface.call("recording_timer", recording_seconds);
+                    ExternalInterface.call("recording_timer", recording_seconds, note_length);
     			}
     			record_len=event.time;
     		}
@@ -393,23 +405,16 @@
 			/* Loading and playing external mp3 file */
 			private function loadNote(id:Number, voice:String, picture:String, server_url:String):void {
 				uic.visible = false;
-				if(false) {
-					soundLoader = new URLLoader();
-					soundLoader.dataFormat = URLLoaderDataFormat.BINARY;
-					soundLoader.addEventListener(Event.COMPLETE, soundLoadComplete);
-					
-					imageLoader = new URLLoader();
-					imageLoader.dataFormat = URLLoaderDataFormat.BINARY;
-					imageLoader.addEventListener(Event.COMPLETE, imageLoadComplete);
-					
-					debug('Start loading');
-					soundLoader.load(new URLRequest(server_url + voice));
-					imageLoader.load(new URLRequest(server_url + picture));
-				}
-				else {
-					externalSound = new Sound(new URLRequest(server_url + voice));
-					captured_shot.source = new URLRequest(server_url + picture);
-				}
+				externalSound = new Sound(new URLRequest(server_url + voice));
+				captured_shot.source = new URLRequest(server_url + picture);
+				
+			}
+			
+			private function loadPic(id:Number, picture:String, server_url:String):void {
+				uic.visible = false;
+				externalSound = null;
+				captured_shot.source = new URLRequest(server_url + picture);
+				
 			}
 			
 			private function imageLoadComplete(event:Event):void{

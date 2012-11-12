@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="fi">
 <head>
-	<title>ReFLEX</title>
+	<title>ReFlex</title>
 	<meta charset="utf-8">
 	<link rel="stylesheet" type="text/css" href="css/dot-luv/jquery-ui-1.9.0.custom.min.css" />
 	<link rel="stylesheet" type="text/css" href="css/style.css" />
@@ -17,38 +17,18 @@
 <body>
 	<div id="wrapper">
 		<div id="user-page" class="page">
+			<div class="header">
+				<div class="logo"><img src="images/logo.png" alt /><h1>ReFlex</h1></div>
+				<div class="options button" onclick="OpenPage('options')"></div>
+			</div>
 			<!-- User info -->
-			<h1 id="username-title"></h1>
-			<div id="left">
-				<div id="avatar">
-					<img src="images/avatars/avatar_placeholder.png" alt class="avatar" id="avatar-image"/>
-					<div id="AvatarCameraContainer"><div id="AvatarCamera"></div></div>
-					<div id="ava-countdown"></div>
-					<div id="ava-save">Save picture</div>
-				</div>
-				<p class="i18n">Enter your pin code to open private notes.</p>
-				<input type="password" id="pin-field" maxlength="4" size="4" /><br />
-				<a id="pin-reset" class="button i18n">Forgot your PIN?</a>
+			<h1 id="username-title"><img src="images/avatars/avatar_placeholder.png" alt class="avatar avatar-image"  /><span></span></h1>
 				
-				<div id="note-options">
-				<a class="i18n button" id="privacy">Make private</a>
-				<ul id="color-palette">
-					<li></li>
-					<li></li>
-					<li></li>
-					<li></li>
-					<li></li>
-					<li></li>
-					<li></li>
-					<li></li>
-					<li></li>
-					<li></li>
-				</ul>
-				</div>
-			</div><!-- left -->
 			<!-- Video player and recorder -->
 			<div id="videos">
-			<div id="video-recorder-wrapper">
+				<div id="video-recorder-wrapper">
+					<span id="new-recording" class="button"></span>
+			<h2 id="video-title">What's going on in school? <span id="favorite" class="button"></span></h2>
 			<div id="video-recorder">
 			
 			<div id="NoteRecorder"></div>
@@ -56,14 +36,13 @@
 				<span class="recorder-ui video-off i18n" id="what-did-i-learn">What did I learn?</span>
 				<div class="recorder-ui video-off recorder-initialized note-sealed" id="record-init-background"></div>
 				<div class="recorder-ui video-off recorder-initialized button" id="record-button-onvideo"><img src="images/record.png" alt /></div>
-				<div class="recorder-ui recorder-finished button save-recorded-video" id="save-recorded-video"><img src="images/save.png" alt /></div>
-				<!-- <div class="recorder-ui recorder-finished save-recorded-video" id="record-video-drag"></div> -->
-				<div class="recorder-ui recorder-finished button" id="re-record-button-onvideo"><img src="images/record.png" alt /></div>
-				<div class="recorder-ui note-selected note-playback-finished button" id="play-button-onvideo"><img src="images/play.png" alt /></div>
+				<div class="recorder-ui recorder-finished button save-recorded-video" id="save-recorded-video"><div id="keep">keep</div></div>
+				<div class="recorder-ui recorder-finished button" id="re-record-button-onvideo"><img src="images/new-recording-screen-2.png" alt /></div>
+				<div class="recorder-ui note-selected note-playback-finished button" id="play-button-onvideo"><img src="images/play-1.png" width="120" height="120" alt /></div>
+				<div class="recorder-ui record-on button" id="stop-recording-button-onvideo"><img src="images/stop-1.png" alt /></div>
 				<div class="recorder-ui note-playing button" id="stop-button-onvideo"><img src="images/stop.png" alt /></div>
-				<div class="recorder-ui record-on i18n" id="ilearned">I learned...</div>
-				<div class="recorder-ui record-on" id="countdown">...</div>
-				<div class="recorder-ui recorder-finished" id="timecapsule-datepicker"><input type="hidden" id="datepicker-calendar" /><img src="images/calendar.png" class="button" id="timecapsule-datepicker-button" alt /></div>
+				<div class="recorder-ui countdown" id="countdown">...</div>
+				<div class="recorder-ui recorder-finished" id="timecapsule-datepicker"><input type="hidden" id="datepicker-calendar" /><img src="images/time-it-1.png" class="button" id="timecapsule-datepicker-button" alt /></div>
 				<div class="recorder-ui record-on" id="vumeters">
 					<div></div>
 					<div></div>
@@ -81,7 +60,8 @@
 					<div></div>
 				</div>
 			<div class="recorder-ui note-timesealed" id="timecapsule-background">
-				<h2><span class="i18n">This note will be open on</span> <span id="timecapsule-date"></span></h2>
+				<h2><img width="170" height="80" src="images/time-capsule-small.png" alt /><br />
+					<span class="i18n">open in</span> <span id="timecapsule-date"></span> <span class="i18n">days</span></h2>
 			</div>
 			
 			<div class="pincode recorder-ui note-sealed">
@@ -89,43 +69,51 @@
 			</div>
 			</div>
 			<div id="video-recorder-controls">
-			<div id="record-button" class="button i18n_title" title="Record a new note"></div>
-			<div id="stop-button" class="button i18n_title" title="Record a new note"></div>
 			<div id="recorder-controls-timeline" class="slider"></div>
 			</div>
+				<div id="record-button" class="button i18n_title" title="Record a new note"></div>
+				<div id="play-button" class="button i18n_title" title="Play"></div>
+				<div id="record-timer"><span class="elapsed">0:00</span> <span>/</span> <span class="total"></span></div>
+				<div id="note-timestamp">15:30 12.4.2012</div>
 			</div>
 			</div> <!-- videos -->
-			<div style="width: 100%; clear:both"></div>
+			<div style="width: 100%; clear:both;"></div>
 			
 			<!-- Saved recordings show up here -->
 			<div id="notes">
-			<div id="note-background"></div>
-			<div id="note-drag-area"></div>
 			<div id="note-timeline-wrapper">
-			<div id="note-timeline">
-			<div id="day-blocks"> </div>
-			<div id="week-blocks"> </div>
-			<div id="month-blocks"> </div>
-			<div id="now-indicator"><div class="i18n">Now</div></div>
+				<div id="timeline-start"></div>
+				<div id="timeline-end"></div>
+				<div id="timeline-back" class="button"></div>
+				<div id="timeline-forward" class="button"></div>
+				<div id="note-timeline"></div>
 			</div>
-			</div>
-			<div id="note-scroll" class="slider"></div>
-			<div id="note-zoom" class="slider"></div>
-			<div id="zoom-title">
-			<span id="zoom-title-months" class="i18n">Months</span>
-			<span id="zoom-title-weeks" class="i18n">Weeks</span>
-			<span id="zoom-title-days" class="i18n">Days</span>
+			<!-- <div id="note-scroll" class="slider"></div> -->
+			<div id="today">Today</div>
+			<div id="zoom-buttons">
+				<input type="radio" name="zoom" id="zoom-day" value="day" /><label for="zoom-day">day</label>
+				<input type="radio" name="zoom" id="zoom-week" value="week" /><label for="zoom-week">week</label>
+				<input type="radio" name="zoom" id="zoom-month" value="month" /><label for="zoom-month">month</label>
+				<input type="radio" name="zoom" id="zoom-alltime" value="alltime" /><label for="zoom-alltime">all time</label>
 			</div>
 			</div><!-- notes -->
 		</div>
 		<div id="register-page" class="page">
+			<div class="header">
+				<div class="logo"><img src="images/logo.png" alt /><h1>ReFlex</h1></div>
+				<div id="login">
+					<span>Log in in ReFlex with your Email and PIN code.</span><br />
+					<input type="text" id="login-email" placeholder="Email address" /><input id="login-pass" type="password" placeholder="PIN code" /><input type="button" id="login-button" value="Log in" />
+				</div>
+			</div>
 			<p class="register" style="display: block; text-align: center">
+				<span style="font-size: 1.4em; margin: 20px; display: block;">New to ReFlex? <br />Create a new account!</span><br />
 				<input type="text" id="newUsername" class="i18n_placeholder" placeholder="Your name" value="" /><br /> 
 				<input type="text" id="newUserEmail" class="i18n_placeholder" placeholder="Your email address" value="" /><br /> 
-				<a id="newUserAdd" class="button i18n">Add new user</a><br />
+				<a id="newUserAdd" class="button i18n">Create new user</a><br />
 				<a id="resendEmail" class="button i18n">Lost your URL?</a>
+				<p class="register-complete" style="display: none; font-size: 1.2em; text-align: center"></p>
 			</p>
-			<p class="register-complete" style="display: none"></p>
 		</div>
 		<div id="recover-url-page" class="page">
 			<p class="recover" style="display: block; text-align: center">
@@ -133,10 +121,27 @@
 				<a id="recoverMail" class="button i18n">Reset lost URL</a>
 			</p>
 		</div>
-			<div id="recover-url-done-page" class="page">
+		<div id="recover-url-done-page" class="page">
 			<p class="recover" style="display: block; text-align: center">
 				<p>Success! You will receive a link to your page by email soon.</p>
 			</p>
+		</div>		
+		<div id="options-page" class="page">
+			<div class="header">
+				<div class="logo"><img src="images/logo.png" alt /><h1>ReFlex</h1></div>
+				<div class="options button" onclick="OpenPage('user')"></div>
+			</div>
+			<div id="options">
+				<h1>Options</h1>
+				<p>Take new profile picture</p>
+				<div id="avatar">
+					<img src="images/avatars/avatar_placeholder.png" alt id="avatar-image" class="avatar avatar-image" />
+					<div id="AvatarCameraContainer"><div id="AvatarCamera"></div></div>
+					<div id="ava-countdown"></div>
+					<div id="ava-save">Save picture</div>
+					<span id="avatar-camera-trigger" class="button"></span>
+				</div>
+			</div>
 		</div>
 	</div>
 </body>

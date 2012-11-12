@@ -3,22 +3,33 @@ header('Access-Control-Allow-Origin: *');
 require_once('db.php');
 
 $new_note = new StdClass();
-
 _log('------------------------NEW NOTE----------------------------');
 _log('Photo size: ' . $_FILES['photo']['size']/1000 . " kilobytes");
 _log('Audio size: ' . $_FILES['voice']['size']/1000 . " kilobytes");
 _log('Photo error code: ' . $_FILES['photo']['error']);
 _log('Audio error code: ' . $_FILES['voice']['error']);
 
+$id = Auth($_POST['email'], $_POST['pin']);
+if(!$id) { $obj = new StdClass(); $obj->Success = false; echo json_encode($obj); die(); }
 
 $new_note->Picture = "";
 $new_note->Voice = "";
-$new_note->Student = $_POST['user_id'];
+$new_note->Student = $id;
 $new_note->Time = $_POST['time'];
-$new_note->Private = 'no';
+$new_note->Pin = $_POST['pin'];
+$new_note->Length = $_POST['length'];
 
-$q = $db->prepare('SELECT name FROM users WHERE id = :id');
-$q->execute(array('id' => $new_note->Student));
+$q = $db->prepare('SELECT name FROM users WHERE id = :id AND pin = :pin');
+$q->execute(array(
+	'id' => $new_note->Student,
+	'pin' => $new_note->Pin));
+
+if($q->rowCount() != 1) {
+	$new_note->Success = false;
+	echo json_encode($new_note);
+	die();
+}
+
 $username = $q->fetchColumn();
 
 $root = '../';
@@ -26,12 +37,12 @@ $base='uploads';
 $student_folder = $username.'_'.$new_note->Student;
 
 //Insert a row in the database
-$q = $db->prepare('INSERT INTO notes(Time, Student, Private) 
-VALUES(:time, :student, :private)');
-$result = $q->execute(array(
-'time' => $new_note->Time,
-'student' => $new_note->Student,
-'private' => $new_note->Private));
+$q = $db->prepare('INSERT INTO notes(Time, Student) 
+		VALUES(:time, :student)');
+		
+		$result = $q->execute(array(
+		'time' => $new_note->Time,
+		'student' => $new_note->Student));
 
 if($result) {_log('Database row inserted successfully'); }
 else { 
@@ -64,7 +75,6 @@ if(!move_uploaded_file($picture, $root.$pic_name))
 else
 { $new_note->Picture = $pic_name; }
 
-
 //Saving audio
 $audio = $_FILES['voice']['tmp_name'];
 $i = 1;
@@ -77,19 +87,13 @@ if(!move_uploaded_file($audio, $root.$aud_name)){
 }
 else { $new_note->Voice = $aud_name; }
 
-$q = $db->prepare('UPDATE notes SET Voice = :voice, Picture = :picture WHERE ID = :id');
+$q = $db->prepare('UPDATE notes SET Voice = :voice, Picture = :picture, AudioLength = :length WHERE ID = :id');
 $q->execute(array(
 		'voice' => $aud_name,
 		'picture' => $pic_name,
+		'length' => $new_note->Length,
 		'id' => $new_note->ID
 		));
-
-if($new_note->Time > time() * 1000 + 2 * 60 * 1000)
-	$new_note->Thumb = 'images/timecapsule.png';
-else if($new_note->Private == 'no') 
-	$new_note->Thumb = $new_note->Picture;
-else
-	$new_note->Thumb = 'images/private.png';
 
 //Return encoded results to javascript
 echo json_encode($new_note);

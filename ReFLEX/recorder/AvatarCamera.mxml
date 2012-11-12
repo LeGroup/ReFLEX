@@ -39,8 +39,8 @@
 			private function init():void {
 				debug('init()');
 				
-                camw=220;
-                camh=220;
+                camw=250;
+                camh=250;
            				
 				_flash=new BitmapData(camw,camh,false, 0xaaFF88);
 				
@@ -151,12 +151,14 @@
             }
 
             private function savePicture(server_path:String, user:String): void {
-				debug('Uploading avatar');         
+				debug('Uploading avatar');        
+				debug('1'); 
 
                 var ml:MultipartURLLoader = new MultipartURLLoader();
                 ml.addEventListener(Event.COMPLETE, onReady);         
                 // ExternalInterface.call("uploadingPicture");
                                 
+				debug('2');
                 function onReady(e:Event):void {
 					debug('saveRecording.onReady()');
                     // notify teamup that we are done
@@ -166,7 +168,7 @@
                 }
                 function onError(evt:IOErrorEvent):void {
 					debug('Error while uploading avatar: ' + evt);
-                };
+                }
                 function forceFinish(event : Event) : void {
 					debug('Forced avatar uploading to finish ');
                     // if the MultipartURLLoader hasn't responded in 20 seconds, assume that its return message is messed up
@@ -174,11 +176,13 @@
 					uploaderTimer.stop();
             		ExternalInterface.call("AVA.finishedRecording", ml.loader.data);
                 }
-            
+				debug('3');
                 //$_POST['data']
                 ml.addVariable('user_id', user);
                 ml.addFile(photo_jpg, 'photo.jpg', 'photo', 'image/jpeg'); 
                 
+				debug('4');
+				debug(server_path);
 				//Uploading the image
                 try {
                     ml.load(server_path + "php/upload_avatar.php", false);  

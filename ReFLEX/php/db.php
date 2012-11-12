@@ -26,11 +26,25 @@ unset($pass);
 //The point of these comments is that the file will change and it can be commited to the server. 
 //(Some failing with conflict resolving.)
 function _log($text) {
-	global $log;
-	fwrite($log, date('Y.m.d H:i:s') . " - ".$text."\n");
+	//global $log;
+	//fwrite($log, date('Y.m.d H:i:s') . " - ".$text."\n");
 }
 
 function DoubleSaltedHash($pw, $salt = WEBSITE_SALT) {
     return sha1($salt.sha1($salt.sha1($pw)));
+}
+
+function Auth($email, $pin) {
+	global $db;
+	$q = $db->prepare('SELECT id FROM users WHERE email = :email AND pin = :pin');
+	$q->execute(array('email' => $email, 'pin' => $pin));
+	
+	if($q->rowCount() == 1) {
+		return $q->fetchColumn();
+	}
+	else {
+		return false;
+	}
+	
 }
 ?>

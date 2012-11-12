@@ -1,6 +1,6 @@
 // **********************************
 // Team recorder UI Reflex
-RECORDER = { on:false, vumeter_values:[], isCameraAccepted: false }
+RECORDER = { on:false, vumeter_values:[], isCameraAccepted: false, noteLength:  60 * 1000 }
 
 // UIChangeState function changes the current UI state
 // This means hiding UI elements that shouldn't be displayed in the current state
@@ -10,6 +10,7 @@ RECORDER.UiStates = {
 	VideoOff: 'video-off',
 	RecorderInitialized: 'recorder-initialized',
 	Recording: 'record-on',
+	CountDown: 'countdown',
 	Playing: 'note-playing',
 	PlaybackFinished: 'note-playback-finished',
 	Encoding: 'recorder-encoding',
@@ -21,7 +22,7 @@ RECORDER.UiStates = {
 	NoteTimeSealed: 'note-timesealed'
 };
 
-var StatesWhenNoteOptionsAvailable = [RECORDER.UiStates.NoteSelected, RECORDER.UiStates.Playing, RECORDER.UiStates.PlaybackFinished];
+var StatesWhenNoteOptionsAvailable = [RECORDER.UiStates.NoteSelected, RECORDER.UiStates.Playing, RECORDER.UiStates.PlaybackFinished, RECORDER.UiStates.NoteTimeSealed];
 
 function InitRecorder() {
 	UIChangeState(RECORDER.UiStates.VideoOff);
@@ -57,8 +58,8 @@ function InitRecorder() {
 	$('#timecapsule-wrapper').droppable({ drop: noteDroppedToTimeCapsule });
 	$('#play-button-onvideo').click(RECORDER.play);
 	$('#stop-button-onvideo').click(RECORDER.stop_playing);
-	$('#record-button').click(RECORDER.prepare_recorder);
-	$('#stop-button').click(RECORDER.stop_recording);
+	$('#stop-recording-button-onvideo').click(RECORDER.stop_recording);
+	$('#record-button, #new-recording').click(RECORDER.prepare_recorder);
 	
 	$('#video-recorder').mouseenter(function() {
 		if(RECORDER.CurrentState == RECORDER.UiStates.Playing)
@@ -67,6 +68,12 @@ function InitRecorder() {
 		if(RECORDER.CurrentState == RECORDER.UiStates.Playing)
 			$('#stop-button-onvideo').stop().animate({opacity: 0.0}, 500);
 	});
+	
+	//Recording timer total time
+	var sec = RECORDER.noteLength / 1000;
+	var min = Math.floor(sec / 60);
+	sec = sec % 60;
+	$('#record-timer > .total').text(min + ':' + zero(sec));
 }
 
 function resizeFix(rec) {
@@ -114,6 +121,9 @@ function UIChangeState(state) {
 		$('#note-options').hide(0);
 	
 	
+	if(RECORDER.CurrentState == RECORDER.UiStates.Playing && state != RECORDER.UiStates.Playing)
+		RECORDER.stop_playing();
+	
 	// Cancel recording if Ui state changed
 	// Eg. another note has been selected
 	if(RECORDER.CurrentState == RECORDER.UiStates.Recording && state != RECORDER.UiStates.Recording) 
@@ -124,14 +134,8 @@ function UIChangeState(state) {
 		RECORDER.stop_playing();
 	}
 	
-	if(RECORDER.CurrentState == RECORDER.UiStates.Recording) {
-		$('#record-button').show();
-		$('#stop-button').hide();
-	}
-	if(state == RECORDER.UiStates.Recording) {
-		$('#stop-button').show();
-		$('#record-button').hide();
-	}
+	if(state != RECORDER.UiStates.Recording) 
+		$('#record-button').css('backgroundImage', 'url(images/mic_dk_grey.png)');
 	
 	RECORDER.CurrentState = state;
 	$('.recorder-ui').stop().animate({ opacity: 0.0 }, 300, function() { $(this).hide(); }); 
@@ -146,7 +150,21 @@ function UIChangeState(state) {
 
 RECORDER.prepare_recorder=function() {
 	if (!RECORDER.getRecorder()) {
-        swfobject.embedSWF('recorder/NoteRecorder.swf', 'NoteRecorder', '100%', '100%', '10.3.0', 'expressInstall.swf', {},{ scale: 'exactfit', wmode: 'transparent' },{});
+		
+		var flashvars = {
+			noteLength: RECORDER.noteLength
+		}
+		
+		var params = { 
+			scale: 'exactfit', 
+			wmode: 'transparent' 
+		}
+		
+		var attributes = { 
+			noteLength: RECORDER.noteLength
+		}
+		
+        swfobject.embedSWF('recorder/NoteRecorder.swf', 'NoteRecorder', '100%', '100%', '10.3.0', 'expressInstall.swf', flashvars, params, attributes);
     }
 	
     debug('record mode on');
@@ -214,25 +232,48 @@ RECORDER.start_recording = function() {
     var rec = RECORDER.getRecorder(); 
     if (rec) {
         rec.startRecording();
-		UIChangeState(RECORDER.UiStates.Recording);
+		UIChangeState(RECORDER.UiStates.CountDown);
         $('#recorder_toggle').css('border-color', 'transparent').hide();
         $('#rec_indicator').removeClass('green').addClass('red');
         $('#stop_button').removeClass('green').addClass('red');
         $('#progress_line').show().width(0);
-        $('#countdown').text("3").show();
-        $('#stop_button').click(RECORDER.stop_recording);         
+        $('#countdown').text("3").show();         
     }
 }
-var note_length = 10000;
-RECORDER.recording_timer = function(t) {
-    // every 10th second, max 600 
+RECORDER.recording_timer = function(t, total) {
+	// t is every 10th of a second
+	// total is milliseconds
+	// because it makes sense
+	t = parseFloat(t);
+	total = parseFloat(total);
+	
+	if(t > total)
+		t = total;
+	
+	if(!total)
+		total = SelectedNote.Length;
+		
+	//Recording timer total time
+	var tSec = Math.floor(total / 1000);
+	var tMin = Math.floor(tSec / 60);
+	tSec = tSec % 60;
+	$('#record-timer > .total').text(tMin + ':' + zero(tSec));
+	
+	//Elapsed time
+	var sec = Math.floor(t / 10);
+	var min = Math.floor(sec / 60);
+	sec = sec % 60;
+	$('#record-timer > .elapsed').text(min + ':' + zero(sec));
+	
 	if(TimelineSlider.hasClass('ui-slider'))
-		TimelineSlider.slider('option', 'value', (t * 10000)/(note_length - 1000) * 0.01);
+		TimelineSlider.slider('option', 'value', (t * 100)/(total - 1000));
 }
 
 RECORDER.countdown = function(t) {
     if (t==0) {
+		$('#record-button').css('backgroundImage', 'url(images/mic_red.png)');
         $('#countdown').hide();
+		UIChangeState(RECORDER.UiStates.Recording);
     } else {       
         $('#countdown').text(t).show();
     }
@@ -268,6 +309,7 @@ RECORDER.stop_playing = function() {
     var rec = RECORDER.getRecorder();
     if (rec) {
         rec.stopPlaying();
+		RECORDER.recording_timer(0, RECORDER.noteLength);
     }
 }
 
@@ -331,7 +373,7 @@ RECORDER.save_note= function() {
 	
 	debug('Using upload path: ' + SERVER_URL);
     if (rec) {
-        rec.saveRecording(SERVER_URL, RecordedNote.Title, User.ID, RecordedNote.Time); 
+        rec.saveRecording(SERVER_URL, User.ID, RecordedNote.Time, User.Email, User.Pin); 
     }        
 }
 
@@ -345,7 +387,7 @@ RECORDER.finishedRecording = function(path) {
 	
 	try{ var note = $.parseJSON(path); }
 	catch (e) { debug('Parsing JSON failed: \n' + path); }
-	note.Private =  note.Private == 'yes';
+	
 	AddNote(note);
 	SelectNote(note);
 }
@@ -357,18 +399,34 @@ RECORDER.loadNote = function(note, pin) {
 
 	getJson('loadMedia.php', { id: note.ID, user: User.ID, pin: pin }, function(data) {
 		if(data.Success) {
+			SelectedNote = note;
 			var rec = RECORDER.getRecorder();
 			if(rec) {
-				rec.loadNote(note.ID, data.Voice, data.Picture, SERVER_URL);
-				UIChangeState(RECORDER.UiStates.NoteSelected);
+				
+				if(data.Voice)
+					rec.loadNote(note.ID, data.Voice, data.Picture, SERVER_URL);
+				else
+					rec.loadPic(note.ID, data.Picture, SERVER_URL);
+					
+				if(!data.Voice) {
+					UIChangeState(RECORDER.UiStates.NoteTimeSealed);
+					
+					var t = SelectedNote.Time - new Date().getTime();
+			
+					
+					$('#timecapsule-date').text(Math.ceil(t / msInDay));
+				}
+				else
+					UIChangeState(RECORDER.UiStates.NoteSelected);
+				
 				$('.pincode > div > input').each(function() { $(this).val('').blur(); });
 			}
 		}
 		else
-			debug('Media loading failed. PHP responds: \n' + data);
+			debug('Media loading failed. PHP responds: \n' + data.Message);
 	});
 
-}
+} 
 
 // redirect Flash ExternalInterface calls: 
 recorderInitialized=RECORDER.initialized;
