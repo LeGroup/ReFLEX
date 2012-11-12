@@ -34,18 +34,18 @@ if(!$q->execute(array(
 $ID = $db->lastInsertId();
 	
 //Let's create hash from id and username
-$hash = DoubleSaltedHash($ID . $user . time());
+// $hash = DoubleSaltedHash($ID . $user . time());
 
 
 
 //Create uri to the new user's page
-$uri = '?i='.$hash;
-$return->Uri = $uri;
-$uri = SERVER_URL.$uri;
+// $uri = '?i='.$hash;
+// $return->Uri = $uri;
+// $uri = SERVER_URL.$uri;
 
 //Save the uri in the database
-$q = $db->prepare('UPDATE users SET url_id = :url_id WHERE id = :id');
-$q->execute(array('url_id' => $hash, 'id' => $ID));
+// $q = $db->prepare('UPDATE users SET url_id = :url_id WHERE id = :id');
+// $q->execute(array('url_id' => $hash, 'id' => $ID));
 
 //Send mail
 //...except if you're using local server which doesn't support it.
