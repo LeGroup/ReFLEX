@@ -1,10 +1,12 @@
 <?php
 header('Access-Control-Allow-Origin: *'); 
 require_once 'db.php';
-if(isset($_POST['id']))
+if(isset($_POST['email']))
 {
-	$q = $db->prepare('SELECT * FROM users WHERE url_id = :id');
-	$q->execute(array('id' => $_POST['id']));
+	$q = $db->prepare('SELECT id, name, date, email FROM users WHERE email = :email AND pin = :pin');
+	$q->execute(
+		array('email' => $_POST['email'],
+		'pin' => $_POST['pin']));
 	
 	if($q->rowCount() == 1) {
 		$result = $q->fetch();
@@ -13,6 +15,7 @@ if(isset($_POST['id']))
 		$USER->ID = $result['id'];
 		$USER->username = $result['name'];
 		$USER->registered = $result['date'];
+		$USER->Email = $result['email'];
 		echo json_encode($USER);
 	}
 	else{

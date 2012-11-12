@@ -5,25 +5,24 @@ require_once('db.php');
 $note = json_decode($_POST['Note']);
 $value = new StdClass();
 
-$q = $db->prepare('UPDATE notes SET Time = :time, Student = :student, Private = :private, Color = :color WHERE ID = :id');
+$id = Auth($_POST['email'], $_POST['pin']);
+if(!$id) { $obj = new StdClass(); $obj->Success = false; echo json_encode($obj); die(); }
+$note->Student = $id;
+
+$q = $db->prepare('UPDATE notes SET Time = :time, Student = :student, Favorite = :favorite WHERE ID = :id');
 $result = $q->execute(array(
-				'time' => $note->Time,
-				'student' => $note->Student,
-				'private' => $note->Private ? 'yes' : 'no',
-				'color' => $note->Color,
-				'id' => $note->ID));
+		'time' => $note->Time,
+		'student' => $note->Student,
+		'favorite' => $note->Favorite,
+		'id' => $note->ID));
 if($result)
 	$value->Success = true;
 else
 	$value->Success = false;
 
+$value->TimeCapsule = ($note->Time > time() * 1000);
+	
 $value->Error = $db->errorInfo();
-$value->Private = $note->Private;
 
-if(!$note->Private) {
-	$q = $db->prepare('SELECT Picture FROM notes WHERE ID = :id');
-	$q->execute(array('id' => $note->ID));
-	$value->Picture = $q->fetchColumn();
-}
 echo json_encode($value);
 ?>
