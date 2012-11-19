@@ -3,11 +3,6 @@ header('Access-Control-Allow-Origin: *');
 require_once('db.php');
 
 $new_note = new StdClass();
-_log('------------------------NEW NOTE----------------------------');
-_log('Photo size: ' . $_FILES['photo']['size']/1000 . " kilobytes");
-_log('Audio size: ' . $_FILES['voice']['size']/1000 . " kilobytes");
-_log('Photo error code: ' . $_FILES['photo']['error']);
-_log('Audio error code: ' . $_FILES['voice']['error']);
 
 $id = Auth($_POST['email'], $_POST['pin']);
 if(!$id) { $obj = new StdClass(); $obj->Success = false; echo json_encode($obj); die(); }
@@ -44,7 +39,7 @@ $q = $db->prepare('INSERT INTO notes(Time, Student)
 		'time' => $new_note->Time,
 		'student' => $new_note->Student));
 
-if($result) {_log('Database row inserted successfully'); }
+if($result) { }
 else { 
 	_log('Inserting database row failed!'); 
 	$e = $db->errorInfo();

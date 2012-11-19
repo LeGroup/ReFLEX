@@ -17,7 +17,7 @@ $q->execute(array('email' => $email));
 
 if($q->rowCount() > 0) {
 	$return->Success = false;
-	$return->Message = 'User for this email address exists already!';
+	$return->Message = localize('User for this email address exists already!');
 	echo json_encode($return);
 	die();
 }
@@ -33,29 +33,17 @@ if(!$q->execute(array(
 //Get the ID
 $ID = $db->lastInsertId();
 	
-//Let's create hash from id and username
-// $hash = DoubleSaltedHash($ID . $user . time());
-
-
-
-//Create uri to the new user's page
-// $uri = '?i='.$hash;
-// $return->Uri = $uri;
-// $uri = SERVER_URL.$uri;
-
-//Save the uri in the database
-// $q = $db->prepare('UPDATE users SET url_id = :url_id WHERE id = :id');
-// $q->execute(array('url_id' => $hash, 'id' => $ID));
-
 //Send mail
 //...except if you're using local server which doesn't support it.
 if(MAIL_ENABLED) {
-	$subject = 'Your user account in ReFLEX.';
-	$message = '<h3>Hello ' . $user . '</h3>'.
-	"<p>Here's a link to your personal user page: " . "<a href=\"".$uri."\">Your user page</a>.</p>
-	<p>Here's also your PIN code you need to open private notes: <b>". $pin . '</b></p>'.
-	'<p style="color: #565656;">Reflex</p>';
-
+	
+	$subject = localize('Thank you for signing up for Reflex');
+	$message = '<b>'.localize('Hello').' '.$user.'</b><br />
+	<b>'.localize('Thank you for signing up for Reflex').'</b>
+	<p>'.localize('Your pin code:').' '.$pin.'</p>
+	<p>'.localize('Navigate to your <a href="http://reflex.aalto.fi">ReFlex page</a> and login with your email address and pin code.').'</p>
+	';
+	
 	if(!mail($email, $subject, $message, MAIL_HEADERS))
 		$return->Success = false;
 	else

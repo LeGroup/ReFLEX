@@ -1,4 +1,4 @@
-var SERVER_URL = ''; //'http://reflex.aalto.fi/';
+﻿var SERVER_URL = ''; //'http://reflex.aalto.fi/';
 var PHP_LIB = 'php/'; //'http://reflex.aalto.fi/php/';
 var User;
 var SelectedNote;
@@ -11,10 +11,29 @@ var Zoom;
 var weeksShown = 1.5;
 var are_notes_draggable = false;
 var localizedStrings;
+var Language;
 var ScrollSlider;
 var ZoomSlider;
 var TimelineSlider;
 var Timeline = { }
+
+var Languages = {
+	"deutsch": "de-AT",
+	"eesti": "et-ET",
+	"english": "en-EN",
+	"español": "es-ES",
+	"français": "fr-FR",
+	"עִבְרִית": "he-HE",
+	"magyar": "hu-HU",
+	"italiano": "it-IT",
+	"lietuvių": "lt-LT",
+	"nederlands": "nl-NL",
+	"norsk": "no-NO",
+	"português": "pt-PT",
+	"slovenčina": "sk-SK",
+	"suomi": "fi-FI",
+	"türkçe": "tr-TR"
+}
 
 $(function() { Init(); });
 
@@ -23,26 +42,20 @@ $(document).bind('touchmove', function(e) { e.preventDefault(); }, false);
 
 function Init() {
 	InitializeRegistrationInterface();
-	
 	localize();
 }
 
-function LogIn() {
-	getJson('login.php', { email: $('#login-email').val(), pin: $('#login-pass').val() }, function(object) {
-		if(object.Success)
-			InitializeUserInterface(object);
+function LogIn(email, pin) {
+	getJson('login.php', { email: email, pin: pin }, function(object) {
+		if(object.Success) {
+			User = object;
+			User.Email = email;
+			User.Pin = pin;
+			InitializeUserInterface();
+		}
 		else
 			alert('Logging in failed. Check your email and PIN');
 	});
-}
-
-function DisplayRatio(o, ratio) {
-	if(ratio)
-		o.attr('data-display-ratio', ratio);
-	else
-		o.attr('data-display-ratio', o.width() / o.height());		
-	o.css('height', o.width() / o.attr('data-display-ratio') + "px"); 
-	$(window).resize(function() { o.css('height', o.width() / o.attr('data-display-ratio') + "px"); }); 
 }
 
 function DisplayRatioByHeight(o, ratio) {
@@ -51,30 +64,14 @@ function DisplayRatioByHeight(o, ratio) {
 	else
 		o.attr('data-display-ratio', o.width() / o.height());		
 		
-	o.css('width', o.height() * o.attr('data-display-ratio') + "px"); 
-	$(window).resize(function() { o.css('width', o.height() * o.attr('data-display-ratio') + "px"); }); 
+	o.css('width', Math.ceil(o.height() * o.attr('data-display-ratio')) + "px"); 
+	//$(window).resize(function() { o.css('width', Math.ceil(o.height() * o.attr('data-display-ratio')) + "px"); }); 
 }
 
-function Centerize(object) {
-	object.css({
-		left: object.width() / 2 + 'px',
-		top: object.height() / 2 + 'px'
-	});
-	$(window).resize(function() { 
-		object.css({
-			left: object.width() / 2 + 'px',
-			top: object.height() / 2 + 'px'
-		});
-	});
-}
-
-function InitializeUserInterface(userObject) {
+function InitializeUserInterface() {
 	OpenPage('user');
-	User = userObject;
-	User.Pin = $('#login-pass').val();
-	User.Email = $('#login-email').val();
 	debug('User logged in. Displaying basic user interface.');
-	$('#username-title > span').text(User.username);
+	$('.username').text(User.username);
 	$('#user-page').show();
 	$('#datepicker-calendar').datepicker({
 		dayNames: [ i18n("Sunday"), i18n("Monday"), i18n("Tuesday"), i18n("Wednesday"), i18n("Thursday"), i18n("Friday"), i18n("Saturday") ], 
@@ -84,7 +81,6 @@ function InitializeUserInterface(userObject) {
 		monthNamesShort: [ i18n("Jan"), i18n("Feb"), i18n("Mar"), i18n("Apr"), i18n("May"), i18n("Jun"), i18n("Jul"), i18n("Aug"), i18n("Sep"), i18n("Oct"), i18n("Nov"), i18n("Dec") ], 
 		minDate: 1,
 		firstDay: 1,
-		monthNames: months,
 		onSelect: function(date, inst) {
 			RecordedNote.Time = new Date(date).getTime();
 			RECORDER.save_note();
@@ -95,9 +91,7 @@ function InitializeUserInterface(userObject) {
 	ScrollSlider = $('#note-scroll');
 	ZoomSlider = $('#note-zoom');
 	TimelineSlider = $('#recorder-controls-timeline');
-	// DisplayRatio($('#video-recorder-wrapper'), 305/210);
-	// DisplayRatio($('#record-button'), 1);
-	
+	NoteTimeline = $('#note-timeline');
 	InitRecorder();
 	
 	$('#toggle-settings').click(function() { $('#settings').toggle(200); });
@@ -139,7 +133,6 @@ function InitializeUserInterface(userObject) {
 	
 	$('#zoom-buttons').buttonset();
 	$('#today').button();
-	setZoom();
 	
 	$('#zoom-alltime').click(ShowAllNotes);
 	$('#zoom-month').click(ShowNotesMonth);
@@ -155,6 +148,8 @@ function InitializeUserInterface(userObject) {
 		debug(data);
 		$('.avatar-image').attr('src', data);
 	});
+	
+	$('.email').text(User.Email);
 }
 
 function GetLastMonday(date) {
@@ -166,16 +161,28 @@ function GetLastMonday(date) {
 	return dateTime;
 }
 
+
 function InitializeRegistrationInterface() {
 	OpenPage('register');
 	debug('User no logged in. Displaying registration screen.');
+	
+	var delimiter = '';
+	for(lang in Languages) {
+		var l = $('<a>');
+		l.text(lang)
+		.attr('href', '?lang=' + Languages[lang])
+		.addClass('language');
+		$('#languages').append(delimiter).append(l);
+		delimiter = ' | ';
+	}
+	
 	$('#newUserAdd').click(RegisterUser);
 	$('#resendEmail').click(function() { OpenPage('recover-url'); });
 	$('#recoverMail').click(ResendEmail);
-	$('#login-button').click(LogIn);
+	$('#login-button').click(function() { LogIn($('#login-email').val(), $('#login-pass').val()); });
 }
 
-function SetTimeline(start, end) {
+function SetTimeline(start, end, finished) {
 	Timeline.Start = start;
 	Timeline.End = end;
 	
@@ -191,12 +198,12 @@ function SetTimeline(start, end) {
 	// EmptyNotes(Timeline.Start - Timeline.Timespan, Timeline.End + Timeline.Timespan);
 	// LoadNewNote(Timeline.Start - Timeline.Timespan, Timeline.End + Timeline.Timespan);	
 	EmptyNotes(Timeline.Start, Timeline.End);
-	LoadNewNote(Timeline.Start, Timeline.End);
+	LoadNewNote(Timeline.Start, Timeline.End, false, finished);
 }
 
 function EmptyNotes(start, end) {
 	for(i = 0; i < Notes.length; i++) {
-		if(Notes[i].Time < start || Notes[i].Time > end) {
+		if(Notes[i].Time < start || Notes[i].Time >= end) {
 			
 			if(Notes[i].Object)
 				Notes[i].Object.remove();
@@ -265,50 +272,20 @@ function ValidateUserRegistration() {
 }
 
 function debug(msg) { 
-	var d = new Date();
-	var hh = d.getHours();
-	var mm = d.getMinutes();
-	var ss = d.getSeconds();
-	var ms = d.getMilliseconds();
-	if (hh < 10) {hh = "0"+hh;}
-	if (mm < 10) {mm = "0"+mm;}
-	if (ss < 10) {ss = "0"+ss;}
-	if (ms < 10) {ms = "0"+ms;}
-	if (ms < 100) {ms = "0"+ms;}
-	console.log(hh + ':' + mm + ':' + ss + '.' + ms + '	' + msg); 
+	// var d = new Date();
+	// var hh = d.getHours();
+	// var mm = d.getMinutes();
+	// var ss = d.getSeconds();
+	// var ms = d.getMilliseconds();
+	// if (hh < 10) {hh = "0"+hh;}
+	// if (mm < 10) {mm = "0"+mm;}
+	// if (ss < 10) {ss = "0"+ss;}
+	// if (ms < 10) {ms = "0"+ms;}
+	// if (ms < 100) {ms = "0"+ms;}
+	// console.log(hh + ':' + mm + ':' + ss + '.' + ms + '	' + msg); 
+	console.log(msg);
 } 
 
-function getScrollbarRatio(id) {
-	return Clamp(($(id).position().left) / ($(id).parent().width()), 0, 1);
-}
-
-function setZoom() {
-	// Notebar.Zoom(ZoomSlider.slider('option', 'value'));
-}
-
-function zoomDisplayChange(show, hide1, hide2) {
-		$('#' + show + '-blocks').show().stop().animate({opacity: 1.0}, 200);
-		$('#' + hide1 + '-blocks').stop().animate({opacity: 0.0}, 200, function() { $(this).hide(); });
-		$('#' + hide2 + '-blocks').stop().animate({opacity: 0.0}, 200, function() { $(this).hide(); });
-		
-		$('#zoom-title-' + show + 's').show().stop().animate({opacity: 1.0}, 200);
-		$('#zoom-title-' + hide1 + 's').stop().animate({opacity: 0.0}, 200, function() { $(this).hide(); });
-		$('#zoom-title-' + hide2 + 's').stop().animate({opacity: 0.0}, 200, function() { $(this).hide(); });
-}
-
-function setScroll() {
-	// Notebar.Scroll(ScrollSlider.slider('option', 'value'));
-}
-	
-	function zoomDisplayChange(show, hide1, hide2) {
-		$('#' + show + '-blocks').show().stop().animate({opacity: 1.0}, 200);
-		$('#' + hide1 + '-blocks').stop().animate({opacity: 0.0}, 200, function() { $(this).hide(); });
-		$('#' + hide2 + '-blocks').stop().animate({opacity: 0.0}, 200, function() { $(this).hide(); });
-		
-		$('#zoom-title-' + show + 's').show().stop().animate({opacity: 1.0}, 200);
-		$('#zoom-title-' + hide1 + 's').stop().animate({opacity: 0.0}, 200, function() { $(this).hide(); });
-		$('#zoom-title-' + hide2 + 's').stop().animate({opacity: 0.0}, 200, function() { $(this).hide(); });
-	}
 function playbackPositionScroll() {
 	RECORDER.movePlaybackToPosition(TimelineSlider.slider('option', 'value'));
 }
@@ -368,18 +345,14 @@ function nextMonth(t) {
 	return new Date(t.getFullYear(), t.getMonth() + 1, t.getDate()).getTime();
 }
 
-function Clamp(val, min, max)
-{ return Math.max(min, Math.min(val, max)); }
-
-
 function i18n(str, lang){
     if (!localizedStrings || !str) return str;
 	
     var locstr = localizedStrings[str];
-    
+	
 	if (locstr == null || locstr == "") {
-		debug('Localization error: ' + str + ' missing in ' + lang);
-        locstr = str;
+		debug('Localization error: "' + str + '" missing in ' + lang);
+        locstr = '[translation missing: ' + str + ']';
     }
     return locstr;
 }
@@ -389,8 +362,20 @@ var URL_VARS = { };
 var CONTROLLER = { };
 CONTROLLER.getLocale = function() { return null; }
 function guess_language(){
+	var get = getUrlVars();
+	if(get['lang']) 
+		return get['lang'];
+	
+	if(typeof(Storage) !== 'undefined') {
+		if(localStorage.Language) {
+			return localStorage.Language;
+		}
+	}
+	
     return URL_VARS.locale || CONTROLLER.getLocale() || navigator.language || navigator.userLanguage;
 }
+
+
 
 function localize(){
     // The idea is that some html-entities are marked for translation (class 'i18n'). The content text of these html-entities (= english text) is used as a key in translation dict (localizedStrings) and it is checked for possible translation available and replaced if available. 
@@ -398,9 +383,11 @@ function localize(){
 
     // Ensure language code is in the format aa-AA:
 	// var lang = OPTIONS.language.replace(/_/, '-').toLowerCase();
-	var lang = guess_language();
-	debug('Language: ' + lang);
+	Language = guess_language();
+	localStorage.Language = Language;
 	
+	lang = Language;
+	debug('Language: ' + lang);
 	if (lang.length > 3) {
 		lang = lang.substring(0, 3) + lang.substring(3).toUpperCase();
 	} else if (lang.length == 2) {
@@ -413,7 +400,6 @@ function localize(){
         error: function(jqXHR, textStatus, errorThrown){
             debug('i18n failed:jqXHR='+jqXHR+' textStatus:'+textStatus+' errorThrown:'+errorThrown);
             return jqXHR;
-                
         },
         complete: function(data) {
             // Change all of the static strings in index.html
@@ -446,22 +432,10 @@ function localize(){
     );
 }
 
-function getQueryData(url) {
-	
-	url = url.split('?');
-	url.splice(0,1);
-	
-	var vars = url.join().split("&");
-	var result = [];
-	for(v in vars) {
-		vars[v] = vars[v].split("=");
-		result[vars[v][0]] = vars[v][1];
-	}
-	return result;
-}
-
 function getJson(url, post, finished, onError, dontDebugRespond) {
 	debug('Start json request ' + PHP_LIB + url);
+	post.Language = Language;
+	
 	if(User) {
 		post.email = User.Email;
 		post.pin = User.Pin;
@@ -481,14 +455,37 @@ function getJson(url, post, finished, onError, dontDebugRespond) {
 	});
 }
 
-function zero(n, length) {
+// Useful
+// Get $_GET[]-variables from url
+function getUrlVars(url) {
+	if(!url)
+		url = window.location.href;
+	
+	url = url.split('?');
+	url.splice(0,1);
+	
+	var vars = url.join().split("&");
+	var result = [];
+	for(v in vars) {
+		vars[v] = vars[v].split("=");
+		result[vars[v][0]] = vars[v][1];
+	}
+	return result;
+}
+
+// Add zeros in front of numbers if needed
+// 3:2.4 -> 03:02.004
+function zeronify(n, length) {
 	n = String(n);
 	if(!length)
-		length = 2;
-		
+		length = 2;	
 	while(n.length < length) {
 		n = '0' + n;
 	}
-	
 	return n;
 }
+
+// Clamp
+// Restrict value between minimum and maximum
+function clamp(val, min, max)
+{ return Math.max(min, Math.min(val, max)); }
