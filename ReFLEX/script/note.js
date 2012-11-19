@@ -7,7 +7,7 @@ function AddNote(note) {
 		Notes.push(note);
 	}
 	else {
-		note.Object.animate({ left: ((note.Time - Timeline.Start) / (Timeline.End - Timeline.Start) * 100) + '%' }, 400);
+		note.Object.animate({ left: GetNotePosition(note) }, 400);
 	}
 }
 
@@ -50,7 +50,6 @@ function Favorite() {
 		else
 			SelectedNote.Favorite = true;
 			
-			console.log(SelectedNote);
 		UpdateNote(SelectedNote);
 	}
 }
@@ -68,7 +67,9 @@ function AddNoteElement(note) {
 	note.Object = CreateNoteElement(note.Thumb);
 	note.Object.css('opacity', 0).animate({ opacity: 1 }, 200);
 	note.Object.attr('title', datetimeFormat(note.Time));
-	note.Object.css('left', ((note.Time - Timeline.Start) / (Timeline.End - Timeline.Start) * 100) + '%');
+	
+	
+	note.Object.css('left', GetNotePosition(note));
 	
 	if(note.Time > new Date().getTime() + 1000 * 3)
 		note.Object.addClass('timecapsule');
@@ -76,29 +77,57 @@ function AddNoteElement(note) {
 	if(note.Favorite && note.Favorite > 0)
 		note.Object.addClass('favorite');
 	
-	if(are_notes_draggable) {
-		note.Object.draggable({ 
-			axis: 'x',
-			containment: 'parent',
-			snap: '#now-indicator',
-			snapMode: 'inner',
-			snapTolerance: 15,
-			zIndex: 9999,
-			start: function() {
-				$(this).data('noclick', true);
-			},
-			stop: function(e, ui) { 
-				note.Time = Notebar.GetTime(ui.offset.left);
-				note.Object.attr('title', datetimeFormat(note.Time));
-				UpdateNote(note);
-			}
-		});
-	}
 	note.Object.click(function() { SelectNote(note); });
 	$('#note-timeline').append(note.Object);
 	
 	DisplayRatioByHeight($(note.Object.find('.single-note-background').get(0)), 420/280);
 	note.Object.Image.load(function() { note.Object.css('marginLeft', -(note.Object.Image.width()/2) + 'px') }); 
+}
+
+var noteGap = 50;
+var NoteTimeline;
+// Move post apart from each other
+function SeparatePosts() {
+	debug('--------Thishappens--------------');
+	var space = Math.min(NoteTimeline.width() / Notes.length, noteGap);
+	
+	var start = new Date();
+	var min = NoteTimeline.width() * 0.06;
+	var max = NoteTimeline.width() * 0.94;
+	
+	var done = false;
+	while(!done) {
+		done = true;
+		for(var i = 0; i < Notes.length; i++) {
+			Notes[i].Object.css('zIndex', parseInt(Notes[i].Object.css('left')));
+			for(var j = i + 1; j < Notes.length; j++) {
+				var iLeft = parseInt(Notes[i].Object.css('left'));
+				var jLeft = parseInt(Notes[j].Object.css('left'));
+				if(Math.abs(iLeft - jLeft) < space) {
+					var g = space - (iLeft - jLeft);
+					done = false;
+					if(Notes[i].Time > Notes[j].Time) {
+						Notes[i].Object.css('left', clamp((iLeft + g/2)/NoteTimeline.width(), 0.06, 0.94) * 100 + '%');
+						Notes[j].Object.css('left', clamp((jLeft - g/2)/NoteTimeline.width(), 0.06, 0.94) * 100 + '%');
+					}
+					else {
+						Notes[i].Object.css('left', clamp((iLeft - g/2)/NoteTimeline.width(), 0.06, 0.94) * 100 + '%');
+						Notes[j].Object.css('left', clamp((jLeft + g/2)/NoteTimeline.width(), 0.06, 0.94) * 100 + '%');
+					}
+				}
+			}
+		}
+		//if(new Date().getTime() - start.getTime() > 1000)
+			//break;
+	}
+	
+	debug(new Date().getTime() - start.getTime());
+}
+
+function GetNotePosition(note) {
+	var r = (note.Time - Timeline.Start) / (Timeline.End - Timeline.Start);
+	r = 0.06 + r * 0.88;
+	return (r * 100) + '%';
 }
 
 function UpdateNote(note) {
@@ -165,41 +194,7 @@ function OpenNote(note) {
 	RECORDER.loadNote(note, $('#pin-field').val());
 }
 
-function LoadNotes() {
-	debug('Preparing to load notes from user ' + User.ID + '.');
-	getJson('loadNoteWithinTimespan.php', { User: User.ID }, function(object) {
-		//Notebar need to be initialized before any notes are added
-		//However we need to know the date of the first note in order to set notebar's timespan
-		var start = new Date();
-		var end = new Date();
-		
-		//If there are notes, set the beginning of the notebar's timespan to the date of the first note.
-		if(object.length > 0) {
-			start = new Date().getTime() > object[0].Time ? object[0].Time : new Date().getTime();
-			end = new Date().getTime() > object[object.length - 1].Time ? new Date().getTime() : object[object.length - 1].Time;
-		}
-		
-		
-		//Add notes
-		debug('Found ' + object.length + ' notes.');
-		for(var i = 0; i < object.length; i++) {
-			AddNote({ 
-				ID: object[i].ID, 
-				Time: object[i].Time, 
-				Thumb: object[i].Picture, 
-				Student: object[i].Student, 
-				Locked: (object[i].Time > new Date().getTime()),
-				Length: object[0].Length
-			});
-		}
-		
-		//If there are already notes, select the most recent.
-		if(object.length > 0)
-			SelectNote(Notes[Notes.length - 1]);
-	}, false, true);
-}
-
-function LoadNewNote(start, end, id) {
+function LoadNewNote(start, end, id, finished) {
 	
 	if(!id) { id = 0; }
 	
@@ -217,11 +212,14 @@ function LoadNewNote(start, end, id) {
 				Thumb: object[0].Thumb, 
 				Student: object[0].Student, 
 				Favorite: object[0].Favorite,
-				Locked: (object[0].Time > new Date().getTime()),
+				Locked: (object[0].Time > new Date().getTime() - 1000 * 60 * 5),
 				Length: object[0].Length
 				});
-				LoadNewNote(start, end, object[0].ID);
+				LoadNewNote(start, end, object[0].ID, finished);
 		}
+		else if(finished)
+			finished();
+			
 		}, false, true);
 }
 
@@ -238,7 +236,7 @@ var ZoomLevel;
 function Back() {
 	switch(ZoomLevel) {
 		case Levels.Day: 
-			SetTimeline(Timeline.Start - msInDay, Timeline.End - msInDay);
+			SetTimeline(Timeline.Start - msInDay, Timeline.End - msInDay, SeparatePosts);
 			break;		
 			
 			case Levels.Week: 
@@ -263,7 +261,7 @@ function Back() {
 function Forward() {
 	switch(ZoomLevel) {
 		case Levels.Day: 
-			SetTimeline(Timeline.Start + msInDay, Timeline.End + msInDay);
+			SetTimeline(Timeline.Start + msInDay, Timeline.End + msInDay, SeparatePosts);
 			break;		
 			
 			case Levels.Week: 
@@ -356,5 +354,5 @@ function ShowNotesDay() {
 	
 
 	end = n.getTime() + msInDay;
-	SetTimeline(start, end);
+	SetTimeline(start, end, SeparatePosts);
 }

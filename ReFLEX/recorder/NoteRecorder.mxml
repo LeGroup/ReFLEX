@@ -51,7 +51,7 @@
             private var camh:Number;
             private var sound_position:Number;
             private var recording:Boolean;
-            private var note_length:Number = 10000;
+            private var note_length:Number;
 			private var resizeTimer:Timer;
 			private var flashDuration:Number = 50;
 			private var recordCanceled:Boolean = false;
@@ -80,24 +80,21 @@
                 ExternalInterface.addCallback("cancelRecording", cancelRecording);
                 ExternalInterface.addCallback("redoRecording", redoRecording);
                 ExternalInterface.addCallback("saveRecording", saveRecording);
-                ExternalInterface.addCallback("resizeFix", resizeFix);
                 ExternalInterface.addCallback("loadNote", loadNote);
                 ExternalInterface.addCallback("loadPic", loadPic);
-                ExternalInterface.addCallback("soundLength", soundLength);
                 ExternalInterface.call("recorderInitialized");
 			}
 			
 			private function debug(msg:Object):void { 
 				ExternalInterface.call('debug', 'FLASH: ' + String(msg));
 			}
-			
+						
 			private function resizeFix():void {
 				if(video != null) {
 					video.width = stage.stageWidth;
 					video.height = stage.stageHeight;
 				}
 			}
-			
 			private function initCamera():void {
                 
 				
@@ -186,6 +183,26 @@
             }
 
 			// Recording 
+			private function _prepareAnnouncement(e:TimerEvent):void {
+    		    prep_counter--;
+                ExternalInterface.call("countdown", prep_counter);
+			}
+
+            private function _prepareComplete(e:TimerEvent):void {
+                takePhoto();
+				startRecorder();
+            }
+			
+			private function startRecorder():void{
+                recorder.record();
+				recording = true;
+			}
+
+			private function stopRecorder():void{
+			    recorder.stop();
+				recording = false;
+			}
+			
 			private function startRecording():void {
 				uic.visible = true;	
 				captured_shot.source = null;
@@ -201,25 +218,6 @@
                 preparationTimer.start(); // --> _prepareAnnouncement, _prepareComplete
 			}
 			
-			private function _prepareAnnouncement(e:TimerEvent):void {
-    		    prep_counter--;
-                ExternalInterface.call("countdown", prep_counter);
-			}
-
-            private function _prepareComplete(e:TimerEvent):void {
-                takePhoto();
-				startRecorder();
-            }
-			
-			private function startRecorder():void{
-                recorder.record();
-				recording = true;
-			}
-			private function stopRecorder():void{
-			    recorder.stop();
-				recording = false;
-			}
-			
 			private function stopRecording():void {
                 video.attachCamera(null);
 				stopRecorder();
@@ -229,6 +227,22 @@
                 still_screen.visible = true;
 			}
 
+            private function cancelRecording():void {
+				recordCanceled = true;
+				if(recording) { stopRecorder(); }
+                video.attachCamera(null);
+                // stop timers 
+                micTimer.stop();
+				preparationTimer.stop();
+                sound_position = 0;
+            }
+			
+            private function redoRecording():void {
+				debug('Redoing');
+				captured_shot.visible = false;
+                startRecording();
+            }
+			
             private function startPlaying():void {
 			
                 try {
@@ -251,11 +265,6 @@
 				}
             }
 
-			private function _displayPosition(e:Event):void{
-				ExternalInterface.call("recording_timer", Math.floor(soundChannel.position / 100), false);
-			}
-
-
             private function stopPlaying():void {
 				debug('Stopped');
 				soundChannel.stop();
@@ -264,31 +273,6 @@
 				//sound_position=timeSlider.value*1000;                
             }
 
-            private function movePlaybackToPosition(p:Number):void {
-                // if (recording) {return;} // shouldn't happen
-				if (p < 1) {
-					sound_position = externalSound.length * p;
-				} else {
-					sound_position = externalSound.length;
-				}
-            }
-
-            private function cancelRecording():void {
-				recordCanceled = true;
-				if(recording) { stopRecorder(); }
-                video.attachCamera(null);
-                // stop timers 
-                micTimer.stop();
-				preparationTimer.stop();
-                sound_position = 0;
-            }
-			
-            private function redoRecording():void {
-				debug('Redoing');
-				captured_shot.visible = false;
-                startRecording();
-            }
-            
 			private function saveRecording(server_path:String, user:String, noteTime:String, email:String, pin:String): void {
 			
                 var ml:MultipartURLLoader = new MultipartURLLoader();
@@ -345,19 +329,29 @@
                 uploaderTimer.reset();
                 uploaderTimer.start();
             }
+			
             // // this should be the only function to use those path parameters 
 			
+			private function _displayPosition(e:Event):void{
+				ExternalInterface.call("recording_timer", Math.floor(soundChannel.position / 100), false);
+			}
+
+            private function movePlaybackToPosition(p:Number):void {
+                // if (recording) {return;} // shouldn't happen
+				if (p < 1) {
+					sound_position = externalSound.length * p;
+				} else {
+					sound_position = externalSound.length;
+				}
+            }
+            
 			private function _miclevel(event:TimerEvent):void {
                 ExternalInterface.call("audioLevel", mymic.activityLevel);
 			}
 			
-			private function soundLength():Number {
-				return externalSound.length;
-			}
-
     		private function _onRecording(event:RecordingEvent):void {
     			// debug("Recording : " + (event.time/1000).toFixed(1) + " s.");
-                if (event.time > note_length + 1000) { // Flash cuts one second from the end of recording
+                if (event.time > note_length + 500) { // Flash cuts one second from the end of recording
                     stopRecording();
                 }
     			if (Math.floor(event.time / 100) > recording_seconds) {
@@ -384,15 +378,18 @@
 					function _mp3EncodeError(event : ErrorEvent) : void {
 						debug('Encode error:' + event.text);
 					}
+					
 					function _mp3EncodeComplete(event : Event) : void {
 						mp3Encoder.removeEventListener(ProgressEvent.PROGRESS, _mp3EncodeProgress);
 						mp3Encoder.removeEventListener(Event.COMPLETE, _mp3EncodeComplete);
 						mp3Encoder.removeEventListener(ErrorEvent.ERROR, _mp3EncodeError);
 						debug('Encoding finished: ' + (mp3Encoder.mp3Data.length/1024).toFixed(1)+' kb.');
 						encoding_container.visible = false;
-						sound = new WavSound(recorder.output);
+						
 						ExternalInterface.call("encodingComplete");
+						
 					}
+					
 					mp3Encoder = new ShineMP3Encoder(recorder.output);
 					mp3Encoder.addEventListener(Event.COMPLETE, _mp3EncodeComplete);
 					mp3Encoder.addEventListener(ProgressEvent.PROGRESS, _mp3EncodeProgress);
@@ -416,19 +413,7 @@
 				captured_shot.source = new URLRequest(server_url + picture);
 				
 			}
-			
-			private function imageLoadComplete(event:Event):void{
-				var loader:URLLoader = URLLoader(event.target);
-				debug('ImageLoadComplete ' + loader.bytesLoaded + ', ' + typeof loader.data);
-				captured_shot.source = new Bitmap(loader.data);
-			}
-			
-			private function soundLoadComplete(event:Event):void{
-				var loader:URLLoader = URLLoader(event.target);
-				debug('SoundLoadComplete ' + loader.bytesLoaded + ', ' + typeof loader.data);
-				externalSound = new Sound(loader.data);
-			}
-
+		
 		]]>
 	</fx:Script>
     <mx:UIComponent id="uic" x="0" y="0" width="100%" height="100%" />

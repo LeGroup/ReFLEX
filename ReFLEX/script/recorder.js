@@ -22,90 +22,39 @@ RECORDER.UiStates = {
 	NoteTimeSealed: 'note-timesealed'
 };
 
-var StatesWhenNoteOptionsAvailable = [RECORDER.UiStates.NoteSelected, RECORDER.UiStates.Playing, RECORDER.UiStates.PlaybackFinished, RECORDER.UiStates.NoteTimeSealed];
-
 function InitRecorder() {
 	UIChangeState(RECORDER.UiStates.VideoOff);
 	RECORDER.prepare_recorder();
-	$('#record-video-drag').draggable({ 
-	helper: function() {
-		var helper = $('<div>');
-		helper.css({
-			backgroundColor: '#ffffff',
-			width: '110px',
-			height: '70px',
-			borderRadius: '8px',
-			backgroundImage: 'url(images/note.png)',
-			backgroundSize: '100%',
-			opacity: 0.0
-		});
-		return helper;
-	},
-	cursorAt: {
-		top: 30,
-		left: 55
-	},
-	start: dragStarted, 
-	stop: dragStopped, 
-	zIndex: 9999 
-	});
+	
 	
 	$('#save-recorded-video').click(function() {
 		RecordedNote.Time = (new Date).getTime(); 
 		RECORDER.save_note();
 		});
-	$('#note-drag-area').droppable({ startDrag: dragStarted, drop: noteDropped });
-	$('#timecapsule-wrapper').droppable({ drop: noteDroppedToTimeCapsule });
 	$('#play-button-onvideo').click(RECORDER.play);
-	$('#stop-button-onvideo').click(RECORDER.stop_playing);
-	$('#stop-recording-button-onvideo').click(RECORDER.stop_recording);
-	$('#record-button, #new-recording').click(RECORDER.prepare_recorder);
-	
-	$('#video-recorder').mouseenter(function() {
-		if(RECORDER.CurrentState == RECORDER.UiStates.Playing)
-			$('#stop-button-onvideo').stop().animate({opacity: 1.0}, 500);
-		}).mouseleave(function() {
-		if(RECORDER.CurrentState == RECORDER.UiStates.Playing)
-			$('#stop-button-onvideo').stop().animate({opacity: 0.0}, 500);
-	});
+	$('#record-button.enabled, #new-recording').click(RECORDER.prepare_recorder);
 	
 	//Recording timer total time
 	var sec = RECORDER.noteLength / 1000;
 	var min = Math.floor(sec / 60);
 	sec = sec % 60;
-	$('#record-timer > .total').text(min + ':' + zero(sec));
-}
-
-function resizeFix(rec) {
-	if(rec) {
-		rec.resizeFix();
-	}
-}
-
-
-function dragStarted(event, ui) { $('#note-drag-area').css('zIndex', 1); ui.helper.animate({opacity: 1.0}, 800); }
-function dragStopped() { $('#note-drag-area').css('zIndex', -1); }
-
-function noteDropped(event, ui) {
+	$('#record-timer > .total').text(min + ':' + zeronify(sec));
 	
-	if(ui.draggable.hasClass('save-recorded-video'))
-	{
-		if(are_notes_draggable) {
-			RecordedNote.Time = Notebar.GetTime(ui.offset.left);
-		}
-		else
-			RecordedNote.Time = (new Date()).getTime();
-		RECORDER.save_note();
-	}
-}
-
-function noteDroppedToTimeCapsule(e, ui) {
-	if(ui.draggable.hasClass('save-recorded-video')) {
-		debug('Time capsule initialized');
-	}
+	$('#play-pause-button').click(function() {
+		if($(this).hasClass('play-button')) { RECORDER.play(); }
+		else if($(this).hasClass('pause-button')) { RECORDER.stop_playing(); }
+	});
+	
+	$('#record-button').click(function() {
+		if($(this).hasClass('recording')) { RECORDER.stop_recording(); }
+		else if($(this).hasClass('enabled')) { RECORDER.start_recording(); }
+	});
 }
 
 function UIChangeState(state) {
+	debug('Changing from ' + RECORDER.CurrentState + ' to ' + state);
+	
+	//Timeline enabled or disabled
 	if(TimelineSlider.hasClass('ui-slider')) {
 		if(state == RECORDER.UiStates.PlaybackFinished || state == RECORDER.UiStates.NoteSelected)
 			TimelineSlider.slider('enable');
@@ -113,40 +62,42 @@ function UIChangeState(state) {
 			TimelineSlider.slider('disable');
 	}
 	
-	debug('Changing from ' + RECORDER.CurrentState + ' to ' + state);
-	
-	if($.inArray(state, StatesWhenNoteOptionsAvailable) >= 0) 
-		$('#note-options').show(0);
-	else 
-		$('#note-options').hide(0);
-	
-	
-	if(RECORDER.CurrentState == RECORDER.UiStates.Playing && state != RECORDER.UiStates.Playing)
+	//Stop playback when opening another note or changing interface somehow
+	if(RECORDER.CurrentState == RECORDER.UiStates.Playing && state != RECORDER.UiStates.Playing && state != RECORDER.UiStates.PlaybackFinished)
 		RECORDER.stop_playing();
-	
+		
 	// Cancel recording if Ui state changed
 	// Eg. another note has been selected
 	if(RECORDER.CurrentState == RECORDER.UiStates.Recording && state != RECORDER.UiStates.Recording) 
 		RECORDER.cancel_recording();
 	
-	if(false && RECORDER.CurrentState == RECORDER.UiStates.Playing && state != RECORDER.UiStates.Playing) {
-		RECORDER.CurrentState = state;
-		RECORDER.stop_playing();
-	}
+	// doesn't work atm
+	if(RECORDER.CurrentState == RECORDER.UiStates.Countdown && state != RECORDER.UiStates.Countdown) 
+		RECORDER.cancel_recording();
+		
+	//Play/pause button display
+	if(state == RECORDER.UiStates.Playing) 
+		$('#play-pause-button').addClass('pause-button').removeClass('play-button');
+	else if($.inArray(state, [ /* RECORDER.UiStates.Finished, */ RECORDER.UiStates.PlaybackFinished, RECORDER.UiStates.NoteSelected ]) >= 0)
+		$('#play-pause-button').addClass('play-button').removeClass('pause-button');
+	else
+		$('#play-pause-button').removeClass('play-button pause-button');
+		
+	//Record button display	
+	if(state == RECORDER.UiStates.Recording)
+		$('#record-button').addClass('recording').removeClass('enabled');
+	else if($.inArray(state, [ RECORDER.UiStates.RecorderInitialized, RECORDER.UiStates.Finished ]) >= 0)
+		$('#record-button').removeClass('recording').addClass('enabled');
+	else
+		$('#record-button').removeClass('recording enabled');
 	
-	if(state != RECORDER.UiStates.Recording) 
-		$('#record-button').css('backgroundImage', 'url(images/mic_dk_grey.png)');
-	
+	//Change the state
 	RECORDER.CurrentState = state;
+	
+	//Handle video UI elements
 	$('.recorder-ui').stop().animate({ opacity: 0.0 }, 300, function() { $(this).hide(); }); 
 	$('.' + state).stop().show(0, function() { $(this).animate({ opacity: 1.0 }, 300) }); 	
-	
-	//Does the layout resize fix
-	//RECORDER.getRecorder();
 }
-
-// **********************************
-// Team recorder 
 
 RECORDER.prepare_recorder=function() {
 	if (!RECORDER.getRecorder()) {
@@ -189,7 +140,6 @@ RECORDER.getRecorder=function() {
     var rec = swfobject.getObjectById('NoteRecorder');
     if (rec && rec.initCamera !== undefined) {
         // debug('Found recorder');
-		resizeFix(rec);
         return rec;
     } else {
         // debug('no recorder available');
@@ -257,13 +207,13 @@ RECORDER.recording_timer = function(t, total) {
 	var tSec = Math.floor(total / 1000);
 	var tMin = Math.floor(tSec / 60);
 	tSec = tSec % 60;
-	$('#record-timer > .total').text(tMin + ':' + zero(tSec));
+	$('#record-timer > .total').text(tMin + ':' + zeronify(tSec));
 	
 	//Elapsed time
 	var sec = Math.floor(t / 10);
 	var min = Math.floor(sec / 60);
 	sec = sec % 60;
-	$('#record-timer > .elapsed').text(min + ':' + zero(sec));
+	$('#record-timer > .elapsed').text(min + ':' + zeronify(sec));
 	
 	if(TimelineSlider.hasClass('ui-slider'))
 		TimelineSlider.slider('option', 'value', (t * 100)/(total - 1000));
@@ -271,7 +221,7 @@ RECORDER.recording_timer = function(t, total) {
 
 RECORDER.countdown = function(t) {
     if (t==0) {
-		$('#record-button').css('backgroundImage', 'url(images/mic_red.png)');
+		$('#record-button').addClass('recording');
         $('#countdown').hide();
 		UIChangeState(RECORDER.UiStates.Recording);
     } else {       
@@ -329,9 +279,9 @@ RECORDER.recording_stopped = function() {
 }
 
 RECORDER.cancel_recording = function() {
+    debug('canceling recording')
 	rec = RECORDER.getRecorder();
 	if(rec) { rec.cancelRecording(); }
-    debug('canceling recording')
 }
 
 RECORDER.encodingComplete= function() {
@@ -339,7 +289,6 @@ RECORDER.encodingComplete= function() {
 	
 	//Generate a note object with unique ID
 	RecordedNote = { "Title": $('#recorder-title').text() }
-	$('#record-video-drag').draggable('enable');
 	$('#re-record-button-onvideo > img').click(RECORDER.redo_recording);
 }
 var alpha = 0;
@@ -383,7 +332,6 @@ RECORDER.finishedRecording = function(path) {
     // $('div.recorder_panel').hide();
     debug('Received a record:'+path);
 	
-	$('#record-video-drag').draggable('disable');
 	
 	try{ var note = $.parseJSON(path); }
 	catch (e) { debug('Parsing JSON failed: \n' + path); }
@@ -413,8 +361,10 @@ RECORDER.loadNote = function(note, pin) {
 					
 					var t = SelectedNote.Time - new Date().getTime();
 			
-					
-					$('#timecapsule-date').text(Math.ceil(t / msInDay));
+					if(Math.ceil(t / msInDay) > 1)
+						$('#timecapsule-date').text(i18n('opens in') + ' ' + Math.ceil(t / msInDay) + ' ' + i18n('days'));
+					else if(Math.ceil(t / msInDay) == 1)
+						$('#timecapsule-date').text(i18n('opens tomorrow'));
 				}
 				else
 					UIChangeState(RECORDER.UiStates.NoteSelected);

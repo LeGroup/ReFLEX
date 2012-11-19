@@ -17,9 +17,9 @@ $email = $q->fetchColumn();
 
 //Send mail
 if(MAIL_ENABLED) {
-	$subject = 'You requested a new pin code in ReFLEX.';
-	$message = 'Hello,' .
-	"\nHere's your new pin code: " . $pin;
+	$subject = localize('You requested a new pin code in ReFLEX.');
+	$message = localize('Hello').'<br />'. 
+	localize("Here's your new pin code: ") . $pin;
 		
 	//Headers from db.php
 	if(!mail($email, $subject, $message, MAIL_HEADERS))

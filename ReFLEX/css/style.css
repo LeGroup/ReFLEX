@@ -12,7 +12,7 @@
 
 html, body {
   background-color: #3d3d3c;
-  font-family: Tahoma, sans-serif;
+  font-family: sans-serif, Tahoma;
   color: #e6e6e5;
   position: relative;
   height: 100%;
@@ -37,20 +37,27 @@ input[type="button"] {
   display: none;
   position: relative;
   width: 100%;
-  height: 98%; }
+  height: 100%; }
 
 .header {
   height: 62px;
   width: 100%;
   background-color: #343435;
   position: relative;
-  /* @include vertical-center-parent; */ }
-  .header div h1 {
+  line-height: 62px; }
+  .header .logo {
     float: left;
-    margin: 16px; }
-  .header .logo img {
-    float: left;
-    margin: 11px; }
+    width: 600px;
+    padding-top: 5px;
+    line-height: normal; }
+    .header .logo img {
+      float: left;
+      margin: 7px;
+      margin-left: 10px; }
+    .header .logo span {
+      font-size: 0.8em; }
+    .header .logo h1 {
+      margin: 0; }
   .header .options {
     float: right;
     margin: 15px;
@@ -61,6 +68,16 @@ input[type="button"] {
       background-image: url(../images/options-hover.png); }
     .header .options:active {
       background-image: url(../images/options-active.png); }
+  .header .leave-options {
+    float: right;
+    margin: 15px;
+    width: 28px;
+    height: 28px;
+    background-image: url(../images/leave-options.png); }
+    .header .leave-options:hover {
+      background-image: url(../images/leave-options-hover.png); }
+    .header .leave-options:active {
+      background-image: url(../images/leave-options-active.png); }
   .header #login {
     float: right; }
     .header #login span {
@@ -73,7 +90,6 @@ input[type="button"] {
       background-color: transparent;
       color: rgba(255, 255, 255, 0.7);
       padding: 4px;
-      text-align: center;
       display: inline-block;
       margin: 5px; }
     .header #login input[type="password"] {
@@ -81,12 +97,13 @@ input[type="button"] {
     .header #login input[type="button"] {
       height: 28px;
       padding: 4px;
-      margin-top: 4px; }
+      margin-top: 4px;
+      margin-right: 10px; }
 
 #wrapper {
   margin: auto;
   position: relative;
-  height: 96%; }
+  height: 100%; }
 
 #username-title {
   height: 75px;
@@ -103,34 +120,56 @@ input[type="button"] {
     display: inline-block;
     vertical-align: middle; }
 
-#avatar {
+#options-page #avatar {
   height: 250px;
   width: 250px;
   position: relative;
   text-align: center; }
-  #avatar #avatar-image {
+  #options-page #avatar #avatar-image {
     width: 100%;
     height: 100%; }
-
-#avatar-camera-trigger {
-  width: 53px;
-  height: 39px;
+#options-page #avatar-camera-trigger {
+  width: 88px;
+  height: 88px;
   position: absolute;
-  bottom: -50px;
-  margin-left: -26.5px;
-  background-image: url(../images/camera-1.png); }
-  #avatar-camera-trigger:hover {
-    background-image: url(../images/camera-2.png); }
-
-#AvatarCameraContainer {
+  top: 50%;
+  right: -120px;
+  margin-top: -44px;
+  background-image: url(../images/camera-active.png); }
+  #options-page #avatar-camera-trigger:hover {
+    background-image: url(../images/camera-active-hover.png); }
+  #options-page #avatar-camera-trigger:active {
+    background-image: url(../images/camera-active-active.png); }
+#options-page #AvatarCameraContainer {
   position: absolute;
   top: 0;
   height: 100%;
   width: 100%; }
-  #AvatarCameraContainer #AvatarCamera {
+  #options-page #AvatarCameraContainer #AvatarCamera {
     top: 0;
     height: 100%;
     width: 100%; }
+#options-page p {
+  margin-top: 20px;
+  line-height: 35px;
+  height: 35px;
+  vertical-align: middle; }
+  #options-page p:before {
+    content: '';
+    display: inline-block;
+    height: 100%;
+    vertical-align: middle; }
+  #options-page p #new-pin {
+    width: 35px;
+    height: 35px;
+    display: inline-block;
+    vertical-align: middle;
+    margin-right: 6px;
+    background-image: url(../images/new-pin.png); }
+    #options-page p #new-pin:hover {
+      background-image: url(../images/new-pin-hover.png); }
+    #options-page p #new-pin:active {
+      background-image: url(../images/new-pin-active.png); }
 
 #left {
   width: 20%;
@@ -203,6 +242,9 @@ input[type="button"] {
   #color-palette li {
     display: block;
     margin: 3px;
+    -moz-border-radius: 6px;
+    -webkit-border-radius: 6px;
+    -khtml-border-radius: 6px;
     border-radius: 6px;
     float: left;
     height: 30px;
@@ -216,7 +258,7 @@ input[type="button"] {
   margin: auto; }
   #video-recorder-wrapper #video-title {
     position: relative; }
-    #video-recorder-wrapper #video-title span {
+    #video-recorder-wrapper #video-title #favorite {
       position: absolute;
       right: 0; }
 
@@ -228,15 +270,23 @@ input[type="button"] {
   width: 648px;
   height: 445px;
   position: relative;
-  background-size: cover !important;
-  background-color: #efef95; }
+  background-size: cover !important; }
+  #video-recorder .recorder-finished.button {
+    opacity: 0.6; }
+    #video-recorder .recorder-finished.button:hover {
+      opacity: 0.8; }
+    #video-recorder .recorder-finished.button:active {
+      opacity: 1; }
 
 #record-init-background {
   width: 100%;
   height: 100%;
-  background-color: #ededaf;
   position: absolute;
   top: 0; }
+
+#video-recorder, #record-init-background {
+  background-color: #1e1e1e;
+  box-shadow: inset 0 0 30px rgba(0, 0, 0, 0.1); }
 
 .pincode {
   width: 100%;
@@ -271,6 +321,9 @@ input[type="button"] {
   #timecapsule-datepicker img {
     width: 100%;
     height: auto;
+    -moz-border-radius: 8px;
+    -webkit-border-radius: 8px;
+    -khtml-border-radius: 8px;
     border-radius: 8px;
     margin: 3px 0 -3px 0; }
 
@@ -284,7 +337,7 @@ input[type="button"] {
   font-size: 2.1em; }
 
 #keep {
-  background-image: url(../images/keep-1.png);
+  background-image: url(../images/keep.png);
   width: 97px;
   height: 46px;
   text-align: center;
@@ -302,6 +355,9 @@ input[type="button"] {
   left: 25%;
   top: 50%;
   width: 15%;
+  -moz-border-radius: 8px;
+  -webkit-border-radius: 8px;
+  -khtml-border-radius: 8px;
   border-radius: 8px;
   margin: -10.3%; }
   #save-recorded-video.recorder-ui img {
@@ -313,6 +369,9 @@ input[type="button"] {
   left: 75%;
   top: 50%;
   width: 14.4%;
+  -moz-border-radius: 8px;
+  -webkit-border-radius: 8px;
+  -khtml-border-radius: 8px;
   border-radius: 8px;
   margin: -10.9%; }
   #re-record-button-onvideo.recorder-ui img {
@@ -330,11 +389,19 @@ input[type="button"] {
     display: none;
     opacity: 0.95; }
 
-#play-button-onvideo.recorder-ui, #stop-button-onvideo.recorder-ui, #stop-recording-button-onvideo.recorder-ui, #record-button-onvideo.recorder-ui {
+#record-button-onvideo img {
+  background-color: rgba(53, 53, 53, 0.7);
+  padding: 40px;
+  -moz-border-radius: 5px;
+  -webkit-border-radius: 5px;
+  -khtml-border-radius: 5px;
+  border-radius: 5px; }
+
+#play-button-onvideo.recorder-ui, #record-button-onvideo.recorder-ui {
   left: 50%;
   top: 50%;
   position: absolute; }
-  #play-button-onvideo.recorder-ui img, #stop-button-onvideo.recorder-ui img, #stop-recording-button-onvideo.recorder-ui img, #record-button-onvideo.recorder-ui img {
+  #play-button-onvideo.recorder-ui img, #record-button-onvideo.recorder-ui img {
     margin: -50%; }
 
 #what-did-i-learn.recorder-ui {
@@ -406,14 +473,10 @@ input[type="button"] {
   border: 4px solid rgba(255, 255, 255, 0.7);
   background-color: rgba(0, 0, 0, 0.4);
   color: rgba(255, 255, 255, 0.9);
+  -moz-border-radius: 1000px;
+  -webkit-border-radius: 1000px;
+  -khtml-border-radius: 1000px;
   border-radius: 1000px; }
-
-#video-recorder {
-  background-color: #ededaf;
-  -moz-transition: border-color 0.3s;
-  -webkit-transition: border-color 0.3s;
-  -o-transition: border-color 0.3s;
-  transition: border-color 0.3s; }
 
 #video-recorder-controls {
   width: 100%;
@@ -424,6 +487,9 @@ input[type="button"] {
   height: 100%;
   background-color: #af9095;
   border: 3px solid #945a5d;
+  -moz-border-radius: 10px;
+  -webkit-border-radius: 10px;
+  -khtml-border-radius: 10px;
   border-radius: 10px;
   float: left;
   display: inline-block; }
@@ -438,7 +504,7 @@ input[type="button"] {
   width: 16px !important;
   position: absolute !important; }
 
-#record-button, #play-button {
+#record-button, #play-pause-button {
   width: 25px;
   height: 25px;
   background-repeat: no-repeat;
@@ -447,10 +513,44 @@ input[type="button"] {
   float: left; }
 
 #record-button {
-  background-image: url(../images/mic_dk_grey.png); }
+  background-image: url(../images/record-small-disabled.png); }
 
-#play-button {
-  background-image: url(../images/play_videocontrols_grey.png); }
+#record-button.recording {
+  cursor: pointer;
+  background-image: url(../images/record-small-red.png); }
+  #record-button.recording:hover {
+    background-image: url(../images/record-small-stop.png);
+    background-color: #4C4C4C; }
+  #record-button.recording:active {
+    background-image: url(../images/record-small-stop.png);
+    background-color: #535353; }
+
+#record-button.enabled {
+  cursor: pointer;
+  background-image: url(../images/record-small.png); }
+  #record-button.enabled:hover {
+    background-color: #4C4C4C; }
+  #record-button.enabled:active {
+    background-color: #535353; }
+
+#play-pause-button {
+  background-image: url(../images/play-small-disabled.png); }
+
+#play-pause-button.play-button {
+  cursor: pointer;
+  background-image: url(../images/play-small.png); }
+  #play-pause-button.play-button:hover {
+    background-color: #4C4C4C; }
+  #play-pause-button.play-button:active {
+    background-color: #535353; }
+
+#play-pause-button.pause-button {
+  cursor: pointer;
+  background-image: url(../images/pause-small.png); }
+  #play-pause-button.pause-button:hover {
+    background-color: #4C4C4C; }
+  #play-pause-button.pause-button:active {
+    background-color: #535353; }
 
 #record-timer {
   margin: 7px;
@@ -485,6 +585,9 @@ input[type="button"] {
   #recorder-controls-timeline .ui-slider-handle {
     opacity: 0; }
   #recorder-controls-timeline .ui-corner-all {
+    -moz-border-radius: 0 !important;
+    -webkit-border-radius: 0 !important;
+    -khtml-border-radius: 0 !important;
     border-radius: 0 !important; }
   #recorder-controls-timeline .ui-slider-range {
     background: none;
@@ -543,53 +646,12 @@ input[type="button"] {
 
 #note-timeline {
   position: relative;
-  height: 80px;
+  height: 90px;
   overflow-x: hidden; }
-
-#note-background {
-  /*
-  height: 65%;
-  background-color: rgba(255,255,255,0.1);
-  width: 100%;
-  position: absolute;
-  border-radius: 12px;
-  top: 0; */ }
 
 #note-options {
   display: none; }
 
-#day-blocks, #week-blocks, #month-blocks {
-  /*
-  position: absolute;
-  bottom: 0;
-  height: 10px;
-  color: #fff;
-  font-size: 0.45em;
-  line-height: 10px;
-  white-space: nowrap;
-  overflow: hidden;
-  
-  div{
-  	float: left;
-  	height: 100%;
-  	display: inline-block;
-  	white-space: normal;
-  	border-radius: 10px;
-  }
-  span{
-  	margin: 0 3px 0 3px;
-  	padding: 0 5px 0 5px;
-  	display: block;
-  	border-radius: 10px;
-  	background-color: #2f75ba;
-  }
-  */ }
-
-/*
-#day-blocks{ display: none; }
-#week-blocks{ display: none; }
-#month-blocks{ display: visible; }
-*/
 .note {
   width: 0;
   position: absolute !important;
@@ -672,6 +734,11 @@ input[type="button"] {
   background-repeat: no-repeat;
   background-position: center center; }
 
+.favorite.timecapsule .note-overlay {
+  background-image: url(../images/favorite-timecapsule.png);
+  background-repeat: no-repeat;
+  background-position: center center; }
+
 #favorite {
   width: 18px;
   height: 17px;
@@ -693,40 +760,85 @@ input[type="button"] {
   border: 1px solid rgba(255, 255, 255, 0.1);
   background-color: transparent;
   color: rgba(255, 255, 255, 0.7);
-  padding: 11px;
-  font-size: 1.3em;
-  text-align: center;
+  padding: 4px;
   display: inline-block;
-  margin-bottom: 10px; }
+  margin-bottom: 10px;
+  width: 95%;
+  font-style: italic; }
+
+#introduction {
+  width: 500px;
+  height: 308px;
+  background-size: cover;
+  background-repeat: no-repeat;
+  float: left;
+  background-image: url(../images/ReFlex-Login-graphic.png);
+  position: relative; }
+  #introduction div {
+    width: 100px;
+    text-align: center;
+    position: absolute; }
+  #introduction #introduction-record {
+    top: 110px;
+    left: 10px; }
+  #introduction #introduction-store {
+    top: 110px;
+    left: 198px; }
+  #introduction #introduction-revisit {
+    top: 110px;
+    left: 388px; }
+  #introduction #introduction-highlight {
+    top: 320px;
+    left: 105px; }
+  #introduction #introduction-timecapsule {
+    top: 320px;
+    left: 305px; }
+
+#register-footer {
+  position: absolute;
+  bottom: 0;
+  border-top: 1px solid #555;
+  width: 100%;
+  text-align: center;
+  font-size: 0.8em;
+  line-height: 2em;
+  padding: 10px 0; }
+  #register-footer a {
+    cursor: pointer;
+    color: #ddd;
+    text-decoration: none; }
+    #register-footer a:hover {
+      text-decoration: underline; }
 
 #newUserAdd {
-  width: 100%;
-  clear: both;
-  display: block;
+  font-size: 0.9em;
+  color: #fff;
   padding: 6px;
-  color: #5764cb;
-  text-align: center; }
+  -moz-border-radius: 5px;
+  -webkit-border-radius: 5px;
+  -khtml-border-radius: 5px;
+  border-radius: 5px;
+  background-color: #343435; }
+  #newUserAdd:hover {
+    background-color: #575656; }
+  #newUserAdd:active {
+    background-color: #878786; }
 
-#now-indicator {
-  /*
-  height: 100%;
-  width: 0px;
-  position: absolute !important; 
-  div {
-  	background-color: rgba(255,255,255,0.2);
-  	position: absolute !important; 
-  	color: rgba(255,255,255,0.7);
-  	text-align: center;
-  	line-height: 20px;
-  	height: 75%;
-  	width: 25px;
-  	margin-left: -12.5px;
-  	box-shadow: 0 0 4px 15px rgba(255,255,255,0.2);
-  	font-size: 0.9em;
-  }
-  */ }
+#login-button {
+  border: 0;
+  color: #fafafa;
+  background-color: #4a4a4a;
+  cursor: pointer;
+  -moz-border-radius: 3px;
+  -webkit-border-radius: 3px;
+  -khtml-border-radius: 3px;
+  border-radius: 3px; }
+  #login-button:hover {
+    background-color: #575656; }
+  #login-button:active {
+    background-color: #878786; }
 
-.recover, .register {
+.recover {
   padding-top: 20%; }
 
 #zoom-title {

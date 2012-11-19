@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="fi">
 <head>
 	<title>ReFlex</title>
@@ -18,17 +18,18 @@
 	<div id="wrapper">
 		<div id="user-page" class="page">
 			<div class="header">
-				<div class="logo"><img src="images/logo.png" alt /><h1>ReFlex</h1></div>
+				<div class="logo"><img src="images/logo.png" alt /><h1>ReFlex</h1>
+				<span class="i18n">Record personal reflections or learning projects</span></div>
 				<div class="options button" onclick="OpenPage('options')"></div>
 			</div>
 			<!-- User info -->
-			<h1 id="username-title"><img src="images/avatars/avatar_placeholder.png" alt class="avatar avatar-image"  /><span></span></h1>
+			<h1 id="username-title"><img src="images/avatars/avatar_placeholder.png" alt class="avatar avatar-image"  /><span class="username"></span></h1>
 				
 			<!-- Video player and recorder -->
 			<div id="videos">
 				<div id="video-recorder-wrapper">
 					<span id="new-recording" class="button"></span>
-			<h2 id="video-title">What's going on in school? <span id="favorite" class="button"></span></h2>
+			<h2 id="video-title"><span class="i18n">What's going on in school?</span> <span id="favorite" class="button"></span></h2>
 			<div id="video-recorder">
 			
 			<div id="NoteRecorder"></div>
@@ -36,13 +37,11 @@
 				<span class="recorder-ui video-off i18n" id="what-did-i-learn">What did I learn?</span>
 				<div class="recorder-ui video-off recorder-initialized note-sealed" id="record-init-background"></div>
 				<div class="recorder-ui video-off recorder-initialized button" id="record-button-onvideo"><img src="images/record.png" alt /></div>
-				<div class="recorder-ui recorder-finished button save-recorded-video" id="save-recorded-video"><div id="keep">keep</div></div>
-				<div class="recorder-ui recorder-finished button" id="re-record-button-onvideo"><img src="images/new-recording-screen-2.png" alt /></div>
+				<div class="recorder-ui recorder-finished button save-recorded-video" id="save-recorded-video"><div id="keep" class="i18n">keep</div></div>
+				<div class="recorder-ui recorder-finished button" id="re-record-button-onvideo"><img src="images/new-recording-screen.png" alt /></div>
 				<div class="recorder-ui note-selected note-playback-finished button" id="play-button-onvideo"><img src="images/play-1.png" width="120" height="120" alt /></div>
-				<div class="recorder-ui record-on button" id="stop-recording-button-onvideo"><img src="images/stop-1.png" alt /></div>
-				<div class="recorder-ui note-playing button" id="stop-button-onvideo"><img src="images/stop.png" alt /></div>
 				<div class="recorder-ui countdown" id="countdown">...</div>
-				<div class="recorder-ui recorder-finished" id="timecapsule-datepicker"><input type="hidden" id="datepicker-calendar" /><img src="images/time-it-1.png" class="button" id="timecapsule-datepicker-button" alt /></div>
+				<div class="recorder-ui recorder-finished" id="timecapsule-datepicker"><input type="hidden" id="datepicker-calendar" /><img src="images/time-it.png" class="button" id="timecapsule-datepicker-button" alt /></div>
 				<div class="recorder-ui record-on" id="vumeters">
 					<div></div>
 					<div></div>
@@ -60,19 +59,15 @@
 					<div></div>
 				</div>
 			<div class="recorder-ui note-timesealed" id="timecapsule-background">
-				<h2><img width="170" height="80" src="images/time-capsule-small.png" alt /><br />
-					<span class="i18n">open in</span> <span id="timecapsule-date"></span> <span class="i18n">days</span></h2>
-			</div>
-			
-			<div class="pincode recorder-ui note-sealed">
-				<h2 class="i18n">This note is private!</h2>
+				<h2><img width="170" height="80" src="images/timecapsule-large.png" alt /><br />
+					<span id="timecapsule-date"></span> </h2>
 			</div>
 			</div>
 			<div id="video-recorder-controls">
 			<div id="recorder-controls-timeline" class="slider"></div>
 			</div>
-				<div id="record-button" class="button i18n_title" title="Record a new note"></div>
-				<div id="play-button" class="button i18n_title" title="Play"></div>
+				<div id="record-button" class="i18n_title" title="Record"></div>
+				<div id="play-pause-button" class="i18n_title play-button" title="Play"></div>
 				<div id="record-timer"><span class="elapsed">0:00</span> <span>/</span> <span class="total"></span></div>
 				<div id="note-timestamp">15:30 12.4.2012</div>
 			</div>
@@ -88,59 +83,62 @@
 				<div id="timeline-forward" class="button"></div>
 				<div id="note-timeline"></div>
 			</div>
-			<!-- <div id="note-scroll" class="slider"></div> -->
-			<div id="today">Today</div>
+			<div id="today" class="i18n">Today</div>
 			<div id="zoom-buttons">
-				<input type="radio" name="zoom" id="zoom-day" value="day" /><label for="zoom-day">day</label>
-				<input type="radio" name="zoom" id="zoom-week" value="week" /><label for="zoom-week">week</label>
-				<input type="radio" name="zoom" id="zoom-month" value="month" /><label for="zoom-month">month</label>
-				<input type="radio" name="zoom" id="zoom-alltime" value="alltime" /><label for="zoom-alltime">all time</label>
+				<input type="radio" name="zoom" id="zoom-day" value="day" /><label for="zoom-day" class="i18n">day</label>
+				<input type="radio" name="zoom" id="zoom-week" value="week" /><label for="zoom-week" class="i18n">week</label>
+				<input type="radio" name="zoom" id="zoom-month" value="month" /><label for="zoom-month" class="i18n">month</label>
+				<input type="radio" name="zoom" id="zoom-alltime" value="alltime" /><label for="zoom-alltime" class="i18n">all time</label>
 			</div>
 			</div><!-- notes -->
 		</div>
 		<div id="register-page" class="page">
 			<div class="header">
-				<div class="logo"><img src="images/logo.png" alt /><h1>ReFlex</h1></div>
+				<div class="logo"><img src="images/logo.png" alt /><h1>ReFlex</h1>
+				<span class="i18n">Record personal reflections or learning projects</span></div>
 				<div id="login">
-					<span>Log in in ReFlex with your Email and PIN code.</span><br />
-					<input type="text" id="login-email" placeholder="Email address" /><input id="login-pass" type="password" placeholder="PIN code" /><input type="button" id="login-button" value="Log in" />
+					<a onclick="LogIn('antti.sandberg@gmail.com', 'p09f')" style="font-size: 0.5em; cursor: pointer; opacity: 0.5">[login asand]</a>
+					<input type="text" class="i18n_placeholder" id="login-email" placeholder="email address" /><input id="login-pass" type="password" class="i18n_placeholder" placeholder="pin" /><input type="button" id="login-button" class="i18n_value" value="Log in" />
 				</div>
 			</div>
-			<p class="register" style="display: block; text-align: center">
-				<span style="font-size: 1.4em; margin: 20px; display: block;">New to ReFlex? <br />Create a new account!</span><br />
-				<input type="text" id="newUsername" class="i18n_placeholder" placeholder="Your name" value="" /><br /> 
-				<input type="text" id="newUserEmail" class="i18n_placeholder" placeholder="Your email address" value="" /><br /> 
-				<a id="newUserAdd" class="button i18n">Create new user</a><br />
-				<a id="resendEmail" class="button i18n">Lost your URL?</a>
-				<p class="register-complete" style="display: none; font-size: 1.2em; text-align: center"></p>
-			</p>
+			<div style="width: 1000px; margin: auto; margin-top: 150px">
+				<div id="introduction">
+					<div id="introduction-record" class="i18n">Record</div>
+					<div id="introduction-store" class="i18n">Store</div>
+					<div id="introduction-revisit" class="i18n">Revisit</div>
+					<div id="introduction-highlight" class="i18n">Highlight</div>
+					<div id="introduction-timecapsule" class="i18n">Timecapsule</div>
+				</div>
+				<div class="register" style="display: block; text-align: right; float: right;">
+					<span style="width: 100%; display: block;" class="i18n">New to ReFlex? Create a reflection space!</span><br />
+					<input type="text" id="newUsername" class="i18n_placeholder" placeholder="your name" value="" /><br /> 
+					<input type="text" id="newUserEmail" class="i18n_placeholder" placeholder="your email address" value="" /><br /> 
+					<a id="newUserAdd" class="button i18n">Create space</a>
+					<p class="register-complete" style="display: none; font-size: 1.2em; text-align: center"></p>
+				</div>
+			</div>
+			<div id="register-footer">
+				<span id="languages"></span><br />
+				<span class="i18n">contact</span> | <span class="i18n">privacy policy</span> | <span class="i18n">terms and conditions</span> | <a href="http://itec.eun.org/">iTEC 2012</a>
+			</div>
 		</div>
-		<div id="recover-url-page" class="page">
-			<p class="recover" style="display: block; text-align: center">
-				<input type="text" id="recoverMailAddress" class="i18n_placeholder" placeholder="Your email address" value="" /><br /> 
-				<a id="recoverMail" class="button i18n">Reset lost URL</a>
-			</p>
-		</div>
-		<div id="recover-url-done-page" class="page">
-			<p class="recover" style="display: block; text-align: center">
-				<p>Success! You will receive a link to your page by email soon.</p>
-			</p>
-		</div>		
 		<div id="options-page" class="page">
 			<div class="header">
-				<div class="logo"><img src="images/logo.png" alt /><h1>ReFlex</h1></div>
-				<div class="options button" onclick="OpenPage('user')"></div>
+				<div class="logo"><img src="images/logo.png" alt /><h1>ReFlex</h1>
+				<span class="i18n">Record personal reflections or learning projects</span></div>
+				<div class="leave-options button" onclick="OpenPage('user')"></div>
 			</div>
 			<div id="options">
-				<h1>Options</h1>
-				<p>Take new profile picture</p>
+				<h1 class="username">Options</h1>
+				
 				<div id="avatar">
 					<img src="images/avatars/avatar_placeholder.png" alt id="avatar-image" class="avatar avatar-image" />
 					<div id="AvatarCameraContainer"><div id="AvatarCamera"></div></div>
 					<div id="ava-countdown"></div>
-					<div id="ava-save">Save picture</div>
+					<div id="ava-save" class="i18n">Save picture</div>
 					<span id="avatar-camera-trigger" class="button"></span>
 				</div>
+				<p><span id="pin-reset"><span id="new-pin"></span> <span class="i18n">email new pin to</span> <span class="email"></span></span></p>
 			</div>
 		</div>
 	</div>

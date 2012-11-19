@@ -151,14 +151,12 @@
             }
 
             private function savePicture(server_path:String, user:String): void {
-				debug('Uploading avatar');        
-				debug('1'); 
+				debug('Uploading avatar');  
 
                 var ml:MultipartURLLoader = new MultipartURLLoader();
                 ml.addEventListener(Event.COMPLETE, onReady);         
                 // ExternalInterface.call("uploadingPicture");
-                                
-				debug('2');
+                               
                 function onReady(e:Event):void {
 					debug('saveRecording.onReady()');
                     // notify teamup that we are done
@@ -176,12 +174,10 @@
 					uploaderTimer.stop();
             		ExternalInterface.call("AVA.finishedRecording", ml.loader.data);
                 }
-				debug('3');
                 //$_POST['data']
                 ml.addVariable('user_id', user);
                 ml.addFile(photo_jpg, 'photo.jpg', 'photo', 'image/jpeg'); 
                 
-				debug('4');
 				debug(server_path);
 				//Uploading the image
                 try {
