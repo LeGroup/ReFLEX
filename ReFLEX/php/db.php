@@ -1,7 +1,7 @@
 <?php
 //Self-explanatory.
 //First one is used for disabling mail in local servers.
-define('MAIL_ENABLED', false);
+define('MAIL_ENABLED', true);
 define('LANGUAGE', isset($_POST['Language']) ? $_POST['Language'] : 'en-EN');
 define('WEBSITE_SALT', $_SERVER['WEBSITE_SALT']);
 define('SERVER_URL', 'http://reflex.aalto.fi/');
@@ -17,7 +17,7 @@ $database = 'reflex';
 $user = 'root';
 $host = '127.0.0.1';
 $pass = 'x)*z8uUmpswmjeUh3y';
-$pass = ''; //Local
+// $pass = ''; //Local
 
 $localized = json_decode(file_get_contents('../i18n/localized_'.LANGUAGE.'.js'));
 	
