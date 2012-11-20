@@ -41,8 +41,24 @@ $(function() { Init(); });
 $(document).bind('touchmove', function(e) { e.preventDefault(); }, false);
 
 function Init() {
-	InitializeRegistrationInterface();
 	localize();
+	if(CheckBrowser()) {
+		InitializeRegistrationInterface();
+	}
+	else
+		OpenPage('browser');
+}
+
+function CheckBrowser() {
+	if($.browser.msie) {
+		var ver = parseInt($.browser.version.substr(0, 1));
+		debug(ver);
+		return ver >= 9;
+	}
+	else if($.browser.webkit) { return true; }
+	else if($.browser.mozilla) { return true; }
+	else if($.browser.opera) { return true; }
+	return false;
 }
 
 function LogIn(email, pin) {
@@ -164,7 +180,6 @@ function GetLastMonday(date) {
 
 function InitializeRegistrationInterface() {
 	OpenPage('register');
-	debug('User no logged in. Displaying registration screen.');
 	
 	var delimiter = '';
 	for(lang in Languages) {
@@ -243,19 +258,18 @@ function RegisterUser() {
 			$('#newUserAdd').hide();
 			// $('#newUserEmail').hide();
 			if(object.Success) {
-				$('#newUsername').remove();	
-				$('#newUserEmail').remove();
-				$('#resendEmail').remove();
-				$('.register-complete').show(200).html(i18n('Registration was successful. You will now get your login details by email.')); 
+				$('#register-before').hide();
+				$('.register-complete').show(); 
 			}
 			else {
 				debug('User Registration failed: ' + object.Message);
-				$('#newUsername').remove();	
-				$('#newUserEmail').remove();
-				$('.register-complete').show(200).html(i18n('Registration was unsuccessful. ' + object.Message));  
+				$('#register-before').hide();
+				$('.register-failed').show();  
 			}
 		});
 	}
+	else
+		alert('Your name and email address cannot be empty!');
 }
 
 function ResendEmail() {
@@ -383,17 +397,21 @@ function localize(){
 
     // Ensure language code is in the format aa-AA:
 	// var lang = OPTIONS.language.replace(/_/, '-').toLowerCase();
+	debug("browser: " + $.browser.chrome + ', ' + $.browser.version);
+	
 	Language = guess_language();
 	localStorage.Language = Language;
 	
 	lang = Language;
-	debug('Language: ' + lang);
+	
 	if (lang.length > 3) {
 		lang = lang.substring(0, 3) + lang.substring(3).toUpperCase();
 	} else if (lang.length == 2) {
 	    lang = lang+'-'+lang.toUpperCase();   
 	}
-	if (lang=='en-EN') return;
+	
+	//if (lang=='en-EN') return;
+	
     jQuery.ajax("i18n/localized_"+lang+".js", {
         dataType: "json",
         isLocal: true,     
@@ -405,8 +423,12 @@ function localize(){
             // Change all of the static strings in index.html
             var place;
             localizedStrings=$.parseJSON(data.responseText);
-            debug(''+Object.keys(localizedStrings).length+' translation keys available');
-            $('.i18n').each(function (i) {
+			try {
+				debug(''+Object.keys(localizedStrings).length+' translation keys available');
+            }
+			catch(error) { }
+			
+			$('.i18n').each(function (i) {
                 $(this).html(i18n($(this).html(), lang));
             })
 			
