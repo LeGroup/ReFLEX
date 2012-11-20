@@ -6,6 +6,7 @@ $return = new StdClass();
 
 $return->Success = true;
 $return->MailSent = false;
+$return->MailEnabled = MAIL_ENABLED;
 $user = $_POST['Username'];
 $email = $_POST['Email'];
 $return->Mail = $email;
@@ -49,6 +50,7 @@ if(MAIL_ENABLED) {
 	else
 		$return->MailSent = true;
 }
+$return->Success = false;
 	
 echo json_encode($return);
 

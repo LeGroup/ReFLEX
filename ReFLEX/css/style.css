@@ -271,12 +271,6 @@ input[type="button"] {
   height: 445px;
   position: relative;
   background-size: cover !important; }
-  #video-recorder .recorder-finished.button {
-    opacity: 0.6; }
-    #video-recorder .recorder-finished.button:hover {
-      opacity: 0.8; }
-    #video-recorder .recorder-finished.button:active {
-      opacity: 1; }
 
 #record-init-background {
   width: 100%;
@@ -756,6 +750,9 @@ input[type="button"] {
   background-image: url(../images/yellow_note.png); }
 
 /* Registration interface */
+.register {
+  max-width: 350px; }
+
 .register input, .recover input {
   border: 1px solid rgba(255, 255, 255, 0.1);
   background-color: transparent;

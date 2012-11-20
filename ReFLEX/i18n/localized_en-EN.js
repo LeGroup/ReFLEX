@@ -99,5 +99,9 @@
 	"pin": "pin",
 	"your name": "your name",
 	"your email address": "your email address",
-	"Log in": "Log in"
+	"Log in": "Log in",
+	"Registration succeeded. You will now receive an email message with your login information.": "Registration succeeded. You will now receive an email message with your login information.",
+	"Registration failed! Please try again. If this error message keeps appearing, please contact to the ReFlex administration.": "Registration failed! Please try again. If this error message keeps appearing, please contact to the ReFlex administration.",
+	"Hey! Your browser is ancient. Please, do yourself a big favor and download": "Hey! Your browser is ancient. Please, do yourself a big favor and download",
+	"a better browser": "a better browser"
 }
