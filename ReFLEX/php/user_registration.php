@@ -50,7 +50,6 @@ if(MAIL_ENABLED) {
 	else
 		$return->MailSent = true;
 }
-$return->Success = false;
 	
 echo json_encode($return);
 
