@@ -88,7 +88,6 @@ var noteGap = 50;
 var NoteTimeline;
 // Move post apart from each other
 function SeparatePosts() {
-	debug('--------Thishappens--------------');
 	var space = Math.min(NoteTimeline.width() / Notes.length, noteGap);
 	
 	var start = new Date();
