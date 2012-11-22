@@ -72,6 +72,10 @@ function UIChangeState(state) {
 	//Stop playback when opening another note or changing interface somehow
 	if(RECORDER.CurrentState == RECORDER.UiStates.Playing && state != RECORDER.UiStates.Playing && state != RECORDER.UiStates.PlaybackFinished)
 		RECORDER.stop_playing();
+	
+	//Stop preview when opening another note or changing interface somehow
+	if(RECORDER.CurrentState == RECORDER.UiStates.Preview && state != RECORDER.UiStates.Preview)
+		RECORDER.stop_preview();
 		
 	// Cancel recording if Ui state changed
 	// Eg. another note has been selected
