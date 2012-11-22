@@ -306,10 +306,9 @@ function ShowAllNotes() {
 	ZoomLevel = Levels.AllTime;
 	getJson('noteTimelineInfo.php', { user: User.ID }, function(object) {
 		var len = Math.round((object[0].Max - object[0].Min) * 0.06);
-		if(len == 0) {
-			object[0].Min -= msInDay;
-			object[0].Max += msInDay;
-		}
+		
+		len = Math.max(len, 1000 * 60 * 60 * 12);
+		
 		SetTimeline(Number(object[0].Min) - Number(len), Number(object[0].Max) + Number(len));
 	});
 }

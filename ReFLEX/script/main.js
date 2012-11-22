@@ -210,8 +210,7 @@ function SetTimeline(start, end, finished) {
 	end.setTime(Timeline.End);
 	$('#timeline-end').text(dateFormat(end.getTime()));
 	Timeline.Timespan = Timeline.End - Timeline.Start;
-	// EmptyNotes(Timeline.Start - Timeline.Timespan, Timeline.End + Timeline.Timespan);
-	// LoadNewNote(Timeline.Start - Timeline.Timespan, Timeline.End + Timeline.Timespan);	
+	
 	EmptyNotes(Timeline.Start, Timeline.End);
 	LoadNewNote(Timeline.Start, Timeline.End, false, finished);
 }
@@ -336,18 +335,6 @@ function monthInTime(month, year) { return new Date(year, month + 2, 0).getTime(
 var Notebar;
 var msInWeeks = 1000 * 60 * 60 * 24 * 7;
 var msInDay = 1000 * 60 * 60 * 24;
-
-function MakePrivate(note) {
-	note.Private = true;
-	$('#privacy').text(i18n('Make public'));
-	UpdateNote(note);
-}
-
-function MakePublic(note) {
-	note.Private = false;
-	$('#privacy').text(i18n('Make private'));
-	UpdateNote(note);
-}
 
 function nextDay(t) {
 	t = new Date(t);

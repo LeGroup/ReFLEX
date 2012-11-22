@@ -530,12 +530,12 @@ input[type="button"] {
 #play-pause-button {
   background-image: url(../images/play-small-disabled.png); }
 
-#play-pause-button.play-button {
+#play-pause-button.play-button, #play-pause-button.preview-button {
   cursor: pointer;
   background-image: url(../images/play-small.png); }
-  #play-pause-button.play-button:hover {
+  #play-pause-button.play-button:hover, #play-pause-button.preview-button:hover {
     background-color: #4C4C4C; }
-  #play-pause-button.play-button:active {
+  #play-pause-button.play-button:active, #play-pause-button.preview-button:active {
     background-color: #535353; }
 
 #play-pause-button.pause-button {

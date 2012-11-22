@@ -17,7 +17,7 @@ $q = $db->prepare('SELECT
 	AudioLength as Length
 	FROM notes WHERE Student = :user 
 	AND Time >= :start 
-	AND Time < :end 
+	AND Time <= :end 
 	AND ID > :id
 	LIMIT 0, 1');
 	
