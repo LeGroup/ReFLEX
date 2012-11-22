@@ -135,11 +135,11 @@ input[type="button"] {
   top: 50%;
   right: -120px;
   margin-top: -44px;
-  background-image: url(../images/camera-active.png); }
+  background-image: url(../images/camera.png); }
   #options-page #avatar-camera-trigger:hover {
-    background-image: url(../images/camera-active-hover.png); }
+    background-image: url(../images/camera-hover.png); }
   #options-page #avatar-camera-trigger:active {
-    background-image: url(../images/camera-active-active.png); }
+    background-image: url(../images/camera-active.png); }
 #options-page #AvatarCameraContainer {
   position: absolute;
   top: 0;
