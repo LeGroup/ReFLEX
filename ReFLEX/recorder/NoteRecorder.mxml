@@ -57,6 +57,7 @@
 			private var recordCanceled:Boolean = false;
 			private var soundLoader:URLLoader;
 			private var imageLoader:URLLoader;
+			private var previewStarted:Number;
 			
 			private function init():void {
 			    //Security.loadPolicyFile(server_path+'crossdomain.php');
@@ -82,6 +83,8 @@
                 ExternalInterface.addCallback("saveRecording", saveRecording);
                 ExternalInterface.addCallback("loadNote", loadNote);
                 ExternalInterface.addCallback("loadPic", loadPic);
+                ExternalInterface.addCallback("preview", preview);
+                ExternalInterface.addCallback("stop_preview", preview_ends);
                 ExternalInterface.call("recorderInitialized");
 			}
 			
@@ -333,7 +336,11 @@
             // // this should be the only function to use those path parameters 
 			
 			private function _displayPosition(e:Event):void{
-				ExternalInterface.call("recording_timer", Math.floor(soundChannel.position / 100), false);
+				recording_timer(Math.floor(soundChannel.position / 100));
+			}
+			
+			private function recording_timer(position:Number):void {
+				ExternalInterface.call("recording_timer", position, false);
 			}
 
             private function movePlaybackToPosition(p:Number):void {
@@ -361,6 +368,30 @@
     			record_len=event.time;
     		}
 			
+			private function preview():void {
+				debug('Starting preview');
+				previewStarted = new Date().getTime();
+				playTimer = new Timer(32);
+				playTimer.addEventListener(TimerEvent.TIMER, previewUpdate);
+				playTimer.start();
+				
+				
+				sound.play();
+			}
+			
+			private function preview_ends():void {
+				debug('preview ends');
+				playTimer.stop();
+				ExternalInterface.call("preview_ended");
+			}
+			
+			private function previewUpdate(e:Event):void {
+				if(new Date().getTime() - previewStarted > sound.length)
+					preview_ends();
+				
+				ExternalInterface.call("recording_timer", (new Date().getTime() - previewStarted) / 100, sound.length);
+			}
+			
     		private function _onRecordComplete(event:Event):void {
 				
 				video.visible = false;
@@ -385,9 +416,8 @@
 						mp3Encoder.removeEventListener(ErrorEvent.ERROR, _mp3EncodeError);
 						debug('Encoding finished: ' + (mp3Encoder.mp3Data.length/1024).toFixed(1)+' kb.');
 						encoding_container.visible = false;
-						
+						sound = new WavSound(recorder.output);
 						ExternalInterface.call("encodingComplete");
-						
 					}
 					
 					mp3Encoder = new ShineMP3Encoder(recorder.output);

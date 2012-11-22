@@ -19,7 +19,8 @@ RECORDER.UiStates = {
 	NoteSealed: 'note-sealed',
 	CameraPermission: 'camera-permission',
 	Uploading: 'uploading',
-	NoteTimeSealed: 'note-timesealed'
+	NoteTimeSealed: 'note-timesealed',
+	Preview: 'record-preview'
 };
 
 function InitRecorder() {
@@ -42,7 +43,13 @@ function InitRecorder() {
 	
 	$('#play-pause-button').click(function() {
 		if($(this).hasClass('play-button')) { RECORDER.play(); }
-		else if($(this).hasClass('pause-button')) { RECORDER.stop_playing(); }
+		else if($(this).hasClass('pause-button')) { 
+		if(RECORDER.CurrentState == RECORDER.UiStates.Playing)
+			RECORDER.stop_playing(); 
+		else if(RECORDER.CurrentState == RECORDER.UiStates.Preview)
+			RECORDER.stop_preview();
+		}
+		else if($(this).hasClass('preview-button')) { RECORDER.preview(); }
 	});
 	
 	$('#record-button').click(function() {
@@ -71,17 +78,19 @@ function UIChangeState(state) {
 	if(RECORDER.CurrentState == RECORDER.UiStates.Recording && state != RECORDER.UiStates.Recording) 
 		RECORDER.cancel_recording();
 	
-	// doesn't work atm
+	// <('-' <)
 	if(RECORDER.CurrentState == RECORDER.UiStates.Countdown && state != RECORDER.UiStates.Countdown) 
 		RECORDER.cancel_recording();
 		
 	//Play/pause button display
-	if(state == RECORDER.UiStates.Playing) 
-		$('#play-pause-button').addClass('pause-button').removeClass('play-button');
-	else if($.inArray(state, [ /* RECORDER.UiStates.Finished, */ RECORDER.UiStates.PlaybackFinished, RECORDER.UiStates.NoteSelected ]) >= 0)
-		$('#play-pause-button').addClass('play-button').removeClass('pause-button');
+	if(state == RECORDER.UiStates.Playing || state == RECORDER.UiStates.Preview) 
+		$('#play-pause-button').addClass('pause-button').removeClass('play-button preview-button');
+	else if($.inArray(state, [ RECORDER.UiStates.PlaybackFinished, RECORDER.UiStates.NoteSelected ]) >= 0)
+		$('#play-pause-button').addClass('play-button').removeClass('pause-button preview-button');
+	else if(state == RECORDER.UiStates.Finished)
+		$('#play-pause-button').addClass('preview-button').removeClass('pause-button play-button');
 	else
-		$('#play-pause-button').removeClass('play-button pause-button');
+		$('#play-pause-button').removeClass('play-button pause-button preview-button');
 		
 	//Record button display	
 	if(state == RECORDER.UiStates.Recording)
@@ -237,6 +246,25 @@ RECORDER.stop_recording = function() {
     }
 }
 
+RECORDER.preview = function() {
+    var rec = RECORDER.getRecorder(); 
+    if (rec) {
+		UIChangeState(RECORDER.UiStates.Preview);
+        rec.preview();
+    }
+}
+
+RECORDER.stop_preview = function() {
+    var rec = RECORDER.getRecorder(); 
+    if (rec) {
+        rec.stop_preview();
+    }
+}
+
+RECORDER.preview_ended = function() {
+	UIChangeState(RECORDER.UiStates.Finished);
+}
+
 RECORDER.redo_recording = function() {
     var rec = RECORDER.getRecorder(); 
     if (rec) {
@@ -390,3 +418,4 @@ countdown=RECORDER.countdown;
 cameraAccepted=RECORDER.cameraAccepted;
 cameraDenied=RECORDER.cameraDenied;
 stopped_playing=RECORDER.stopped_playing;
+preview_ended = RECORDER.preview_ended;
