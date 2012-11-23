@@ -1,5 +1,11 @@
 
 function AddNote(note) {
+	
+	if(Timeline.Start > note.Time)
+		SetTimeline(note.Time, Timeline.End);
+	if(Timeline.End < note.Time)
+		SetTimeline(Timeline.Start, note.Time);
+	
 	//Check if note is already added
 	if(Is_note_new(note))
 	{
@@ -7,18 +13,9 @@ function AddNote(note) {
 		Notes.push(note);
 	}
 	else {
-		note.Object.animate({ left: GetNotePosition(note) }, 400);
+		note.Position = GetNotePosition(note);
+		note.Object.stop().animate({ left: note.Position * 100 + '%' }, 400);
 	}
-}
-
-function UpdateAllNotePositions() {
-	for(var i = 0; i < Notes.length; i++) {
-		UpdateNotePosition(Notes[i]);
-	}
-}
-
-function UpdateNotePosition(note) {
-	// Notebar.PositionElement(note.Object, note.Time);
 }
 
 var verticalOffset = 0;
@@ -68,8 +65,8 @@ function AddNoteElement(note) {
 	note.Object.css('opacity', 0).animate({ opacity: 1 }, 200);
 	note.Object.attr('title', datetimeFormat(note.Time));
 	
-	
-	note.Object.css('left', GetNotePosition(note));
+	note.Position = GetNotePosition(note);
+	note.Object.css('left', (note.Position * 100) + '%');
 	
 	if(note.Time > new Date().getTime() + 1000 * 3)
 		note.Object.addClass('timecapsule');
@@ -88,7 +85,7 @@ var noteGap = 50;
 var NoteTimeline;
 // Move post apart from each other
 function SeparatePosts() {
-	var space = Math.min(NoteTimeline.width() / Notes.length, noteGap);
+	var space = Math.min(NoteTimeline.width() / Notes.length, noteGap)/NoteTimeline.width();
 	
 	var start = new Date();
 	var min = NoteTimeline.width() * 0.06;
@@ -98,35 +95,42 @@ function SeparatePosts() {
 	while(!done) {
 		done = true;
 		for(var i = 0; i < Notes.length; i++) {
-			Notes[i].Object.css('zIndex', parseInt(Notes[i].Object.css('left')));
+			Notes[i].Object.css('zIndex', parseFloat(Notes[i].Object.css('left')) / NoteTimeline.width());
 			for(var j = i + 1; j < Notes.length; j++) {
-				var iLeft = parseInt(Notes[i].Object.css('left'));
-				var jLeft = parseInt(Notes[j].Object.css('left'));
-				if(Math.abs(iLeft - jLeft) < space) {
-					var g = space - (iLeft - jLeft);
+				var iLeft = Notes[i].Position;
+				var jLeft = Notes[j].Position;
+				if(Math.abs(Notes[i].Position - Notes[j].Position) < space) {
+					var g = space - (Notes[i].Position - Notes[j].Position);
 					done = false;
 					if(Notes[i].Time > Notes[j].Time) {
-						Notes[i].Object.css('left', clamp((iLeft + g/2)/NoteTimeline.width(), 0.06, 0.94) * 100 + '%');
-						Notes[j].Object.css('left', clamp((jLeft - g/2)/NoteTimeline.width(), 0.06, 0.94) * 100 + '%');
+						Notes[i].Position = clamp((iLeft + g/2), 0.06, 0.94);
+						Notes[j].Position = clamp((jLeft - g/2), 0.06, 0.94);
+						// Notes[i].Object.css('left', clamp((iLeft + g/2), 0.06, 0.94) * 100 + '%');
+						// Notes[j].Object.css('left', clamp((jLeft - g/2), 0.06, 0.94) * 100 + '%');
 					}
 					else {
-						Notes[i].Object.css('left', clamp((iLeft - g/2)/NoteTimeline.width(), 0.06, 0.94) * 100 + '%');
-						Notes[j].Object.css('left', clamp((jLeft + g/2)/NoteTimeline.width(), 0.06, 0.94) * 100 + '%');
+						Notes[i].Position = clamp((iLeft - g/2), 0.06, 0.94);
+						Notes[j].Position = clamp((jLeft + g/2), 0.06, 0.94);
+						// Notes[i].Object.css('left', clamp((iLeft - g/2), 0.06, 0.94) * 100 + '%');
+						// Notes[j].Object.css('left', clamp((jLeft + g/2), 0.06, 0.94) * 100 + '%');
 					}
 				}
 			}
 		}
-		//if(new Date().getTime() - start.getTime() > 1000)
-			//break;
+		if(new Date().getTime() - start.getTime() > 1000)
+			break;
 	}
+	
+	for(var i = 0; i < Notes.length; i++)
+		Notes[i].Object.animate({ left: (Notes[i].Position * 100) + '%' }, 400);
 	
 	debug(new Date().getTime() - start.getTime());
 }
 
 function GetNotePosition(note) {
 	var r = (note.Time - Timeline.Start) / (Timeline.End - Timeline.Start);
-	r = 0.06 + r * 0.88;
-	return (r * 100) + '%';
+	return 0.06 + r * 0.88;
+
 }
 
 function UpdateNote(note) {

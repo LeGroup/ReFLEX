@@ -36,6 +36,7 @@
             private var wavEncoder:WaveEncoder = new WaveEncoder( volume );
             private var recorder:MicRecorder;
     		private var sound:WavSound; //WavSound
+			private var wavSoundChannel:WavSoundChannel;
 			private var externalSound:Sound; //Can't play mp3 files with wavSound
 			private var soundChannel:SoundChannel = new SoundChannel();
     		private var record_len:Number;
@@ -84,7 +85,7 @@
                 ExternalInterface.addCallback("loadNote", loadNote);
                 ExternalInterface.addCallback("loadPic", loadPic);
                 ExternalInterface.addCallback("preview", preview);
-                ExternalInterface.addCallback("stop_preview", preview_ends);
+                ExternalInterface.addCallback("stop_preview", stop_preview);
                 ExternalInterface.call("recorderInitialized");
 			}
 			
@@ -370,17 +371,24 @@
 			
 			private function preview():void {
 				debug('Starting preview');
+				
+				var previewSound:WavSound = new WavSound(recorder.output);
+				wavSoundChannel = previewSound.play();
 				previewStarted = new Date().getTime();
 				playTimer = new Timer(32);
 				playTimer.addEventListener(TimerEvent.TIMER, previewUpdate);
 				playTimer.start();
 				
-				
-				sound.play();
+			}
+			
+			private function stop_preview():void {
+				debug('Stopping preview');
+				preview_ends();
 			}
 			
 			private function preview_ends():void {
 				debug('preview ends');
+				wavSoundChannel.stop();
 				playTimer.stop();
 				ExternalInterface.call("preview_ended");
 			}
@@ -441,7 +449,6 @@
 				uic.visible = false;
 				externalSound = null;
 				captured_shot.source = new URLRequest(server_url + picture);
-				
 			}
 		
 		]]>
