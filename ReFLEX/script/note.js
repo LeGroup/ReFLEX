@@ -331,7 +331,7 @@ function ShowNotesMonth() {
 	n.setDate(0);
 	
 	end = n.getTime();
-	SetTimeline(start, end);
+	SetTimeline(start, end, SeparatePosts);
 }
 
 function ShowNotesWeek() {
@@ -345,7 +345,7 @@ function ShowNotesWeek() {
 	start = n;
 	
 	end = n + msInDay * 7 - 1;
-	SetTimeline(start, end);
+	SetTimeline(start, end, SeparatePosts);
 }
 
 function ShowNotesDay() {

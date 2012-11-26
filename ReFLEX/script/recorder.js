@@ -272,7 +272,7 @@ RECORDER.preview_ended = function() {
 RECORDER.redo_recording = function() {
     var rec = RECORDER.getRecorder(); 
     if (rec) {
-		UIChangeState(RECORDER.UiStates.Recording);
+		UIChangeState(RECORDER.UiStates.CountDown);
         rec.redoRecording();
     }
 }

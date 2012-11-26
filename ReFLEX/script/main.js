@@ -50,6 +50,7 @@ function Init() {
 }
 
 function CheckBrowser() {
+	debug("browser: " + JSON.stringify($.browser));
 	if($.browser.msie) {
 		var ver = parseInt($.browser.version.substr(0, 1));
 		debug(ver);
@@ -118,7 +119,6 @@ function InitializeUserInterface() {
 			MakePrivate(SelectedNote);
 	});
 	
-	$('#pin-reset').click(ResetPin);
 	
 	$(window).resize(function() {
 		$('.single-note-background').each(function() { $(this).css('marginLeft', -($(this).width()/2) + 'px'); });
@@ -187,13 +187,14 @@ function InitializeRegistrationInterface() {
 		l.text(lang)
 		.attr('href', '?lang=' + Languages[lang])
 		.addClass('language');
-		$('#languages').append(delimiter).append(l);
+		$('.languages').append(delimiter).append(l);
 		delimiter = ' | ';
 	}
 	
+	$('#pin-reset').click(ResetPin);
+	$('.back-index').click(function() { OpenPage('register'); });
+	$('#forgot-pin').click(function() { OpenPage('resend-mail'); });
 	$('#newUserAdd').click(RegisterUser);
-	$('#resendEmail').click(function() { OpenPage('recover-url'); });
-	$('#recoverMail').click(ResendEmail);
 	$('#login-button').click(function() { LogIn($('#login-email').val(), $('#login-pass').val()); });
 }
 
@@ -238,8 +239,16 @@ function OpenPage(id) {
 }
 
 function ResetPin() {
-	getJson('resetPin.php', { id: User.ID, email: User.Email }, function() {
-		alert(i18n('Your pin has been reset. Please check your email.'));
+	var email = $('#resetEmail').val();
+	getJson('resetPin.php', { email: email}, function(object) {
+		if(object.Success) {
+			alert(i18n('Your pin has been reset. You will receive new pin code shortly.'));
+			$('#resetEmail').val('');
+		}
+		else if(object.EmailNotFound)
+			alert(i18n("Email address not found. Maybe you haven't registered yet?"));
+		else
+			alert(i18n("Something went wrong. Please try again."));
 	});
 }
 
@@ -269,15 +278,6 @@ function RegisterUser() {
 	}
 	else
 		alert('Your name and email address cannot be empty!');
-}
-
-function ResendEmail() {
-	getJson('resend_email.php', { 
-		email: $('#recoverMailAddress').val() },
-		function(object) {
-			if(object.Success)
-				OpenPage('recover-url-done');
-		}, true, true);
 }
 
 function ValidateUserRegistration() {
@@ -377,14 +377,12 @@ function guess_language(){
 }
 
 
-
 function localize(){
     // The idea is that some html-entities are marked for translation (class 'i18n'). The content text of these html-entities (= english text) is used as a key in translation dict (localizedStrings) and it is checked for possible translation available and replaced if available. 
     // This is enough for us, but would not scale for larger program. (Homonyms in english would translate identically for differing purposes.)
 
     // Ensure language code is in the format aa-AA:
 	// var lang = OPTIONS.language.replace(/_/, '-').toLowerCase();
-	debug("browser: " + $.browser.chrome + ', ' + $.browser.version);
 	
 	Language = guess_language();
 	localStorage.Language = Language;
@@ -444,7 +442,6 @@ function localize(){
 function getJson(url, post, finished, onError, dontDebugRespond) {
 	debug('Start json request ' + PHP_LIB + url);
 	post.Language = Language;
-	
 	if(User) {
 		post.email = User.Email;
 		post.pin = User.Pin;
