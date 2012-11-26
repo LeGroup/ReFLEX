@@ -99,6 +99,10 @@ input[type="button"] {
       padding: 4px;
       margin-top: 4px;
       margin-right: 10px; }
+    .header #login #forgot-pin {
+      position: absolute;
+      bottom: -50px;
+      right: 10px; }
 
 #wrapper {
   margin: auto;
@@ -821,7 +825,7 @@ input[type="button"] {
   #newUserAdd:active {
     background-color: #878786; }
 
-#login-button {
+input[type=button] {
   border: 0;
   color: #fafafa;
   background-color: #4a4a4a;
@@ -830,9 +834,9 @@ input[type="button"] {
   -webkit-border-radius: 3px;
   -khtml-border-radius: 3px;
   border-radius: 3px; }
-  #login-button:hover {
+  input[type=button]:hover {
     background-color: #575656; }
-  #login-button:active {
+  input[type=button]:active {
     background-color: #878786; }
 
 .recover {

@@ -105,5 +105,11 @@
 	"Hey! Your browser is ancient. Please, do yourself a big favor and download": "Hey! Your browser is ancient. Please, do yourself a big favor and download",
 	"a better browser": "a better browser",
 	"opens in": "opens in",
-	"opens tomorrow": "opens tomorrow"
+	"opens tomorrow": "opens tomorrow",
+	"Back to the login page": "Back to the login page",
+	"Reset your pin code": "Reset your pin code",
+	"Reset pin": "Reset pin",
+	"Forgot your pin?": "Forgot your pin?",
+	"Something went wrong. Please try again.": "Email address not found. Maybe you haven't registered yet?",
+	"Your pin has been reset. You will receive new pin code shortly.": "Your pin has been reset. You will receive new pin code shortly."
 }
