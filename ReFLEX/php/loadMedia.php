@@ -25,7 +25,7 @@ $obj->Error = $q->errorInfo();
 if($q->rowCount() == 1) {
 	$obj = $q->fetchObject();
 	
-	if($obj->Time > time() * 1000) {
+	if($obj->Time > time() * 1000 + 1000 * 120) {
 		$obj->Voice = false;
 	}
 	

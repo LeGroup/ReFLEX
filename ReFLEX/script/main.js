@@ -191,7 +191,7 @@ function InitializeRegistrationInterface() {
 		delimiter = ' | ';
 	}
 	
-	$('#pin-reset').click(ResetPin);
+	$('.pin-reset').click(ResetPin);
 	$('.back-index').click(function() { OpenPage('register'); });
 	$('#forgot-pin').click(function() { OpenPage('resend-mail'); });
 	$('#newUserAdd').click(RegisterUser);
@@ -240,6 +240,8 @@ function OpenPage(id) {
 
 function ResetPin() {
 	var email = $('#resetEmail').val();
+	if(!email || email.length == 0)
+		email = User.email;
 	getJson('resetPin.php', { email: email}, function(object) {
 		if(object.Success) {
 			alert(i18n('Your pin has been reset. You will receive new pin code shortly.'));

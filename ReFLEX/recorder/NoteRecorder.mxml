@@ -23,7 +23,7 @@
             import flash.system.Security;
             import flash.external.ExternalInterface;
             import mx.core.FlexGlobals;
-
+			
 			private var mymic:Microphone;
 			private var playback_channel:WavSoundChannel;
 			private var micTimer:Timer;
@@ -60,7 +60,11 @@
 			private var imageLoader:URLLoader;
 			private var previewStarted:Number;
 			
+			
+			
+			
 			private function init():void {
+				
 			    //Security.loadPolicyFile(server_path+'crossdomain.php');
                 camw=420 * 2;
                 camh=280 * 2;
