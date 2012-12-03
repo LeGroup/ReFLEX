@@ -64,7 +64,9 @@ AVA.countdown = function(num) {
 AVA.finishedRecording = function(data) {
 	AVA.State = AVA.States.Closed;
 	debug('Finished recording, PHP responds: ' + data);
-	var d = $.parseJSON(data);
+	try {
+		var d = $.parseJSON(data); 
+	} catch(e) { debug('2asdasd' + e); }
 	debug('Finished recording, PHP responds: ' + data);
 	$('#ava-save').hide();
 	$('#AvatarCameraContainer').html('<div id="AvatarCamera"></div>');

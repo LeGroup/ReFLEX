@@ -68,8 +68,9 @@ function AddNoteElement(note) {
 	note.Position = GetNotePosition(note);
 	note.Object.css('left', (note.Position * 100) + '%');
 	
-	if(note.Time > new Date().getTime() + 1000 * 3)
+	if(note.Time > new Date().getTime() + 1000 * 3) {
 		note.Object.addClass('timecapsule');
+	}
 		
 	if(note.Favorite && note.Favorite > 0)
 		note.Object.addClass('favorite');
@@ -171,6 +172,8 @@ function SelectNote(note) {
 		RECORDER.stop_playing();
 	
 	RECORDER.recording_timer(0, note.Length);
+	debug(note.Time);
+	$('#note-timestamp').text(datetimeFormat(note.Time));
 	
 	SelectedNote = note;
 	debug('Selected a note');
