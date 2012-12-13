@@ -63,7 +63,7 @@ function AddNoteElement(note) {
 		
 	note.Object = CreateNoteElement(note.Thumb);
 	note.Object.css('opacity', 0).animate({ opacity: 1 }, 200);
-	note.Object.attr('title', datetimeFormat(note.Time));
+	note.Object.attr('title', dateFormat(note.Time));
 	
 	note.Position = GetNotePosition(note);
 	note.Object.css('left', (note.Position * 100) + '%');

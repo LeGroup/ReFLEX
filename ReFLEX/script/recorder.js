@@ -327,7 +327,7 @@ var alpha = 0;
 RECORDER.audioLevel=function(level) {
     //RECORDER.vumeter.height(level*3);
 	var count = $('#vumeters > div').length;
-	level = Math.min(level/50, 1);
+	level = level/50;
 	RECORDER.vumeter_values.splice(0, 0, 1 + level* 40);
 	
 	if(RECORDER.vumeter_values.length > count)
