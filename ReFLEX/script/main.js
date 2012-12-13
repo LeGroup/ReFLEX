@@ -317,7 +317,12 @@ function weekBlockWidths(weekCount) {
 
 var months = [ i18n('January'), i18n('February'), i18n('March'), i18n('April'), i18n('May'), i18n('June'), i18n('July'), i18n('August'), i18n('September'), i18n('October'), i18n('November'), i18n('December') ];
 
-function dateFormat(date) { date = new Date(date); return date.getDate() + '.' + (date.getMonth() + 1) + '.' + date.getFullYear(); }
+function dateFormat(time) {
+	date = new Date(); 
+	date.setTime(time);
+	return date.getDate() + '.' + (date.getMonth() + 1) + '.' + date.getFullYear(); 
+}
+
 function monthFormat(date) { return i18n(months[new Date(date).getMonth()]); }
 function datetimeFormat(date) { 
 	var d = new Date();

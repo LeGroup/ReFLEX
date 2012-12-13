@@ -173,7 +173,7 @@ function SelectNote(note) {
 	
 	RECORDER.recording_timer(0, note.Length);
 	debug(note.Time);
-	$('#note-timestamp').text(datetimeFormat(note.Time));
+	$('#note-timestamp').text(dateFormat(note.Time));
 	
 	SelectedNote = note;
 	debug('Selected a note');
