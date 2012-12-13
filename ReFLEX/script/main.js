@@ -298,7 +298,7 @@ function debug(msg) {
 	// if (ms < 10) {ms = "0"+ms;}
 	// if (ms < 100) {ms = "0"+ms;}
 	// console.log(hh + ':' + mm + ':' + ss + '.' + ms + '	' + msg); 
-	console.log(msg);
+	//console.log(msg);
 } 
 
 function playbackPositionScroll() {
