@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <style>
+            body{padding-top: 6px; float: right; background-color: #343435 }
+            
+            input[type="text"], input[type="password"] {
+                border: 1px solid rgba(255,255,255,0.1); 
+                background-color: transparent;
+                color: rgba(255,255,255,0.7);
+                padding: 4px;
+                display: inline-block;
+                margin: 5px;
+            }
+            input[type="password"] {
+                width: 60px;
+            }
+            input[type="submit"] {
+                font-size: 0.9em;
+                border: 0;
+                color: #fff;
+                padding: 6px; 
+                border-radius: 5px;
+                background-color: #2a2a2a;
+            }
+            input[type="submit"]:hover { background-color: #2f2f2f; }
+            input[type="submit"]:active { background-color: #575656; }
+            
+        </style>
+    </head>
+    <body>
+    <script>
+    function login_button(e) { 
+            parent.LogIn(document.getElementById('login-email').value, document.getElementById('login-pass').value); 
+        }
+    </script>
+        <form method="post" onsubmit="login_button()" action="login_form.html" autocomplete="on">
+            <input type="text" class="i18n_placeholder" name="email" id="login-email" placeholder="email address" /><input id="login-pass" name="pin" type="password" class="i18n_placeholder" placeholder="PIN" />
+            <input type="submit" class="button i18n_value" value="Log in" />
+        </form>
+    </body>
+</html>

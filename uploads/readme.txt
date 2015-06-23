@@ -1,0 +1,1 @@
+This is the folder for uploaded recordings, divided to subfolders for each user
